@@ -17,30 +17,63 @@
                 <div class="breadcrumb_div">TopoHawk</div>
             </div>
             <div id="menu_div">
-                <img src="images/button-menu.svg" style="height:30px;"/>
+                <img src="images/button-menu.svg" style="height:30px;" onclick="button_menu_click()"/>
             </div>
         </div>
         
-        <div id="center_div"></div>
+        <div id="center_div">
+            <div id = "screen_destinations" class="screen"></div>
+            <div id = "screen_map" class="screen"></div>
+            <div id = "screen_seach" class="screen"></div>
+            <div id = "screen_stream" class="screen"></div>
+        </div>
         
         <div id="buttons_div">
             <div class="button_group_left_div">
                 <div class="button_group_left_div">
-                    <div id="button_1_div"><img src="images/button-destinations.svg" class="button_image"/></div>
+                    <div id="button_1_div"><img src="images/button-info.svg" class="button_image"/></div>
                 </div>
                 <div class="button_group_right_div">
-                    <div id="button_2_div"><img src="images/button-map.svg" class="button_image"/></div>
+                    <div id="button_2_div"><img src="images/button-destinations.svg" class="button_image"/></div>
                 </div>
             </div>
             
             <div class="button_group_right_div">
                 <div class="button_group_left_div">
-                    <div id="button_3_div"><img src="images/button-map.svg" class="button_image"/></div>
+                    <div id="button_3_div"><img src="images/button-photos.svg" class="button_image"/></div>
                 </div>
                 <div class="button_group_right_div">
                     <div id="button_4_div"><img src="images/button-map.svg" class="button_image"/></div>
                 </div>
             </div>
         </div>
+        
+        <div id="menu_popup">
+            <div class="menu_item">Search</div><hr/>
+            <div class="menu_item">Spray</div><hr/>
+            <div class="menu_item">Ticks</div><hr/>
+            <div class="menu_item">Offline Content</div><hr/>
+            <div class="menu_item">Edit</div><hr/>
+            <div class="menu_item">Settings</div><hr/>
+            <div class="menu_item">About</div>
+        </div>
+        
+        <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+        
+        <script>
+
+            
+            function button_menu_click() {
+                if ($("#menu_popup").css('visibility') == 'visible') {
+                    $("#menu_popup").css('visibility','hidden');
+                } else {
+                    var left = $(window).width() - $("#menu_popup").width() - 5;
+                    $("#menu_popup").css('left', left);
+                    $("#menu_popup").css('visibility','visible');
+                }
+            }
+        
+            
+        </script>
     </body>
 </html>
