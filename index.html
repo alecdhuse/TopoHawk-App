@@ -4,7 +4,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1"/>
         
+        <link rel="stylesheet" href="css/dd.css">
+        <link rel="stylesheet" href="css/jquery.nouislider.min.css" />
+        <link rel="stylesheet" href="css/jquery-ui-1.8.2.custom.min.css" />
+        <link rel="stylesheet" href="css/leaflet.custom.min.css" />
         <link rel="stylesheet" href="css/styles.css" />
+        <link rel="stylesheet" href="css/topohawk-map.css" />
         <link rel="icon" sizes="192x192" href="images/touch-icon-192x192.png">
         
         <title>TopoHawk</title>
@@ -38,19 +43,19 @@
         <div id="buttons_div">
             <div class="button_group_left_div">
                 <div class="button_group_left_div">
-                    <div id="button_1_div"><img src="images/button-info.svg" class="button_image"/></div>
+                    <div id="button_1_div"><img src="images/button-info.svg" class="button_image" id="button1_img" onclick="button1_click()"/></div>
                 </div>
                 <div class="button_group_right_div">
-                    <div id="button_2_div"><img src="images/button-destinations.svg" class="button_image"/></div>
+                    <div id="button_2_div"><img src="images/button-destinations.svg" class="button_image" id="button2_img" onclick="button2_click()"/></div>
                 </div>
             </div>
             
             <div class="button_group_right_div">
                 <div class="button_group_left_div">
-                    <div id="button_3_div"><img src="images/button-photos.svg" class="button_image"/></div>
+                    <div id="button_3_div"><img src="images/button-photos.svg" class="button_image" id="button3_img" onclick="button3_click()"/></div>
                 </div>
                 <div class="button_group_right_div">
-                    <div id="button_4_div"><img src="images/button-map.svg" class="button_image"/></div>
+                    <div id="button_4_div"><img src="images/button-map.svg" class="button_image" id="button4_img" onclick="button4_click()"/></div>
                 </div>
             </div>
         </div>
@@ -66,10 +71,55 @@
         </div>
         
         <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="js/jquery.dd.min.js"></script>
+        <script type="text/javascript" src="js/jquery.nouislider.min.js"></script>
+        <script type="text/javascript" src="js/leaflet.js"></script>
+        <script type="text/javascript" src="js/leaflet.label.js"></script>
+        <script type="text/javascript" src="js/leaflet.markercluster.js"></script>
+        <script type="text/javascript" src="js/topohawk_map.js"></script>
         
         <script>
+            var user_id = -1;
+        
+            /* Map Setup */
+            var map = TH.map('screen_map', {
+                cluster:    true,
+                mobile:     true,
+                offline:    true,
+                lat:        40.6,
+                lng:        -98.0,
+                zoom:       3
+            });
 
-            
+            map.on_area_click        = function (area_obj)        { };
+            map.on_destination_click = function (destination_obj) { };
+            map.on_route_click       = function (route_obj)       { };
+            map.on_user_info_loaded  = function ()                { user_info_loaded() };
+
+            function button1_click() {
+                buttons_reset();
+                $("#button1_img").attr("src", "images/button-info-selected.svg");
+                $("#screen_info").css('visibility','visible');
+            }
+        
+            function button2_click() {
+                buttons_reset();
+                $("#button2_img").attr("src", "images/button-destinations-selected.svg");
+                $("#screen_destinations").css('visibility','visible');
+            }
+        
+            function button3_click() {
+                buttons_reset();
+                $("#button3_img").attr("src", "images/button-photos-selected.svg");
+                $("#screen_stream").css('visibility','visible');
+            }
+        
+            function button4_click() {
+                buttons_reset();
+                $("#button4_img").attr("src", "images/button-map-selected.svg");
+                $("#screen_map").css('visibility','visible');
+            }
+        
             function button_menu_click() {
                 if ($("#menu_popup").css('visibility') == 'visible') {
                     $("#menu_popup").css('visibility','hidden');
@@ -80,7 +130,88 @@
                 }
             }
         
-            
+            function buttons_reset() {
+                 $("#button1_img").attr("src", "images/button-info.svg");
+                 $("#button2_img").attr("src", "images/button-destinations.svg");
+                 $("#button3_img").attr("src", "images/button-photos.svg");
+                 $("#button4_img").attr("src", "images/button-map.svg");
+                 
+                 $("#screen_about").css('visibility','hidden');
+                 $("#screen_destinations").css('visibility','hidden');
+                 $("#screen_edit").css('visibility','hidden');
+                 $("#screen_info").css('visibility','hidden');
+                 $("#screen_map").css('visibility','hidden');
+                 $("#screen_offline_content").css('visibility','hidden');
+                 $("#screen_search").css('visibility','hidden');
+                 $("#screen_settings").css('visibility','hidden');
+                 $("#screen_stream").css('visibility','hidden');
+                 $("#screen_spray").css('visibility','hidden');
+                 $("#screen_ticks").css('visibility','hidden');
+            }
+        
+            function finish_map_setup(max_slider_val) {
+                th_map = map;
+                $('.noUiSlider').noUiSlider({
+                    range: [0, max_slider_val],
+                    start: [0, max_slider_val],
+                    step:  1,
+                    slide: function() {
+                        var sliderVal  = $(".noUiSlider").val();
+                        var max_sport  = TH.util.grades.get_grade_by_index(th_map._options.grade_sport, parseInt(sliderVal[1]));
+                        var min_sport  = TH.util.grades.get_grade_by_index(th_map._options.grade_sport, parseInt(sliderVal[0]));
+                        var common_max = TH.util.grades.convert_to_common(th_map._options.grade_sport, max_sport);
+                        var common_min = TH.util.grades.convert_to_common(th_map._options.grade_sport, min_sport);
+                        
+                        map.route_filter.difficulty_min = common_min.difficulty;
+                        map.route_filter.difficulty_max = common_max.difficulty;
+
+                        map._filter_control._update_filter_labels(th_map);
+                        map.redraw_map();
+                    }
+                });
+                
+                $("body select").msDropDown({
+                    animStyle: 'none',
+                    on: {change:function(data, ui) {
+                        map.route_filter.min_rating = parseInt(data.value);
+                        map.redraw_map();
+                    }}
+                });
+                
+                map._leaflet_map.on('click', function () {
+                    /* TODO: Put Tap Action here */
+                });
+            }
+        
+            function get_user_info() {
+                if (user_id >= 0) {
+                    map.set_user_id(user_id);
+                } else {
+                    map.set_localization();
+                }
+            }
+        
+            function resize_window() {
+                $("#screen_map").height($(window).height()-80).width($(window).width());
+                map.invalidate_size();
+            }
+        
+            function user_info_loaded() {
+                /* Update Filter Max Value */
+                finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport));
+            }
+        
+            window.onresize = function () {
+                resize_window();
+            }
+        
+            document.onreadystatechange = function(e) {
+                get_user_info();
+                button1_click();
+                resize_window();
+                
+                $(".filter-image").attr("src", "images/filter.svg");
+            };
         </script>
     </body>
 </html>

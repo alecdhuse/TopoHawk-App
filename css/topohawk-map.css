@@ -1,0 +1,241 @@
+.dd .ddChild li {
+    height: 24px;
+    padding: 5px;
+}
+
+.filter_check {
+    width: 2em;
+    height: 2em;
+}
+
+.filter_control {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 7px rgba(0,0,0,.4);
+    max-height: 24px;
+    padding: 2px;
+    -webkit-border-radius: 5px;
+}
+
+.filter_control-expanded {
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+    font-size: medium;
+    min-height: 335px;
+    min-width: 200px;
+}
+
+.filter_div {
+    margin-left: 8px;
+    margin-right: 5px;
+}
+
+.filter_difficulty_min {
+    float: left;
+	margin: 0 0 0 0;
+	padding: 0;
+    text-align: left;
+    height: 28px;
+    width:  50%;
+}
+
+.filter_difficulty_max {
+    float: right;
+	margin: 0 0 0 0;
+	padding: 0;    
+    text-align: right;
+    height: 28px;
+    width:  50%;
+}
+
+.filter_popup_close {
+    background-color: rgba(230, 230, 230, .6);
+    border-radius: 5px;
+    color: rgb(68, 68, 68);
+    height: 24px;
+    left: 182px;
+    position: absolute;
+    text-align: center;
+    top: 0px;
+    width: 22px;
+    -webkit-border-radius: 5px;
+}
+
+.filter_rating_dd {
+    width: 170px;
+    user-select: none;
+}
+
+.filter_rating_div {
+    margin-bottom: 2px;
+    margin-left: 8px;
+    margin-top: 6px;
+}
+
+.filter_rating_span {
+    margin-bottom:  4px;
+    margin-left:    12px;
+    width: 100%;
+}
+
+.filter_div_slider {
+    margin-left: 20px;
+    padding-top: 60px;
+    width: 140px;
+}
+
+.leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+	-webkit-transition: -webkit-transform 0.2s ease-out, opacity 0.2s ease-in;
+	-moz-transition: -moz-transform 0.2s ease-out, opacity 0.2s ease-in;
+	-o-transition: -o-transform 0.2s ease-out, opacity 0.2s ease-in;
+	transition: transform 0.2s ease-out, opacity 0.2s ease-in;
+}
+
+.leaflet-label {
+	background: rgb(235, 235, 235);
+	background-clip: padding-box;
+	border-color: #777;
+	border-color: rgba(0,0,0,0.25);
+	border-radius: 4px;
+	border-style: solid;
+	border-width: 4px;
+	color: #111;
+	display: block;
+	font: 10px/12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	padding: 1px 6px;
+	position: absolute;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+	white-space: nowrap;
+	z-index: 28000;
+    top: 2.5px;
+}
+
+.leaflet-label:before {
+	border-right: 6px solid black;
+	border-right-color: inherit;
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
+	content: "";
+	position: absolute;
+	top: 1.5px;
+	left: -10px;
+}
+
+.leaflet-static-label {
+	background: rgb(205, 205, 205);
+	background: rgba(205, 205, 205, 0.80);
+	background-clip: padding-box;
+	border-radius: 4px;
+	border-style: solid;
+	border-width: 0px;
+	color: #111;
+	display: block;
+	font: 10px/12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	padding: 1px 3px;
+	position: absolute;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+	white-space: nowrap;
+	z-index: 6;
+    top: 7px;
+    left: -6px;
+}
+
+.marker-cluster-aid {
+	background-color: rgb(0,0,0);
+}
+
+.marker-cluster-aid div {
+	background-color: rgb(211, 211, 211);
+}
+
+.marker-cluster-alpine {
+	background-color: rgb(0,0,0);
+}
+
+.marker-cluster-alpine div {
+	background-color: rgb(255, 255, 255);
+}
+
+.marker-cluster-boulder {
+	background-color: rgb(0,0,0);
+}
+
+.marker-cluster-boulder div {
+	background-color: rgb(0, 255, 0);
+}
+
+.marker-cluster-ice {
+	background-color: rgb(94, 218, 254);
+}
+
+.marker-cluster-ice div {
+	background-color: rgb(211, 211, 211);
+}
+
+.marker-cluster-mixed {
+	background-color: rgb(0,0,0);
+}
+
+.marker-cluster-mixed div {
+	background-color: rgb(128, 0, 128);
+}
+
+.marker-cluster-small {
+	background-color: rgb(0,0,0);
+}
+
+.marker-cluster-small div {
+	background-color: rgb(68, 68, 68);
+}
+
+.marker-cluster-sport {
+	background-color: rgb(0,0,0);
+}
+
+.marker-cluster-sport div {
+	background-color: rgb(0, 0, 255);
+}
+
+.marker-cluster-toprope {
+	background-color: rgb(0,0,0);
+}
+
+.marker-cluster-toprope div {
+	background-color: rgb(255, 215, 0);
+}
+
+.marker-cluster-trad {
+	background-color: rgb(0,0,0);
+}
+
+.marker-cluster-trad div {
+	background-color: rgb(255, 0, 0);
+}
+
+.marker-cluster {
+	background-clip: padding-box;
+	border-radius: 20px;
+}
+
+.marker-cluster div {
+	width: 14px;
+	height: 14px;
+	margin-left: 1px;
+	margin-top: 1px;
+
+    color: rgb(255, 255, 255);
+	text-align: center;
+	border-radius: 15px;
+	font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+.marker-cluster span {
+	line-height: 8px;
+}
