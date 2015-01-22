@@ -48,7 +48,7 @@
                 }
             };
             
-            /* Adjustments for runnint if offline or app mode */
+            /* Adjustments for running in offline or app mode */
             if (this._options.offline == true) {
                 this._location_icon = L.icon({ iconUrl: 'images/loc-ort.svg', iconSize: [16, 16] });
             }
@@ -372,12 +372,12 @@
             }
                              
             if (this._options.show_location) {
-                this._leaflet_map.on('locationfound', function (e) {
+                this._leaflet_map.on('locationfound', function(e) {
                     map_obj._update_location(e, map_obj);
                 });
-                             
+                
                 this._leaflet_map.locate({setView: false, maxZoom: 20, watch: true, maximumAge: 10000, enableHighAccuracy: true});
-                map_obj._initialize_device_orientation(this);
+                this._initialize_device_orientation(map_obj);
             }
                     
             if (this._options.locked == false) {
@@ -566,7 +566,7 @@
             }
         },
         
-        _draw_location_marker: function (latlng) {
+        _draw_location_marker: function (map_obj) {
             this._user_location_layer.clearLayers();
             
             if (window.DeviceOrientationEvent) {
@@ -591,7 +591,7 @@
             this._user_location_layer.addLayer(marker);
             
             if (this._first_location_fix === true) {
-                this.set_view(this._gps_location);
+                this.set_view(map_obj._gps_location);
                 this._first_location_fix = false;
             }
         },
@@ -602,6 +602,9 @@
             if (this._options.cluster) {
                 this._destination_cluster_layer.clearLayers();
                 this.hide_cluster_label();
+            }
+             
+            if (this._options.cluster) {
                 this._draw_destination_markers(this.destinations, this._destination_cluster_layer, this._destination_color);
             } else {
                 this._draw_destination_markers(this.destinations, this._objects_layer, this._destination_color);
@@ -890,7 +893,7 @@
                     }
                     
                     map_obj._gps_orientation = (map_obj._gps_orientation - 180);
-                    map_obj._draw_location_marker();
+                    map_obj._draw_location_marker(map_obj);
                 });
                 
                 // MIT-licensed code by Benjamin Becquet
@@ -915,7 +918,7 @@
             var map_obj = this;
             
             this._sat_tiles = L.tileLayer(
-                'https://{s}.tiles.mapbox.com/v3/scarletshark.h68kpm4j/{z}/{x}/{y}.png', {
+                '//{s}.tiles.mapbox.com/v3/scarletshark.h68kpm4j/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="http://www.mapbox.com/about/maps/" target="_blank">Mapbox</a>',
                     maxZoom: 19
                 }
@@ -993,7 +996,7 @@
         
         _update_location: function (e, map_obj) {
             map_obj._gps_location = e.latlng;
-            map_obj._draw_location_marker();
+            map_obj._draw_location_marker(map_obj);
         },
         
         _update_route_grades: function (response, map_obj) {
@@ -1248,12 +1251,14 @@
                 filter_select_opt2.title = ('images/rating-two.svg');
                 filter_select_opt3.title = ('images/rating-three.svg');
                 filter_select_opt4.title = ('images/rating-four.svg');
+                image.setAttribute('src','images/filter.svg');
             } else {
                 filter_select_opt0.title = ('//topohawk.com/images/rating-zero.svg');
                 filter_select_opt1.title = ('//topohawk.com/images/rating-one.svg');
                 filter_select_opt2.title = ('//topohawk.com/images/rating-two.svg');
                 filter_select_opt3.title = ('//topohawk.com/images/rating-three.svg');
                 filter_select_opt4.title = ('//topohawk.com/images/rating-four.svg');
+                image.setAttribute('src','//topohawk.com/images/filter.svg');
             }
                 
             filter_div_min_sport.innerHTML   = '5.0';
@@ -1261,7 +1266,6 @@
             filter_div_min_boulder.innerHTML = 'VB-';
             filter_div_max_boulder.innerHTML = 'V16';
             
-            image.setAttribute('src','//topohawk.com/images/filter.svg');
             filter_div.hidden = true;
             
             this._filter_div   = filter_div;
