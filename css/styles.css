@@ -5,6 +5,7 @@ body {
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
     margin: 0px;
     padding: 0px;
+    overflow-x: hidden;
 }
 
 #breadcrumbs_div {
@@ -51,6 +52,18 @@ body {
     width: 100%;
 }
 
+.destination_list_element {
+    margin-top: 5px;
+}
+
+.destination_list_location {
+    font-size: 10px;
+}
+
+.destination_list_name {
+
+}
+
 #logo_image {
     float: left;
     margin-right: 5px;
@@ -68,6 +81,7 @@ body {
 }
 
 #menu_popup {
+    background-color: white:
     border-radius: 5px;
     box-shadow: 0 1px 7px rgba(0,0,0,.4);
     height: 265px;
@@ -78,7 +92,20 @@ body {
 }
 
 .screen {
+    position: absolute;
+    top: 30px;
     visibility: hidden;
+    width: 100%;
+}
+
+.screen_inner {
+    margin: 8px;
+    padding-bottom: 50px;
+}
+
+.search_text {
+    height: 2em;
+    width: 100%;
 }
 
 #top_bar_div {

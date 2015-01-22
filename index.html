@@ -28,7 +28,15 @@
         
         <div id="center_div">
             <div id = "screen_about" class="screen"></div>
-            <div id = "screen_destinations" class="screen"></div>
+            
+            <div id = "screen_destinations" class="screen">
+                <div class="screen_inner">
+                    <input class="search_text" type="text" name="destination_search" />
+                    <div id="destination_search_results" style="width:100%"></div>
+                </div>
+            </div>
+            
+            
             <div id = "screen_edit" class="screen"></div>
             <div id = "screen_info" class="screen"></div>
             <div id = "screen_map" class="screen"></div>
@@ -94,11 +102,12 @@
                 zoom:           3
             });
 
-            map.on_area_click        = function (area_obj)        { };
-            map.on_destination_click = function (destination_obj) { };
-            map.on_route_click       = function (route_obj)       { };
-            map.on_user_info_loaded  = function ()                { user_info_loaded() };
-
+            map.on_area_click           = function (area_obj)        { };
+            map.on_destination_click    = function (destination_obj) { };
+            map.on_route_click          = function (route_obj)       { };
+            map.on_user_info_loaded     = function ()                { user_info_loaded() };
+            map.destination_info_loaded = function (destination_obj) { create_destination_list("") };
+            
             function button1_click() {
                 buttons_reset();
                 $("#button1_img").attr("src", "images/button-info-selected.svg");
@@ -150,6 +159,19 @@
                  $("#screen_stream").css('visibility','hidden');
                  $("#screen_spray").css('visibility','hidden');
                  $("#screen_ticks").css('visibility','hidden');
+            }
+        
+            function create_destination_list(search_string) {
+                var destination_list_html = "";
+                
+                for (var i=0; i < map.destinations.features.length; i++) {
+                    destination_list_html += "<div class='destination_list_element'>";
+                    destination_list_html += "<div class='destination_list_name'>" + map.destinations.features[i].properties.name + "</div>";
+                    destination_list_html += "<div class='destination_list_location'>" + map.destinations.features[i].properties.location + "</div>";
+                    destination_list_html += "</div>";
+                }
+                
+                $("#destination_search_results").html(destination_list_html);
             }
         
             function finish_map_setup(max_slider_val) {

@@ -861,7 +861,7 @@
                 .replace('{y}', tilePoint.y);
 
                 if (err_count == 1 || (zoom < 13)) {
-                    url = 'https://a.tiles.mapbox.com/v3/scarletshark.h69c7n2p/' + tile;
+                    url = 'http://a.tiles.mapbox.com/v3/scarletshark.h69c7n2p/' + tile;
                     img.src = url;
                 } else {
                     //Look for custom topo tile first
