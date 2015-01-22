@@ -76,19 +76,22 @@
         <script type="text/javascript" src="js/leaflet.js"></script>
         <script type="text/javascript" src="js/leaflet.label.js"></script>
         <script type="text/javascript" src="js/leaflet.markercluster.js"></script>
+        <script type="text/javascript" src="js/map_icons.js"></script>
         <script type="text/javascript" src="js/topohawk_map.js"></script>
         
         <script>
+            var map_finished = false;
             var user_id = -1;
         
             /* Map Setup */
             var map = TH.map('screen_map', {
-                cluster:    true,
-                mobile:     true,
-                offline:    true,
-                lat:        40.6,
-                lng:        -98.0,
-                zoom:       3
+                cluster:        true,
+                mobile:         true,
+                offline:        true,
+                show_location:  false,
+                lat:            40.6,
+                lng:            -98.0,
+                zoom:           3
             });
 
             map.on_area_click        = function (area_obj)        { };
@@ -150,37 +153,41 @@
             }
         
             function finish_map_setup(max_slider_val) {
-                th_map = map;
-                $('.noUiSlider').noUiSlider({
-                    range: [0, max_slider_val],
-                    start: [0, max_slider_val],
-                    step:  1,
-                    slide: function() {
-                        var sliderVal  = $(".noUiSlider").val();
-                        var max_sport  = TH.util.grades.get_grade_by_index(th_map._options.grade_sport, parseInt(sliderVal[1]));
-                        var min_sport  = TH.util.grades.get_grade_by_index(th_map._options.grade_sport, parseInt(sliderVal[0]));
-                        var common_max = TH.util.grades.convert_to_common(th_map._options.grade_sport, max_sport);
-                        var common_min = TH.util.grades.convert_to_common(th_map._options.grade_sport, min_sport);
-                        
-                        map.route_filter.difficulty_min = common_min.difficulty;
-                        map.route_filter.difficulty_max = common_max.difficulty;
+                if (map_finished === false) {
+                    th_map = map;
+                    $('.noUiSlider').noUiSlider({
+                        range: [0, max_slider_val],
+                        start: [0, max_slider_val],
+                        step:  1,
+                        slide: function() {
+                            var sliderVal  = $(".noUiSlider").val();
+                            var max_sport  = TH.util.grades.get_grade_by_index(th_map._options.grade_sport, parseInt(sliderVal[1]));
+                            var min_sport  = TH.util.grades.get_grade_by_index(th_map._options.grade_sport, parseInt(sliderVal[0]));
+                            var common_max = TH.util.grades.convert_to_common(th_map._options.grade_sport, max_sport);
+                            var common_min = TH.util.grades.convert_to_common(th_map._options.grade_sport, min_sport);
+                            
+                            map.route_filter.difficulty_min = common_min.difficulty;
+                            map.route_filter.difficulty_max = common_max.difficulty;
 
-                        map._filter_control._update_filter_labels(th_map);
-                        map.redraw_map();
-                    }
-                });
-                
-                $("body select").msDropDown({
-                    animStyle: 'none',
-                    on: {change:function(data, ui) {
-                        map.route_filter.min_rating = parseInt(data.value);
-                        map.redraw_map();
-                    }}
-                });
-                
-                map._leaflet_map.on('click', function () {
-                    /* TODO: Put Tap Action here */
-                });
+                            map._filter_control._update_filter_labels(th_map);
+                            map.redraw_map();
+                        }
+                    });
+                    
+                    $("body select").msDropDown({
+                        animStyle: 'none',
+                        on: {change:function(data, ui) {
+                            map.route_filter.min_rating = parseInt(data.value);
+                            map.redraw_map();
+                        }}
+                    });
+                    
+                    map._leaflet_map.on('click', function () {
+                        /* TODO: Put Tap Action here */
+                    });
+                    
+                    map_finished = true;
+                }
             }
         
             function get_user_info() {

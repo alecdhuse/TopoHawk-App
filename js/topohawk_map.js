@@ -48,6 +48,11 @@
                 }
             };
             
+            /* Adjustments for runnint if offline or app mode */
+            if (this._options.offline == true) {
+                this._location_icon = L.icon({ iconUrl: 'images/loc-ort.svg', iconSize: [16, 16] });
+            }
+            
             /* Overridable Functions */
             this.on_area_click        = function (area_obj) {};
             this.on_destination_click = function (destination_obj) {};
@@ -367,9 +372,12 @@
             }
                              
             if (this._options.show_location) {
-                this._leaflet_map.on('locationfound', _update_location);
+                this._leaflet_map.on('locationfound', function (e) {
+                    map_obj._update_location(e, map_obj);
+                });
+                             
                 this._leaflet_map.locate({setView: false, maxZoom: 20, watch: true, maximumAge: 10000, enableHighAccuracy: true});
-                _initialize_device_orientation();
+                map_obj._initialize_device_orientation(this);
             }
                     
             if (this._options.locked == false) {
@@ -558,7 +566,7 @@
             }
         },
         
-        _draw_location_marker: function () {
+        _draw_location_marker: function (latlng) {
             this._user_location_layer.clearLayers();
             
             if (window.DeviceOrientationEvent) {
@@ -583,7 +591,7 @@
             this._user_location_layer.addLayer(marker);
             
             if (this._first_location_fix === true) {
-                this.set_view(e.latlng);
+                this.set_view(this._gps_location);
                 this._first_location_fix = false;
             }
         },
@@ -594,9 +602,6 @@
             if (this._options.cluster) {
                 this._destination_cluster_layer.clearLayers();
                 this.hide_cluster_label();
-            }
-             
-            if (this._options.cluster) {
                 this._draw_destination_markers(this.destinations, this._destination_cluster_layer, this._destination_color);
             } else {
                 this._draw_destination_markers(this.destinations, this._objects_layer, this._destination_color);
@@ -872,20 +877,20 @@
             }
         },
                     
-        _initialize_device_orientation: function () {
+        _initialize_device_orientation: function (map_obj) {
             if (window.DeviceOrientationEvent) {
                 window.addEventListener('deviceorientation', function(event) {
                     if(event.webkitCompassHeading) {
-                        this._gps_orientation = event.webkitCompassHeading;
+                        map_obj._gps_orientation = event.webkitCompassHeading;
                     } else {
-                        this._gps_orientation = event.alpha;
+                        map_obj._gps_orientation = event.alpha;
                         if(!window.chrome) {
-                            this._gps_orientation = this._gps_orientation - 270;
+                            map_obj._gps_orientation = map_obj._gps_orientation - 270;
                         }
                     }
                     
-                    this._gps_orientation = (this._gps_orientation - 180);
-                    _draw_location_marker();
+                    map_obj._gps_orientation = (map_obj._gps_orientation - 180);
+                    map_obj._draw_location_marker();
                 });
                 
                 // MIT-licensed code by Benjamin Becquet
@@ -910,7 +915,7 @@
             var map_obj = this;
             
             this._sat_tiles = L.tileLayer(
-                '//{s}.tiles.mapbox.com/v3/scarletshark.h68kpm4j/{z}/{x}/{y}.png', {
+                'https://{s}.tiles.mapbox.com/v3/scarletshark.h68kpm4j/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="http://www.mapbox.com/about/maps/" target="_blank">Mapbox</a>',
                     maxZoom: 19
                 }
@@ -986,9 +991,9 @@
             map_obj.destination_info_loaded();
         },
         
-        _update_location: function (e) {
-            this._gps_location = e.latlng;
-            _draw_location_marker();
+        _update_location: function (e, map_obj) {
+            map_obj._gps_location = e.latlng;
+            map_obj._draw_location_marker();
         },
         
         _update_route_grades: function (response, map_obj) {
