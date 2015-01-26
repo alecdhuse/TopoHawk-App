@@ -31,11 +31,10 @@
             
             <div id = "screen_destinations" class="screen">
                 <div class="screen_inner">
-                    <input class="search_text" type="text" name="destination_search" />
+                    <input class="search_text" type="text" name="destination_search" id="destination_search_filter"/>
                     <div id="destination_search_results" style="width:100%"></div>
                 </div>
             </div>
-            
             
             <div id = "screen_edit" class="screen"></div>
             <div id = "screen_info" class="screen"></div>
@@ -106,7 +105,7 @@
             map.on_destination_click    = function (destination_obj) { };
             map.on_route_click          = function (route_obj)       { };
             map.on_user_info_loaded     = function ()                { user_info_loaded() };
-            map.destination_info_loaded = function (destination_obj) { create_destination_list("") };
+            map.destination_info_loaded = function (destination_obj) { create_destination_list() };
             
             function button1_click() {
                 buttons_reset();
@@ -161,14 +160,32 @@
                  $("#screen_ticks").css('visibility','hidden');
             }
         
-            function create_destination_list(search_string) {
+            function create_destination_list() {
                 var destination_list_html = "";
+                var show_destination = false;
+                var search_string = $("#destination_search_filter").val();
                 
                 for (var i=0; i < map.destinations.features.length; i++) {
-                    destination_list_html += "<div class='destination_list_element'>";
-                    destination_list_html += "<div class='destination_list_name'>" + map.destinations.features[i].properties.name + "</div>";
-                    destination_list_html += "<div class='destination_list_location'>" + map.destinations.features[i].properties.location + "</div>";
-                    destination_list_html += "</div>";
+                    if (search_string.length = 0) {
+                        show_destination = true;
+                    } else {
+                        if (map.destinations.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                            show_destination = true;
+                        } else {
+                            if (map.destinations.features[i].properties.location.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                                show_destination = true;
+                            } else {
+                                show_destination = false;
+                            }
+                        }
+                    }
+                    
+                    if (show_destination === true) {
+                        destination_list_html += "<div class='destination_list_element'>";
+                        destination_list_html += "<div class='destination_list_name'>" + map.destinations.features[i].properties.name + "</div>";
+                        destination_list_html += "<div class='destination_list_location'>" + map.destinations.features[i].properties.location + "</div>";
+                        destination_list_html += "</div>";
+                    }
                 }
                 
                 $("#destination_search_results").html(destination_list_html);
@@ -235,6 +252,8 @@
             }
         
             document.onreadystatechange = function(e) {
+                $("#destination_search_filter").keyup(function() { create_destination_list() });
+                
                 get_user_info();
                 button1_click();
                 resize_window();
