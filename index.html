@@ -19,7 +19,7 @@
         <div id="top_bar_div">
             <div id="breadcrumbs_div">
                 <img id="logo_image" src="images/logo.svg" style="height:30px;"/>
-                <div class="breadcrumb_div">TopoHawk</div>
+                <div class="breadcrumb_div" id='breadcrumbs_div_1'>TopoHawk</div>
             </div>
             <div id="menu_div">
                 <img src="images/button-menu.svg" style="height:30px;" onclick="button_menu_click()"/>
@@ -101,11 +101,12 @@
                 zoom:           3
             });
 
-            map.on_area_click           = function (area_obj)        { };
-            map.on_destination_click    = function (destination_obj) { };
-            map.on_route_click          = function (route_obj)       { };
-            map.on_user_info_loaded     = function ()                { user_info_loaded() };
-            map.destination_info_loaded = function (destination_obj) { create_destination_list() };
+            map.on_area_click               = function (area_obj)        { };
+            map.on_destination_click        = function (destination_obj) { };
+            map.on_route_click              = function (route_obj)       { };
+            map.on_user_info_loaded         = function ()                { user_info_loaded() };
+            map.destination_info_loaded     = function (destination_obj) { create_destination_list() };
+            map.on_destination_info_loaded  = function ()                { destination_info_loaded() };
             
             function button1_click() {
                 buttons_reset();
@@ -160,13 +161,23 @@
                  $("#screen_ticks").css('visibility','hidden');
             }
         
+            function change_destination(destination_id) {
+                var loading_html = "<div style='margin-top:5px;text-align:center;'>Loading Area List <img src='images/ui-anim_basic_16x16.gif'></div>"
+                $("#destination_search_results").html(loading_html);
+                
+                map.set_destination(destination_id);
+            }
+        
             function create_destination_list() {
+                var destination_id = 0;
                 var destination_list_html = "";
                 var show_destination = false;
                 var search_string = $("#destination_search_filter").val();
                 
                 for (var i=0; i < map.destinations.features.length; i++) {
-                    if (search_string.length = 0) {
+                    destination_id = map.destinations.features[i].properties.destination_id;
+                    
+                    if (search_string.length == 0) {
                         show_destination = true;
                     } else {
                         if (map.destinations.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
@@ -181,7 +192,7 @@
                     }
                     
                     if (show_destination === true) {
-                        destination_list_html += "<div class='destination_list_element'>";
+                        destination_list_html += "<div class='destination_list_element' onclick='change_destination(" + destination_id + ")'>";
                         destination_list_html += "<div class='destination_list_name'>" + map.destinations.features[i].properties.name + "</div>";
                         destination_list_html += "<div class='destination_list_location'>" + map.destinations.features[i].properties.location + "</div>";
                         destination_list_html += "</div>";
@@ -189,6 +200,28 @@
                 }
                 
                 $("#destination_search_results").html(destination_list_html);
+            }
+        
+            function destination_info_loaded() {
+                var area_list_html = "";
+                var route_count    = 0;
+
+                $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
+                
+                for (var i=0; i < map.areas.features.length; i++) {
+                        if (route_count = map.areas.features[i].properties.stats !== null) {
+                            route_count = map.areas.features[i].properties.stats.types.Total;
+                        } else {
+                            route_count = 0;
+                        }
+                        
+                        area_list_html += "<div class='destination_list_element'>";
+                        area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
+                        area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
+                        area_list_html += "</div>";
+                }
+                
+                $("#destination_search_results").html(area_list_html);
             }
         
             function finish_map_setup(max_slider_val) {

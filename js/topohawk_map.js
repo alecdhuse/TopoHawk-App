@@ -54,10 +54,11 @@
             }
             
             /* Overridable Functions */
-            this.on_area_click        = function (area_obj) {};
-            this.on_destination_click = function (destination_obj) {};
-            this.on_route_click       = function (route_obj) {};
-            this.on_user_info_loaded  = function () {};
+            this.on_area_click              = function (area_obj) {};
+            this.on_destination_click       = function (destination_obj) {};
+            this.on_route_click             = function (route_obj) {};
+            this.on_user_info_loaded        = function () {};
+            this.on_destination_info_loaded = function () {};
             
             this._initialize_map_layers();
             this._create_leaflet_map();
@@ -159,6 +160,10 @@
             }
         },
         
+        set_destination: function (destination_id) {
+            this._get_destination_data(destination_id);
+        },
+        
         set_localization: function () {
             var iso_country_code = navigator.language.slice(-2);
             var map_obj = this;
@@ -255,11 +260,6 @@
         
         show_destination: function (destination) {
             this._get_destination_data(destination.properties.destination_id);
-            
-            var latlng = L.latLng(destination.geometry.coordinates[1], destination.geometry.coordinates[0]);
-            var zoom   = destination.properties.click_zoom_to;
-            
-            this.set_view(latlng, zoom);
         },
         
         show_area_popup: function (feature) {
@@ -970,7 +970,13 @@
                 this._first_location_fix = false;
             }
             
+            /* Zoom into destination location */
+            var latlng = L.latLng(data.result.destination_lat, data.result.destination_lng);
+            var zoom   = data.result.destination_zoom;
+            this.set_view(latlng, zoom);
+            
             this.destination_info_loaded(data);
+            this.on_destination_info_loaded();
             this._draw_map_objects();
         },
         
