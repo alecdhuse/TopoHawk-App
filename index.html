@@ -19,7 +19,7 @@
         <div id="top_bar_div">
             <div id="breadcrumbs_div">
                 <img id="logo_image" src="images/logo.svg" style="height:30px;"/>
-                <div class="breadcrumb_div" id='breadcrumbs_div_1'>TopoHawk</div>
+                <div class="breadcrumb_element_div" id='breadcrumbs_div_1'>TopoHawk</div>
             </div>
             <div id="menu_div">
                 <img src="images/button-menu.svg" style="height:30px;" onclick="button_menu_click()"/>
@@ -32,7 +32,7 @@
             <div id="screen_destinations" class="screen">
                 <div class="search_filter"><input class="search_text" type="text" name="destination_search" id="destination_search_filter"/></div>
                 <div class="screen_inner">
-                    <div id="destination_search_results" style="width:100%"></div>
+                    <div id="destination_search_results"></div>
                 </div>
             </div>
             
@@ -215,19 +215,25 @@
                 $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
                 $("#screen_info_inner").html(map.selected_destination.description);
                 
-                for (var i=0; i < map.areas.features.length; i++) {
-                        if (route_count = map.areas.features[i].properties.stats !== null) {
-                            route_count = map.areas.features[i].properties.stats.types.Total;
-                        } else {
-                            route_count = 0;
-                        }
-                        
-                        area_list_html += "<div class='destination_list_element'>";
-                        area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
-                        area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
-                        area_list_html += "</div>";
+                if (map.areas.features.length > 0) {
+                    for (var i=0; i < map.areas.features.length; i++) {
+                            if (route_count = map.areas.features[i].properties.stats !== null) {
+                                route_count = map.areas.features[i].properties.stats.types.Total;
+                            } else {
+                                route_count = 0;
+                            }
+                            
+                            area_list_html += "<div class='destination_list_element'>";
+                            area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
+                            area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
+                            area_list_html += "</div>";
+                    }
+                } else {
+                    /* No Areas at destination */
+                    area_list_html += "<div style='text-align:center;'>No areas found</div>";
                 }
                 
+                $("#destination_search_filter").val("");
                 $("#destination_search_results").html(area_list_html);
             }
         

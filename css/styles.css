@@ -20,6 +20,17 @@ body {
     margin-top: 5px;
 }
 
+.breadcrumb_element_div {
+    color: white;
+    float: left;
+    margin-left: 5px;
+    margin-top: 5px;
+    max-height: 20px;
+    max-width: 200px;
+    overflow-y: hidden;
+    text-overflow: ellipsis;
+}
+
 .button_image {
     display: block;
     margin-left: auto;
@@ -62,7 +73,12 @@ body {
 }
 
 .destination_list_name {
+    
+}
 
+#destination_search_results {
+    margin-bottom: 140px;
+    width:100%;
 }
 
 #logo_image {
@@ -94,7 +110,6 @@ body {
 
 .screen {
     height: 100%;
-    overflow: auto;
     position: absolute;
     top: 30px;
     visibility: hidden;
@@ -102,8 +117,11 @@ body {
 }
 
 .screen_inner {
-    margin: 8px;
-    margin-bottom: 90px;
+    height: 100%;
+    margin-left: 8px;
+    margin-top: 8px;
+    margin-bottom: 200px;
+    overflow: auto;
 }
 
 #screen_map {
@@ -111,7 +129,9 @@ body {
 }
 
 .search_filter {
-    margin: 8px;
+    padding-left: 8px;
+    padding-right: 16px;
+    padding-top: 8px;
 }
 
 .search_text {
