@@ -27,24 +27,30 @@
         </div>
         
         <div id="center_div">
-            <div id = "screen_about" class="screen"></div>
+            <div id="screen_about" class="screen"></div>
             
-            <div id = "screen_destinations" class="screen">
+            <div id="screen_destinations" class="screen">
+                <div class="search_filter"><input class="search_text" type="text" name="destination_search" id="destination_search_filter"/></div>
                 <div class="screen_inner">
-                    <input class="search_text" type="text" name="destination_search" id="destination_search_filter"/>
                     <div id="destination_search_results" style="width:100%"></div>
                 </div>
             </div>
             
-            <div id = "screen_edit" class="screen"></div>
-            <div id = "screen_info" class="screen"></div>
-            <div id = "screen_map" class="screen"></div>
-            <div id = "screen_offline_content" class="screen"></div>
-            <div id = "screen_search" class="screen"></div>
-            <div id = "screen_settings" class="screen"></div>
-            <div id = "screen_stream" class="screen"></div>
-            <div id = "screen_spray" class="screen"></div>
-            <div id = "screen_ticks" class="screen"></div>
+            <div id="screen_edit" class="screen">
+                <div class="screen_inner"></div>
+            </div>
+            
+            <div id="screen_info" class="screen">
+                <div class="screen_inner" id="screen_info_inner"></div>
+            </div>
+            
+            <div id="screen_map" class="screen"></div>
+            <div id="screen_offline_content" class="screen"></div>
+            <div id="screen_search" class="screen"></div>
+            <div id="screen_settings" class="screen"></div>
+            <div id="screen_stream" class="screen"></div>
+            <div id="screen_spray" class="screen"></div>
+            <div id="screen_ticks" class="screen"></div>
         </div>
         
         <div id="buttons_div">
@@ -207,6 +213,7 @@
                 var route_count    = 0;
 
                 $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
+                $("#screen_info_inner").html(map.selected_destination.description);
                 
                 for (var i=0; i < map.areas.features.length; i++) {
                         if (route_count = map.areas.features[i].properties.stats !== null) {

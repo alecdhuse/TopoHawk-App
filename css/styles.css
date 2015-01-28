@@ -6,6 +6,7 @@ body {
     margin: 0px;
     padding: 0px;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 #breadcrumbs_div {
@@ -48,7 +49,7 @@ body {
 }
 
 #center_div {
-    min-height: 100%;
+    height: 100%;
     width: 100%;
 }
 
@@ -66,7 +67,7 @@ body {
 
 #logo_image {
     float: left;
-    margin-right: 5px;
+    margin-right: 8px;
 }
 
 #menu_div {
@@ -81,7 +82,7 @@ body {
 }
 
 #menu_popup {
-    background-color: white:
+    background-color: white;
     border-radius: 5px;
     box-shadow: 0 1px 7px rgba(0,0,0,.4);
     height: 265px;
@@ -92,6 +93,8 @@ body {
 }
 
 .screen {
+    height: 100%;
+    overflow: auto;
     position: absolute;
     top: 30px;
     visibility: hidden;
@@ -100,7 +103,15 @@ body {
 
 .screen_inner {
     margin: 8px;
-    padding-bottom: 50px;
+    margin-bottom: 90px;
+}
+
+#screen_map {
+    overflow: hidden;
+}
+
+.search_filter {
+    margin: 8px;
 }
 
 .search_text {
