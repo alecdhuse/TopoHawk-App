@@ -3,7 +3,7 @@
 <!-- config.xml reference: https://build.phonegap.com/docs/config-xml -->
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
-        id        = "com.topohawk.mobile"
+        id        = "com.topohawk.m"
         version   = "1.0.0">
 
     <name>TopoHawk</name>
@@ -30,17 +30,12 @@
     <preference name="disable-cursor"             value="false" />
     <preference name="android-installLocation"    value="auto" /> 
 
-    <gap:plugin name="org.apache.cordova.device" />
-    <gap:plugin name="org.apache.cordova.device-motion" />
     <gap:plugin name="org.apache.cordova.device-orientation" />
-    <gap:plugin name="org.apache.cordova.dialogs" />
     <gap:plugin name="org.apache.cordova.file" />
     <gap:plugin name="org.apache.cordova.file-transfer" />
     <gap:plugin name="org.apache.cordova.geolocation" />
-    <gap:plugin name="org.apache.cordova.globalization" />
     <gap:plugin name="org.apache.cordova.inappbrowser" />
-    <gap:plugin name="org.apache.cordova.media" />
-    <gap:plugin name="org.apache.cordova.splashscreen" />
+    <gap:plugin name="org.apache.cordova.network-information" />
     
     <icon src="icon.png"/>
     <icon src="www/images/icon-36-ldpi.png"       gap:platform="android"   gap:qualifier="ldpi" />
