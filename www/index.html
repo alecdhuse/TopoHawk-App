@@ -190,6 +190,30 @@
                 map.set_destination(destination_id);
             }
         
+            function create_area_list() {
+                var area_list_html = "";
+                
+                if (map.areas.features.length > 0) {
+                    for (var i=0; i < map.areas.features.length; i++) {
+                            if (route_count = map.areas.features[i].properties.stats !== null) {
+                                route_count = map.areas.features[i].properties.stats.types.Total;
+                            } else {
+                                route_count = 0;
+                            }
+                            
+                            area_list_html += "<div class='destination_list_element' onclick='change_area(" + map.areas.features[i].properties.area_id + ")'>";
+                            area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
+                            area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
+                            area_list_html += "</div>";
+                    }
+                } else {
+                    /* No Areas at destination */
+                    area_list_html += "<div style='text-align:center;'>No areas found</div>";
+                }
+                
+                $("#destination_search_results").html(area_list_html);
+            }
+        
             function create_destination_list() {
                 var destination_id = 0;
                 var destination_list_html = "";
@@ -251,34 +275,15 @@
             }
         
             function destination_info_loaded() {
-                var area_list_html = "";
                 var route_count    = 0;
 
                 $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
                 $("#breadcrumbs_div_2").html("");
                 $("#screen_info_inner").html(map.selected_destination.description);
                 $("#screen_info_title").html(map.selected_destination.destination_name);
-                
-                if (map.areas.features.length > 0) {
-                    for (var i=0; i < map.areas.features.length; i++) {
-                            if (route_count = map.areas.features[i].properties.stats !== null) {
-                                route_count = map.areas.features[i].properties.stats.types.Total;
-                            } else {
-                                route_count = 0;
-                            }
-                            
-                            area_list_html += "<div class='destination_list_element' onclick='change_area(" + map.areas.features[i].properties.area_id + ")'>";
-                            area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
-                            area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
-                            area_list_html += "</div>";
-                    }
-                } else {
-                    /* No Areas at destination */
-                    area_list_html += "<div style='text-align:center;'>No areas found</div>";
-                }
-                
                 $("#destination_search_filter").val("");
-                $("#destination_search_results").html(area_list_html);
+                
+                create_area_list();
             }
         
             function finish_map_setup(max_slider_val) {
