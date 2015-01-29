@@ -20,6 +20,7 @@
             <div id="breadcrumbs_div">
                 <img id="logo_image" src="images/logo.svg" style="height:30px;"/>
                 <div class="breadcrumb_element_div" id='breadcrumbs_div_1'>TopoHawk</div>
+                <div class="breadcrumb_element_div" id='breadcrumbs_div_2'></div>
             </div>
             <div id="menu_div">
                 <img src="images/button-menu.svg" style="height:30px;" onclick="button_menu_click()"/>
@@ -41,7 +42,10 @@
             </div>
             
             <div id="screen_info" class="screen">
-                <div class="screen_inner" id="screen_info_inner"></div>
+                <div id="screen_info_title"></div>
+                <div class="screen_inner" id="screen_info_inner">
+                    
+                </div>
             </div>
             
             <div id="screen_map" class="screen"></div>
@@ -167,6 +171,13 @@
                  $("#screen_ticks").css('visibility','hidden');
             }
         
+            function change_area(area_id) {
+                map.set_area(area_id);
+                $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
+                $("#screen_info_title").html(map.selected_area.properties.name);
+                $("#screen_info_inner").html(map.selected_area.properties.description);
+            }
+        
             function change_destination(destination_id) {
                 var loading_html = "<div style='margin-top:5px;text-align:center;'>Loading Area List <img src='images/ui-anim_basic_16x16.gif'></div>"
                 $("#destination_search_results").html(loading_html);
@@ -213,7 +224,9 @@
                 var route_count    = 0;
 
                 $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
+                $("#breadcrumbs_div_2").html("");
                 $("#screen_info_inner").html(map.selected_destination.description);
+                $("#screen_info_title").html(map.selected_destination.destination_name);
                 
                 if (map.areas.features.length > 0) {
                     for (var i=0; i < map.areas.features.length; i++) {
@@ -223,7 +236,7 @@
                                 route_count = 0;
                             }
                             
-                            area_list_html += "<div class='destination_list_element'>";
+                            area_list_html += "<div class='destination_list_element' onclick='change_area(" + map.areas.features[i].properties.area_id + ")'>";
                             area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
                             area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
                             area_list_html += "</div>";

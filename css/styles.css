@@ -116,6 +116,12 @@ body {
     width: 100%;
 }
 
+#screen_info_title {
+    font-weight: bold;
+    margin: 8px;
+    text-align: center;
+}
+
 .screen_inner {
     height: 100%;
     margin-left: 8px;
