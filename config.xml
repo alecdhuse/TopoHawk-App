@@ -3,8 +3,8 @@
 <!-- config.xml reference: https://build.phonegap.com/docs/config-xml -->
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
-        id        = "com.phonegap.helloworld"
-        version   = “1.0.0”>
+        id        = "com.topohawk.mobile"
+        version   = "1.0.0">
 
     <name>TopoHawk</name>
 
@@ -12,20 +12,20 @@
         Community generated climbing guides, now on your mobile device.
     </description>
 
-    <author href="http://topohawk.com" email=“helpdesk@topohawk.com”>
+    <author href="http://topohawk.com" email="helpdesk@topohawk.com">
         TopoHawk Team
     </author>
 
     <preference name="orientation"                value="portrait" />
     <preference name="target-device"              value="universal" />
     <preference name="fullscreen"                 value="true" />
-    <preference name="webviewbounce"              value=“false” />  
-    <preference name="prerendered-icon"           value=“false” />
+    <preference name="webviewbounce"              value="false" />  
+    <preference name="prerendered-icon"           value="false" />
     <preference name="stay-in-webview"            value="false" />
     <preference name="ios-statusbarstyle"         value="black-opaque" /> 
     <preference name="detect-data-types"          value="true" />
     <preference name="exit-on-suspend"            value="false" />
-    <preference name="show-splash-screen-spinner" value=“false” />
+    <preference name="show-splash-screen-spinner" value="false" />
     <preference name="auto-hide-splash-screen"    value="true" />
     <preference name="disable-cursor"             value="false" />
     <preference name="android-installLocation"    value="auto" /> 
@@ -41,21 +41,21 @@
     <gap:plugin name="org.apache.cordova.inappbrowser" />
     <gap:plugin name="org.apache.cordova.media" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
-
-    <icon src=“images/touch-icon-192x192.png" />
-    <icon src="images/icon-36-ldpi.png"       gap:platform="android"   gap:qualifier="ldpi" />
-    <icon src="images/icon-48-mdpi.png"       gap:platform="android"   gap:qualifier="mdpi" />
-    <icon src="images/icon-72-hdpi.png"       gap:platform="android"   gap:qualifier="hdpi" />
-    <icon src="images/icon-96-xhdpi.png"      gap:platform="android"   gap:qualifier="xhdpi" />
-    <icon src="images/icon-72-hdpi.png"       gap:platform="ios"       width="72"  height="72" />
-    <icon src="images/touch-icon-192x192.png" gap:platform="ios"       width="192" height="192" />
     
-    <gap:splash src="images/splash-320-426.png"       gap:platform="android" gap:qualifier="port-ldpi" />
-    <gap:splash src="images/splash-320-470.png"       gap:platform="android" gap:qualifier="port-mdpi" />
-    <gap:splash src="images/splash-640-960.png"       gap:platform="android" gap:qualifier="port-hdpi" />
-    <gap:splash src="images/splash-720-960.png"       gap:platform="android" gap:qualifier="port-xhdpi" />
-    <gap:splash src="images/splash-320-480.png"       gap:platform="ios"     width="320" height="480" />
-    <gap:splash src="images/splash-640-960.png"       gap:platform="ios"     width="640" height="960" />
+    <icon src="www/images/icon-36-ldpi.png"       gap:platform="android"   gap:qualifier="ldpi" />
+    <icon src="www/images/icon-48-mdpi.png"       gap:platform="android"   gap:qualifier="mdpi" />
+    <icon src="www/images/icon-72-hdpi.png"       gap:platform="android"   gap:qualifier="hdpi" />
+    <icon src="www/images/icon-96-xhdpi.png"      gap:platform="android"   gap:qualifier="xhdpi" />
+    <icon src="www/images/icon-72-hdpi.png"       gap:platform="ios"       width="72"  height="72" />
+    <icon src="www/images/touch-icon-192x192.png" gap:platform="ios"       width="192" height="192" />
+    <icon src="www/icon.png"/>
+    
+    <gap:splash src="www/images/splash-320-426.png"       gap:platform="android" gap:qualifier="port-ldpi" />
+    <gap:splash src="www/images/splash-320-470.png"       gap:platform="android" gap:qualifier="port-mdpi" />
+    <gap:splash src="www/images/splash-640-960.png"       gap:platform="android" gap:qualifier="port-hdpi" />
+    <gap:splash src="www/images/splash-720-960.png"       gap:platform="android" gap:qualifier="port-xhdpi" />
+    <gap:splash src="www/images/splash-320-480.png"       gap:platform="ios"     width="320" height="480" />
+    <gap:splash src="www/images/splash-640-960.png"       gap:platform="ios"     width="640" height="960" />
     
     <access origin="*"/>
 
