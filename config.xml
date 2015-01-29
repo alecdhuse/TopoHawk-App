@@ -42,14 +42,14 @@
     <gap:plugin name="org.apache.cordova.media" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
     
+    <icon src="icon.png"/>
     <icon src="www/images/icon-36-ldpi.png"       gap:platform="android"   gap:qualifier="ldpi" />
     <icon src="www/images/icon-48-mdpi.png"       gap:platform="android"   gap:qualifier="mdpi" />
     <icon src="www/images/icon-72-hdpi.png"       gap:platform="android"   gap:qualifier="hdpi" />
     <icon src="www/images/icon-96-xhdpi.png"      gap:platform="android"   gap:qualifier="xhdpi" />
     <icon src="www/images/icon-72-hdpi.png"       gap:platform="ios"       width="72"  height="72" />
     <icon src="www/images/touch-icon-192x192.png" gap:platform="ios"       width="192" height="192" />
-    <icon src="www/icon.png"/>
-    
+        
     <gap:splash src="www/images/splash-320-426.png"       gap:platform="android" gap:qualifier="port-ldpi" />
     <gap:splash src="www/images/splash-320-470.png"       gap:platform="android" gap:qualifier="port-mdpi" />
     <gap:splash src="www/images/splash-640-960.png"       gap:platform="android" gap:qualifier="port-hdpi" />
