@@ -140,6 +140,7 @@
                 buttons_reset();
                 $("#button4_img").attr("src", "images/button-map-selected.svg");
                 $("#screen_map").css('visibility','visible');
+                map.enable_device_location(true);
             }
         
             function button_menu_click() {
@@ -153,6 +154,8 @@
             }
         
             function buttons_reset() {
+                 map.enable_device_location(false);
+                 
                  $("#button1_img").attr("src", "images/button-info.svg");
                  $("#button2_img").attr("src", "images/button-destinations.svg");
                  $("#button3_img").attr("src", "images/button-photos.svg");

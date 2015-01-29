@@ -101,6 +101,16 @@
         
         },
         
+        enable_device_location: function (enabled) {
+            if (enabled === true) {
+                /* Start GPS location */
+                this._leaflet_map.locate({setView: false, maxZoom: 20, watch: true, maximumAge: 4000, enableHighAccuracy: true});
+            } else {
+                /* Stop GPS location */
+                this._leaflet_map.stopLocate();
+            }
+        },
+        
         get_feature_by_name: function (features, name) {
             for (var i = 0; i < features.length; i++) {
                 if (features[i].properties.name.toLowerCase() == name.toLowerCase()) {
