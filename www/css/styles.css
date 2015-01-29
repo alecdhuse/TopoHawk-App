@@ -108,6 +108,14 @@ body {
     width: 200px;
 }
 
+.route_list_rating {
+    width: auto;
+}
+
+.route_list_type {
+    width: auto;
+}
+
 .screen {
     height: 100%;
     position: absolute;

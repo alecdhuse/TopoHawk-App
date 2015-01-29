@@ -176,6 +176,8 @@
         
             function change_area(area_id) {
                 map.set_area(area_id);
+                create_route_list(area_id);
+                
                 $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
                 $("#screen_info_title").html(map.selected_area.properties.name);
                 $("#screen_info_inner").html(map.selected_area.properties.description);
@@ -220,6 +222,32 @@
                 }
                 
                 $("#destination_search_results").html(destination_list_html);
+            }
+        
+            function create_route_list(area_id) {
+                var current_route   = {};
+                var grade_system    = map.get_grade_systems();
+                var route_grade     = "";
+                var route_list_html = "";
+                
+                for (var i=0; i < map.routes.features.length; i++) {
+                    current_route = map.routes.features[i];
+                    
+                    if (current_route.properties.area_id == area_id) {
+                        route_grade = TH.util.grades.convert_common_to(grade_system[current_route.properties.route_type], current_route.properties.route_grade);
+                        
+                        route_list_html += "<div class='destination_list_element'>";
+                        route_list_html += "<div class='destination_list_name'>" + current_route.properties.name;
+                        route_list_html += " <span>" + TH.util.get_star_html(current_route.properties.rating, true).substr(5) + "</span></div>";
+                        route_list_html += "<div class='destination_list_location'>";
+                        route_list_html += "<span class='route_list_rating'>" + route_grade + "</span> ";
+                        route_list_html += "<span class='route_list_type'>" + current_route.properties.route_type + "</span>";
+                        route_list_html += "</div>";
+                        route_list_html += "</div>";
+                    }
+                }
+                
+                $("#destination_search_results").html(route_list_html);
             }
         
             function destination_info_loaded() {
