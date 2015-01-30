@@ -97,6 +97,12 @@
         <script type="text/javascript" src="js/topohawk_map.js"></script>
         
         <script>
+            var MODE_NONE        = 0;
+            var MODE_DESTINATION = 1;
+            var MODE_AREA        = 2;
+            var MODE_ROUTE       = 3;
+            
+            var current_mode = MODE_DESTINATION;
             var map_finished = false;
             var user_id = -1;
         
@@ -177,6 +183,7 @@
             function change_area(area_id) {
                 map.set_area(area_id);
                 create_route_list(area_id);
+                current_mode = MODE_AREA;
                 
                 $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
                 $("#screen_info_title").html(map.selected_area.properties.name);
@@ -187,14 +194,35 @@
                 var loading_html = "<div style='margin-top:5px;text-align:center;'>Loading Area List <img src='images/ui-anim_basic_16x16.gif'></div>"
                 $("#destination_search_results").html(loading_html);
                 
+                current_mode = MODE_DESTINATION;
                 map.set_destination(destination_id);
+            }
+        
+            function change_route(route_id) {
+                current_mode = MODE_ROUTE;
+                
+                /* TODO: Change info screen to have info about the route */
             }
         
             function create_area_list() {
                 var area_list_html = "";
+                var search_string  = $("#destination_search_filter").val();
+                var show_area      = false;
                 
                 if (map.areas.features.length > 0) {
                     for (var i=0; i < map.areas.features.length; i++) {
+                    
+                        if (search_string.length == 0) {
+                            show_area = true;
+                        } else {
+                            if (map.areas.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                                show_area = true;
+                            }
+                                show_area = false;
+                            }
+                        }
+                        
+                        if (show_area === true) {
                             if (route_count = map.areas.features[i].properties.stats !== null) {
                                 route_count = map.areas.features[i].properties.stats.types.Total;
                             } else {
@@ -205,6 +233,7 @@
                             area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
                             area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
                             area_list_html += "</div>";
+                        }
                     }
                 } else {
                     /* No Areas at destination */
@@ -253,21 +282,35 @@
                 var grade_system    = map.get_grade_systems();
                 var route_grade     = "";
                 var route_list_html = "";
+                var search_string   = $("#destination_search_filter").val();
+                var show_route      = false;
                 
                 for (var i=0; i < map.routes.features.length; i++) {
                     current_route = map.routes.features[i];
                     
-                    if (current_route.properties.area_id == area_id) {
-                        route_grade = TH.util.grades.convert_common_to(grade_system[current_route.properties.route_type], current_route.properties.route_grade);
-                        
-                        route_list_html += "<div class='destination_list_element'>";
-                        route_list_html += "<div class='destination_list_name'>" + current_route.properties.name;
-                        route_list_html += " <span>" + TH.util.get_star_html(current_route.properties.rating, true).substr(5) + "</span></div>";
-                        route_list_html += "<div class='destination_list_location'>";
-                        route_list_html += "<span class='route_list_rating'>" + route_grade + "</span> ";
-                        route_list_html += "<span class='route_list_type'>" + current_route.properties.route_type + "</span>";
-                        route_list_html += "</div>";
-                        route_list_html += "</div>";
+                    if (search_string.length == 0) {
+                        show_route = true;
+                    } else {
+                        if (current_route.properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                            show_route = true;
+                        } else {
+                            show_route = false;
+                        }
+                    }
+                    
+                    if (show_route === true) {
+                        if (current_route.properties.area_id == area_id) {
+                            route_grade = TH.util.grades.convert_common_to(grade_system[current_route.properties.route_type], current_route.properties.route_grade);
+                            
+                            route_list_html += "<div class='destination_list_element' onclick='change_route(" + current_route.properties.route_id + ")'>";
+                            route_list_html += "<div class='destination_list_name'>" + current_route.properties.name;
+                            route_list_html += " <span>" + TH.util.get_star_html(current_route.properties.rating, true).substr(5) + "</span></div>";
+                            route_list_html += "<div class='destination_list_location'>";
+                            route_list_html += "<span class='route_list_rating'>" + route_grade + "</span> ";
+                            route_list_html += "<span class='route_list_type'>" + current_route.properties.route_type + "</span>";
+                            route_list_html += "</div>";
+                            route_list_html += "</div>";
+                        }
                     }
                 }
                 
@@ -284,6 +327,16 @@
                 $("#destination_search_filter").val("");
                 
                 create_area_list();
+            }
+        
+            function filter_list() {
+                if (current_mode == MODE_NONE) {
+                    create_destination_list();
+                } else if (current_mode == MODE_DESTINATION) {
+                    create_area_list();
+                } else {
+                    create_route_list(map.selected_area.properties.area_id);
+                }
             }
         
             function finish_map_setup(max_slider_val) {
@@ -347,7 +400,7 @@
             }
         
             document.onreadystatechange = function(e) {
-                $("#destination_search_filter").keyup(function() { create_destination_list() });
+                $("#destination_search_filter").keyup(function() { filter_list() });
                 
                 get_user_info();
                 button1_click();

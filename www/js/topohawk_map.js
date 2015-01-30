@@ -966,7 +966,6 @@
             this.paths       = data.result.paths;
             this.polygons    = data.result.polygons;
             this.routes      = data.result.routes;
-            this.selected_destination = data.result;
             
             if (this._first_location_fix == true) {
                 if (this._options.area_id > 0) {
@@ -980,6 +979,11 @@
                 this._first_location_fix = false;
             }
             
+            /* Set selected destination and clear out selected area and route. */
+            this.selected_area          = {};
+            this.selected_route         = {};
+            this.selected_destination   = data.result;
+                        
             /* Zoom into destination location */
             var latlng = L.latLng(data.result.destination_lat, data.result.destination_lng);
             var zoom   = data.result.destination_zoom;
