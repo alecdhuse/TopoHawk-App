@@ -102,7 +102,7 @@
             var MODE_AREA        = 2;
             var MODE_ROUTE       = 3;
             
-            var current_mode = MODE_DESTINATION;
+            var current_mode = MODE_NONE;
             var map_finished = false;
             var user_id = -1;
         
@@ -185,6 +185,7 @@
                 create_route_list(area_id);
                 current_mode = MODE_AREA;
                 
+                $("#destination_search_filter").val("");
                 $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
                 $("#screen_info_title").html(map.selected_area.properties.name);
                 $("#screen_info_inner").html(map.selected_area.properties.description);
@@ -200,8 +201,12 @@
         
             function change_route(route_id) {
                 current_mode = MODE_ROUTE;
+                map.set_route(route_id);
                 
-                /* TODO: Change info screen to have info about the route */
+                $("#screen_info_title").html(map.selected_route.properties.name);
+                $("#screen_info_inner").html(map.selected_route.properties.description);
+                
+                /* TODO: Change info screen to have comments */
             }
         
             function create_area_list() {
@@ -217,7 +222,7 @@
                         } else {
                             if (map.areas.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
                                 show_area = true;
-                            }
+                            } else {
                                 show_area = false;
                             }
                         }
