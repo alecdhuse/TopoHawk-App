@@ -31,7 +31,10 @@
             <div id="screen_about" class="screen"></div>
             
             <div id="screen_destinations" class="screen">
-                <div class="search_filter"><input class="search_text" type="text" name="destination_search" id="destination_search_filter"/></div>
+                <div class="search_filter">
+                    <input class="search_text" type="text" name="destination_search" id="destination_search_filter"/><br/>
+                    <div id="filter_hidden_items"></div>
+                </div>
                 <div class="screen_inner">
                     <div id="destination_search_results"></div>
                 </div>
@@ -181,11 +184,12 @@
             }
         
             function change_area(area_id) {
-                map.set_area(area_id);
-                create_route_list(area_id);
-                current_mode = MODE_AREA;
-                
                 $("#destination_search_filter").val("");
+                
+                map.set_area(area_id);
+                current_mode = MODE_AREA;
+                create_route_list(area_id);
+                
                 $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
                 $("#screen_info_title").html(map.selected_area.properties.name);
                 $("#screen_info_inner").html(map.selected_area.properties.description);
@@ -200,17 +204,43 @@
             }
         
             function change_route(route_id) {
+                var tilte_html = "";
+                
                 current_mode = MODE_ROUTE;
                 map.set_route(route_id);
                 
-                $("#screen_info_title").html(map.selected_route.properties.name);
+                /* Center map on route latlng */
+                var route_latlng = L.latLng(map.selected_route.geometry.coordinates[1], map.selected_route.geometry.coordinates[0]);
+                map.set_view(route_latlng, map.get_zoom())
+                
+                /* Get rating in prefered scale */
+                var route_grade = TH.util.grades.convert_common_to(map.get_grade_systems()[map.selected_route.properties.route_type], map.selected_route.properties.route_grade);
+                
+                tilte_html += "<span>" + map.selected_route.properties.name + "</span><br/>";
+                tilte_html += "<span id='screen_info_title_second_line'>";
+                tilte_html += "<span>" + route_grade + "</span> ";
+                tilte_html += "<span>" + map.selected_route.properties.route_type + "</span> ";
+                
+                if (map.selected_route.properties.pitches > 1) {
+                    tilte_html += "<span>Multipitch</span>";
+                }
+                
+                tilte_html += "</span><br/>"
+                tilte_html += "<span>" + TH.util.get_star_html(map.selected_route.properties.rating, true).substr(5) + "</span>";
+                
+                $("#screen_info_title").html(tilte_html);
                 $("#screen_info_inner").html(map.selected_route.properties.description);
                 
                 /* TODO: Change info screen to have comments */
+                
+                
+                /* Change screen to info view */
+                button1_click();
             }
         
             function create_area_list() {
                 var area_list_html = "";
+                var hidden_count   = 0;
                 var search_string  = $("#destination_search_filter").val();
                 var show_area      = false;
                 
@@ -238,6 +268,8 @@
                             area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
                             area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
                             area_list_html += "</div>";
+                        } else {
+                            hidden_count++;
                         }
                     }
                 } else {
@@ -246,13 +278,20 @@
                 }
                 
                 $("#destination_search_results").html(area_list_html);
+                
+                if (hidden_count > 0) {
+                    $("#filter_hidden_items").html(hidden_count + " hidden items.");
+                } else {
+                    $("#filter_hidden_items").html("");
+                }
             }
         
             function create_destination_list() {
-                var destination_id = 0;
-                var destination_list_html = "";
-                var show_destination = false;
-                var search_string = $("#destination_search_filter").val();
+                var destination_id          = 0;
+                var destination_list_html   = "";
+                var hidden_count            = 0;
+                var show_destination        = false;
+                var search_string           = $("#destination_search_filter").val();
                 
                 for (var i=0; i < map.destinations.features.length; i++) {
                     destination_id = map.destinations.features[i].properties.destination_id;
@@ -276,15 +315,24 @@
                         destination_list_html += "<div class='destination_list_name'>" + map.destinations.features[i].properties.name + "</div>";
                         destination_list_html += "<div class='destination_list_location'>" + map.destinations.features[i].properties.location + "</div>";
                         destination_list_html += "</div>";
+                    } else {
+                        hidden_count++;
                     }
                 }
                 
                 $("#destination_search_results").html(destination_list_html);
+                
+                if (hidden_count > 0) {
+                    $("#filter_hidden_items").html(hidden_count + " hidden items.");
+                } else {
+                    $("#filter_hidden_items").html("");
+                }
             }
         
             function create_route_list(area_id) {
                 var current_route   = {};
                 var grade_system    = map.get_grade_systems();
+                var hidden_count    = 0;
                 var route_grade     = "";
                 var route_list_html = "";
                 var search_string   = $("#destination_search_filter").val();
@@ -308,18 +356,32 @@
                             route_grade = TH.util.grades.convert_common_to(grade_system[current_route.properties.route_type], current_route.properties.route_grade);
                             
                             route_list_html += "<div class='destination_list_element' onclick='change_route(" + current_route.properties.route_id + ")'>";
-                            route_list_html += "<div class='destination_list_name'>" + current_route.properties.name;
-                            route_list_html += " <span>" + TH.util.get_star_html(current_route.properties.rating, true).substr(5) + "</span></div>";
+                            route_list_html += "<div class='destination_list_name'>" + current_route.properties.name + " ";
+                            route_list_html += "<span>" + TH.util.get_star_html(current_route.properties.rating, true).substr(5) + "</span>";
+                            route_list_html += "</div>";
                             route_list_html += "<div class='destination_list_location'>";
                             route_list_html += "<span class='route_list_rating'>" + route_grade + "</span> ";
-                            route_list_html += "<span class='route_list_type'>" + current_route.properties.route_type + "</span>";
+                            route_list_html += "<span class='route_list_type'>" + current_route.properties.route_type + "</span> ";
+                            
+                            if (current_route.properties.pitches > 1) {
+                                route_list_html += "<span>Multipitch</span>";
+                            }
+                            
                             route_list_html += "</div>";
                             route_list_html += "</div>";
                         }
+                    } else {
+                        hidden_count++;
                     }
                 }
                 
                 $("#destination_search_results").html(route_list_html);
+                
+                if (hidden_count > 0) {
+                    $("#filter_hidden_items").html(hidden_count + " hidden items.");
+                } else {
+                    $("#filter_hidden_items").html("");
+                }
             }
         
             function destination_info_loaded() {
