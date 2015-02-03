@@ -367,6 +367,15 @@ window.onresize = function () {
 document.onreadystatechange = function(e) {
     $("#destination_search_filter").keyup(function() { filter_list() });
     
+    /* Slider Setup */
+    $('#photo_slider').slick({
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        fade: true,
+        asNavFor: '#photo_slider'
+    });
+    
     get_user_info();
     button1_click();
     resize_window();
