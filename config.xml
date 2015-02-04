@@ -25,7 +25,7 @@
     <preference name="ios-statusbarstyle"         value="black-opaque" /> 
     <preference name="detect-data-types"          value="true" />
     <preference name="exit-on-suspend"            value="false" />
-    <preference name="show-splash-screen-spinner" value="false" />
+    <preference name="show-splash-screen-spinner" value="true" />
     <preference name="auto-hide-splash-screen"    value="true" />
     <preference name="disable-cursor"             value="false" />
     <preference name="android-installLocation"    value="auto" /> 
@@ -38,12 +38,12 @@
     <gap:plugin name="org.apache.cordova.network-information" />
     
     <icon src="icon.png"/>
-    <icon src="www/images/icon-36-ldpi.png"       gap:platform="android"   gap:qualifier="ldpi" />
-    <icon src="www/images/icon-48-mdpi.png"       gap:platform="android"   gap:qualifier="mdpi" />
-    <icon src="www/images/icon-72-hdpi.png"       gap:platform="android"   gap:qualifier="hdpi" />
-    <icon src="www/images/icon-96-xhdpi.png"      gap:platform="android"   gap:qualifier="xhdpi" />
-    <icon src="www/images/icon-72-hdpi.png"       gap:platform="ios"       width="72"  height="72" />
-    <icon src="www/images/touch-icon-192x192.png" gap:platform="ios"       width="192" height="192" />
+    <icon src="platform/android/res/icon-36-ldpi.png"   gap:platform="android"   gap:qualifier="ldpi" />
+    <icon src="platform/android/res/icon-48-mdpi.png"   gap:platform="android"   gap:qualifier="mdpi" />
+    <icon src="platform/android/res/icon-72-hdpi.png"   gap:platform="android"   gap:qualifier="hdpi" />
+    <icon src="platform/android/res/icon-96-xhdpi.png"  gap:platform="android"   gap:qualifier="xhdpi" />
+    <icon src="www/images/icon-72-hdpi.png"             gap:platform="ios"       width="72"  height="72" />
+    <icon src="www/images/touch-icon-192x192.png"       gap:platform="ios"       width="192" height="192" />
         
     <gap:splash src="www/images/splash-320-426.png"       gap:platform="android" gap:qualifier="port-ldpi" />
     <gap:splash src="www/images/splash-320-470.png"       gap:platform="android" gap:qualifier="port-mdpi" />
