@@ -98,6 +98,7 @@ function buttons_reset() {
      $("#screen_info").css('visibility','hidden');
      $("#screen_map").css('visibility','hidden');
      $("#screen_offline_content").css('visibility','hidden');
+     $("#screen_photo").css('visibility','hidden');
      $("#screen_search").css('visibility','hidden');
      $("#screen_settings").css('visibility','hidden');
      $("#screen_stream").css('visibility','hidden');
