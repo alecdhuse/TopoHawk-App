@@ -119,6 +119,7 @@ body {
     top: 30px;
     visibility: hidden;
     width: 200px;
+    z-index: 9999;
 }
 
 #photo_bullets {
@@ -179,6 +180,8 @@ body {
 
 #screen_photo {
     background: #444;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .search_filter {
