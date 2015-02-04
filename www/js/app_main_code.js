@@ -8,6 +8,7 @@ var map_finished = false;
 var photo_ids    = [];
 var photo_index  = 0;
 var photo_topo   = new PT();
+var swipe_binded = false;
 var user_id      = -1;
 
 /* Map Setup */
@@ -27,6 +28,20 @@ map.on_route_click              = function (route_obj)       { };
 map.on_user_info_loaded         = function ()                { user_info_loaded() };
 map.destination_info_loaded     = function (destination_obj) { create_destination_list() };
 map.on_destination_info_loaded  = function ()                { destination_info_loaded() };
+
+function bind_swipes() {
+    if (swipe_binded === false) {
+        $("#screen_photo").on( "swipeleft", function() {
+            photo_show_next();
+        });
+        
+        $("#screen_photo").on( "swiperight", function() {
+            photo_show_previous();
+        });
+        
+        swipe_binded = true;
+    }
+}
 
 function button1_click() {
     buttons_reset();
@@ -482,8 +497,9 @@ window.onresize = function () {
 }
 
 document.onreadystatechange = function(e) {
-    $("#destination_search_filter").keyup(function() { filter_list() });    
+    $("#destination_search_filter").keyup(function() { filter_list() });
     
+    bind_swipes();
     get_user_info();
     button1_click();
     resize_window();

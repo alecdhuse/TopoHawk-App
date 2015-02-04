@@ -249,39 +249,42 @@ PT.prototype._load_photo = function(result) {
 };
 
 PT.prototype.change_photo = function(photo_id) {
-    this.paper_scope.project.clear();
     this.photo_id = photo_id;
     
-    paper = this.paper_scope;
-    
-    if (paper.view.zoom > 1) {
-        paper.view.zoom = 1;
-        paper.view.center = this._canvas_center_1st;
+    if (typeof this.paper_scope !== 'undefined' && this.paper_scope !== null) {
+        this.paper_scope.project.clear();
+        
+        paper = this.paper_scope;
+        
+        if (paper.view.zoom > 1) {
+            paper.view.zoom = 1;
+            paper.view.center = this._canvas_center_1st;
+        }
+        
+        //this._destination_loaded = false;
+        this._paths_drawn        = false;
+        this._photo_loaded       = false;
+        //this.destination         = null;
+        this.last_segment_index  = 0;
+        this.line_started        = false;
+        this.new_path_points     = []
+        this.paths               = [];
+        this.paths_json          = [];
+        this.photo_area          = 0;
+        this.photo_destination   = 0;
+        this.photo_left_margin   = 0;
+        this.photo_top_margin    = 0;
+        this.photo_url           = '';
+        this.photo_scale         = 1;
+        this.photo_height_scaled = 0;
+        this.photo_width_scaled  = 0;
+        this.route_markers       = [];
+        this.route_markers_outer = [];
+        this.route_marker_points = [];
+        this.route_marker_text   = [];
+        
+        this._get_photo_info(photo_id);
     }
-    
-    //this._destination_loaded = false;
-    this._paths_drawn        = false;
-    this._photo_loaded       = false;
-    //this.destination         = null;
-    this.last_segment_index  = 0;
-    this.line_started        = false;
-    this.new_path_points     = []
-    this.paths               = [];
-    this.paths_json          = [];
-    this.photo_area          = 0;
-    this.photo_destination   = 0;
-    this.photo_left_margin   = 0;
-    this.photo_top_margin    = 0;
-    this.photo_url           = '';
-    this.photo_scale         = 1;
-    this.photo_height_scaled = 0;
-    this.photo_width_scaled  = 0;
-    this.route_markers       = [];
-    this.route_markers_outer = [];
-    this.route_marker_points = [];
-    this.route_marker_text   = [];
-    
-    this._get_photo_info(photo_id);
 };
 
 PT.prototype.create_new_line = function(event, route) {
