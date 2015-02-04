@@ -43,6 +43,14 @@ function bind_swipes() {
     }
 }
 
+function bread_crumb_area_click() {
+
+}
+
+function bread_crumb_destination_click() {
+
+}
+
 function button1_click() {
     buttons_reset();
     $("#button1_img").attr("src", "images/button-info-selected.svg");
