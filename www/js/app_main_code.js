@@ -3,13 +3,15 @@ var MODE_DESTINATION = 1;
 var MODE_AREA        = 2;
 var MODE_ROUTE       = 3;
 
-var current_mode = MODE_NONE;
-var map_finished = false;
-var photo_ids    = [];
-var photo_index  = 0;
-var photo_topo   = new PT();
-var swipe_binded = false;
-var user_id      = -1;
+var current_mode  = MODE_NONE;
+var map_finished  = false;
+var photo_ids     = [];
+var photo_index   = 0;
+var photo_topo    = new PT();
+var stream_offset = 0;
+var stream_scroll = false;
+var swipe_binded  = false;
+var user_id       = -1;
 
 /* Map Setup */
 var map = TH.map('screen_map', {
@@ -71,6 +73,7 @@ function button3_click() {
         get_photo_ids();
         $("#screen_photo").css('visibility','visible');
     } else {
+        show_photo_stream();
         $("#screen_stream").css('visibility','visible');
     }
 }
@@ -172,6 +175,10 @@ function change_route(route_id) {
     
     /* Change screen to info view */
     button1_click();
+}
+
+function click_stream_item(route_id, area_id, destination_id) {
+
 }
 
 function create_area_list() {
@@ -285,6 +292,42 @@ function create_photo_canvas(photos) {
         /* No Photo */
         var t=0;
     }
+}
+
+function create_photo_stream_html(stream_json) {
+    var html = "";
+    var on_click;
+    var reload_at = 6;
+    
+    if (stream_json.result_code > 0) {
+        var reload_at = stream_json.photos.length - 4;
+        
+        for (var i = 0; i < stream_json.photos.length; i++) {
+            var photo_name = stream_json.photos[i].photo_name;
+            var photo_file = "t" + stream_json.photos[i].photo_file;
+            var photo_url  = "http://topohawk.com/images/routes/" +  photo_file;
+            
+            if (stream_json.photos[i].route_id > 0) {
+                on_click   = "onclick='click_stream_item(" + stream_json.photos[i].route_id + "," + stream_json.photos[i].area_id + "," + stream_json.photos[i].destination_id + ")'";
+            } else if (stream_json.photos[i].area_id > 0) {
+            
+            } else if (stream_json.photos[i].destination_id > 0) {
+            
+            }
+            
+            html = html + "<div class='stream_photo'>";
+            html = html + "<img src='" + photo_url + "' alt='" + photo_name + "'" + on_click + " width='300'/>";
+            html = html + "<br />";
+            
+            if (i == reload_at) html = html + "<div class='load_more_photos'></div>";
+            
+            html = html + "</div>";
+        }
+    } else {
+        
+    }
+    
+    return html;
 }
 
 function create_route_list(area_id) {
@@ -495,6 +538,33 @@ function resize_window() {
     map.invalidate_size();
 }
 
+function show_photo_stream() {
+    $.ajax({
+        type: 'POST',
+        url:  'http://topohawk.com/api/v1/get_photo_stream.php',
+        dataType: 'json',
+        data: {
+            'offset': stream_offset,
+            'limit':  10
+        },
+        success: function(response) {
+            if (response.result_code > 0) {
+                var photo_margin = ($("#stream_inner").width() - 300) / 2.0;
+                var html = create_photo_stream_html(response);
+           
+                $("#photo_stream_div").html($("#photo_stream_div").html() + html);
+                $(".stream_photo").css( { marginLeft : photo_margin + "px" } );
+                stream_scroll = false;
+            } else {
+                console.log("Error " + response.result);
+            }
+        },
+        error: function (req, status, error) {
+           console.log("Error getting photo stream: " + error);
+        }
+    });
+}
+
 function user_info_loaded() {
     /* Update Filter Max Value */
     finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport));
@@ -512,6 +582,25 @@ document.onreadystatechange = function(e) {
     get_user_info();
     button1_click();
     resize_window();
+    
+    $("#stream_inner").scroll(function() {
+         if ($("#stream_inner").is(":visible")) {
+            /* Code to test if new photos need to be loaded. */
+            var divs = $(".load_more_photos");
+            var last_index = divs.length - 1;
+            var offset = divs[last_index].offsetTop;
+            var view_bottom = $("#stream_inner").scrollTop() + ($(window).height() - 50);
+
+            if (view_bottom > offset) {
+                if (stream_scroll == false) {
+                    /* load more photos */
+                    stream_scroll  = true;
+                    stream_offset += 10;
+                    show_photo_stream();
+                }
+            }
+         }
+    });
 };
 
 function onDeviceReady() {
