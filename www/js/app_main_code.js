@@ -513,3 +513,7 @@ document.onreadystatechange = function(e) {
     button1_click();
     resize_window();
 };
+
+function onDeviceReady() {
+    navigator.splashscreen.show();
+}
