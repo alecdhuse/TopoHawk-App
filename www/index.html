@@ -8,8 +8,6 @@
         <link rel="stylesheet" type="text/css" href="css/jquery.nouislider.min.css" />
         <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.8.2.custom.min.css" />
         <link rel="stylesheet" type="text/css" href="css/leaflet.custom.min.css" />
-        <link rel="stylesheet" type="text/css" href="css/slick.css"/>
-        <link rel="stylesheet" type="text/css" href="css/slick-theme.css"/>        
         <link rel="stylesheet" type="text/css" href="css/styles.css" />
         <link rel="stylesheet" type="text/css" href="css/topohawk-map.css" />
         
@@ -56,16 +54,25 @@
             
             <div id="screen_map" class="screen"></div>
             <div id="screen_offline_content" class="screen"></div>
-            <div id="screen_photo" class="screen"></div>
+            
+            <div id="screen_photo" class="screen">
+                <canvas id='photo_topo_canvas'></canvas>
+                <div id='photo_nav_bar'>
+                    <div id='arrow_left'  onclick='photo_show_previous()'><img src='images/arrow_left.svg' /></div>
+                    <div id='arrow_right' onclick='photo_show_next()'><img src='images/arrow_right.svg' /></div>
+                    <div id='photo_bullets'></div>
+                </div>
+            </div>
+            
             <div id="screen_search" class="screen"></div>
             <div id="screen_settings" class="screen"></div>
             
             <div id="screen_stream" class="screen">
                 <div id="photo_slider">
-                    <div>1111111111</div>
-                    <div>2222222222</div>
-                    <div>3333333333</div>
-                    <div>4444444444</div>
+                    <div><img src='images/icon-96-xhdpi.png'/><br/>1</div>
+                    <div><img src='images/icon-96-xhdpi.png'/><br/>2</div>
+                    <div><img src='images/icon-96-xhdpi.png'/><br/>3</div>
+                    <div><img src='images/icon-96-xhdpi.png'/><br/>4</div>
                 </div>
             </div>
             
@@ -110,7 +117,8 @@
         <script type="text/javascript" src="js/leaflet.label.js"></script>
         <script type="text/javascript" src="js/leaflet.markercluster.js"></script>
         <script type="text/javascript" src="js/map_icons.js"></script>
-        <script type="text/javascript" src="js/slick.min.js"></script>
+        <script type="text/javascript" src="js/paper-full.min.js"></script>
+        <script type="text/javascript" src="js/photo_topo.js"></script>
         <script type="text/javascript" src="js/topohawk_map.js"></script>
         <script type="text/javascript" src="js/app_main_code.js"></script>
     </body>

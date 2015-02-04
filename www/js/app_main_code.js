@@ -5,7 +5,10 @@ var MODE_ROUTE       = 3;
 
 var current_mode = MODE_NONE;
 var map_finished = false;
-var user_id = -1;
+var photo_ids    = [];
+var photo_index  = 0;
+var photo_topo   = new PT();
+var user_id      = -1;
 
 /* Map Setup */
 var map = TH.map('screen_map', {
@@ -40,7 +43,13 @@ function button2_click() {
 function button3_click() {
     buttons_reset();
     $("#button3_img").attr("src", "images/button-photos-selected.svg");
-    $("#screen_stream").css('visibility','visible');
+    
+    if (current_mode != MODE_NONE) {
+        get_photo_ids();
+        $("#screen_photo").css('visibility','visible');
+    } else {
+        $("#screen_stream").css('visibility','visible');
+    }
 }
 
 function button4_click() {
@@ -99,6 +108,11 @@ function change_destination(destination_id) {
     
     current_mode = MODE_DESTINATION;
     map.set_destination(destination_id);
+}
+
+function change_photo_topo_photo(photo_id) {
+    photo_topo.change_photo(photo_id);
+    photo_bullets_update();
 }
 
 function change_route(route_id) {
@@ -227,6 +241,28 @@ function create_destination_list() {
     }
 }
 
+function create_photo_canvas(photos) {
+    var photo_bullets;
+    
+    photo_index = 0;
+    photo_ids   = photos;
+    
+    if (photos.length > 0) {
+        var max_height = $(window).height() - 120;
+        var max_width  = $(window).width();
+    
+        $("#photo_topo_canvas").css({"height": max_height});
+        $("#photo_topo_canvas").css({"width": max_width});
+        
+        photo_bullets_update();
+        photo_topo.init('photo_topo_canvas', photos[0]);
+        photo_topo.resize([$("#photo_topo_canvas").height(), $("#photo_topo_canvas").width()]);
+    } else {
+        /* No Photo */
+        var t=0;
+    }
+}
+
 function create_route_list(area_id) {
     var current_route   = {};
     var grade_system    = map.get_grade_systems();
@@ -342,12 +378,92 @@ function finish_map_setup(max_slider_val) {
     }
 }
 
+function get_photo_ids() {
+    var data;
+    var make_request = true;
+    
+    if (current_mode == MODE_DESTINATION) {
+        data = {
+            destination_id: map.selected_destination.destination_id
+        };
+    } else if (current_mode == MODE_AREA) {
+        data = {
+            area_id: map.selected_area.properties.area_id
+        };
+    } else if (current_mode == MODE_ROUTE) {
+        data = {
+            route_id: map.selected_route.properties.route_id
+        };
+    } else {
+        make_request = false;
+    }
+
+    if (make_request == true) {
+        $.ajax({
+           type:     'POST',
+           url:      'https://topohawk.com/api/v1/get_photos.php',
+           dataType: 'json',
+           data:     data,
+           success:  function(response) {
+                if (response.result_code > 0) {
+                    create_photo_canvas(response.photo_ids);
+                } else {
+                    console.log("Error " + response.result);
+                }
+           },
+           error: function (req, status, error) {
+               console.log("Error retrieving photo_ids.");
+           }
+        });
+    } else {
+        console.log("Function get_photo_ids has incorrect parameters.");
+    }
+}
+
 function get_user_info() {
     if (user_id >= 0) {
         map.set_user_id(user_id);
     } else {
         map.set_localization();
     }
+}
+
+function photo_bullets_update() {
+    if (photo_index === 0) {
+        photo_bullets = "<span id='photo_bullet_selected'>•</span>";
+    } else {
+        photo_bullets = "•";
+    }
+    
+    for (var i=1; i<photo_ids.length; i++) {
+        if (photo_index == i) {
+            photo_bullets += " <span id='photo_bullet_selected'>•</span>";
+        } else {
+            photo_bullets += " •";
+        }
+    }
+    
+    $("#photo_bullets").html(photo_bullets);
+}
+
+function photo_show_next() {
+    photo_index++;
+    
+    if (photo_index >= photo_ids.length) {
+        photo_index = 0;
+    }
+    
+    change_photo_topo_photo(photo_ids[photo_index]);
+}
+
+function photo_show_previous() {
+    photo_index--;
+    
+    if (photo_index < 0) {
+        photo_index = (photo_ids.length - 1);
+    }
+    
+    change_photo_topo_photo(photo_ids[photo_index]);
 }
 
 function resize_window() {
@@ -358,6 +474,7 @@ function resize_window() {
 function user_info_loaded() {
     /* Update Filter Max Value */
     finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport));
+    photo_topo.grade_system = map.get_grade_systems();
 }
 
 window.onresize = function () {
@@ -365,16 +482,7 @@ window.onresize = function () {
 }
 
 document.onreadystatechange = function(e) {
-    $("#destination_search_filter").keyup(function() { filter_list() });
-    
-    /* Slider Setup */
-    $('#photo_slider').slick({
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: true,
-        fade: true,
-        asNavFor: '#photo_slider'
-    });
+    $("#destination_search_filter").keyup(function() { filter_list() });    
     
     get_user_info();
     button1_click();

@@ -9,6 +9,14 @@ body {
     overflow-y: hidden;
 }
 
+#arrow_left {
+    float: left;
+}
+
+#arrow_right {
+    float: right;
+}
+
 #breadcrumbs_div {
     color: white;
     float: left;
@@ -113,6 +121,21 @@ body {
     width: 200px;
 }
 
+#photo_bullets {
+    height: 30px;
+    text-align: center;
+}
+
+#photo_bullet_selected {
+    color: white;
+}
+
+#photo_nav_bar {
+    height: 28px;
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
 .route_list_rating {
     width: auto;
 }
@@ -150,6 +173,10 @@ body {
 
 #screen_map {
     overflow: hidden;
+}
+
+#screen_photo {
+    background: #444;
 }
 
 .search_filter {
