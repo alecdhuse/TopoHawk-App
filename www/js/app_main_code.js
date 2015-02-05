@@ -124,11 +124,53 @@ function button_menu_click() {
     }
 }
 
+function button_menu_about() {
+    buttons_reset();
+    $("#menu_popup").css('visibility','hidden');
+    $("#screen_about").css('visibility','visible');
+    $("#breadcrumbs_div_2").html("• About");    
+}
+
+function button_menu_edit() {
+    buttons_reset();
+    $("#menu_popup").css('visibility','hidden');
+
+    $("#breadcrumbs_div_2").html("• Edit");
+}
+
+function button_menu_offline_content() {
+    buttons_reset();
+    $("#menu_popup").css('visibility','hidden');
+    $("#screen_offline_content").css('visibility','visible');
+    $("#breadcrumbs_div_2").html("• Offline Content");
+}
+
 function button_menu_search() {
     buttons_reset();
-    $("#screen_search").css('visibility','visible');
     $("#menu_popup").css('visibility','hidden');
+    $("#screen_search").css('visibility','visible');
     $("#breadcrumbs_div_2").html("• Search");
+}
+
+function button_menu_settings() {
+    buttons_reset();
+    $("#menu_popup").css('visibility','hidden');
+    $("#screen_settings").css('visibility','visible');
+    $("#breadcrumbs_div_2").html("• Settings");
+}
+
+function button_menu_spray() {
+    buttons_reset();
+    $("#menu_popup").css('visibility','hidden');
+    $("#screen_spray").css('visibility','visible');
+    $("#breadcrumbs_div_2").html("• Spray");
+}
+
+function button_menu_ticks() {
+    buttons_reset();
+    $("#menu_popup").css('visibility','hidden');
+    $("#screen_ticks").css('visibility','visible');
+    $("#breadcrumbs_div_2").html("• Route Ticks");
 }
 
 function buttons_reset() {

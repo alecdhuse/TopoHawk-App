@@ -29,7 +29,37 @@
         </div>
         
         <div id="center_div">
-            <div id="screen_about" class="screen"></div>
+            <div id="screen_about" class="screen">
+                <div class="screen_inner">
+                    <div class="page_header">Map Legend</div>
+                    <ul>
+                        <li style="list-style-image: url('images/marker-route-boulder.svg');">Green - Boulder Problem</li>
+                        <li style="list-style-image: url('images/marker-route-trad.svg');">Red - Trad Route</li>
+                        <li style="list-style-image: url('images/marker-route-sport.svg');">Blue - Sport Route</li>
+                        <li style="list-style-image: url('images/marker-route-mixed.svg');">Purple - Mixed Route</li>
+                        <li style="list-style-image: url('images/marker-route-toprope.svg');">Gold - Top Rope Route</li>
+                        <li style="list-style-image: url('images/marker-route-aid.svg');">Light Gray - Aid Routes</li>
+                        <li style="list-style-image: url('images/marker-route-alpine.svg');">White - Alpine Routes</li>
+                        <li style="list-style-image: url('images/marker-route-ice.svg');">Light Blue - Ice Routes</li>
+                        <li style="list-style-image: url('images/marker-climbing-area.svg');">Orange - Climbing Area or Wall</li>
+                        <li style="list-style-image: url('images/marker-destination.svg');">Gray - Climbing Destination</li>
+                        <br />
+                        <li style="list-style-image: url('images/cafe-12.svg');">Cafe</li>
+                        <li style="list-style-image: url('images/campsite-12.svg');">Camping</li>
+                        <li style="list-style-image: url('images/fuel-12.svg');">Fuel</li>
+                        <li style="list-style-image: url('images/grocery-12.svg');">Grocery</li>
+                        <li style="list-style-image: url('images/hospital-12.svg');">Hospital</li>
+                        <li style="list-style-image: url('images/laundry-12.svg');">Laundry</li>
+                        <li style="list-style-image: url('images/lodging-12.svg');">Lodging</li>
+                        <li style="list-style-image: url('images/other-12.svg');">Other</li>
+                        <li style="list-style-image: url('images/parking-12.svg');">Parking</li>
+                        <li style="list-style-image: url('images/restaurant-12.svg');">Restaurant</li>
+                        <li style="list-style-image: url('images/shop-12.svg');">Shop</li>
+                        <li style="list-style-image: url('images/toilets-12.svg');">Toilets</li>
+                        <li style="list-style-image: url('images/water-12.svg');">Water</li>
+                    </ul>
+                </div>
+            </div>
             
             <div id="screen_destinations" class="screen">
                 <div class="search_filter">
@@ -53,6 +83,7 @@
             </div>
             
             <div id="screen_map" class="screen"></div>
+            
             <div id="screen_offline_content" class="screen"></div>
             
             <div id="screen_photo" class="screen">
@@ -79,7 +110,14 @@
                 </div>
             </div>
             
-            <div id="screen_spray" class="screen"></div>
+            <div id="screen_spray" class="screen">
+                <div class="screen_inner" id='stream_inner'>
+                    <div class="page_header">This feature is still under development.</div>
+                    <p>Spray is a way to comunicate with other TopoHawk users at a crag.</p>
+                    <p>Messages posted here are only visable for a few hours.</p>
+                </div>
+            </div>
+            
             <div id="screen_ticks" class="screen"></div>
         </div>
         
@@ -104,13 +142,13 @@
         </div>
         
         <div id="menu_popup">
-            <div class="menu_item" onclick='button_menu_search()'>Search</div><hr/>
-            <div class="menu_item">Spray</div><hr/>
-            <div class="menu_item">Ticks</div><hr/>
-            <div class="menu_item">Offline Content</div><hr/>
-            <div class="menu_item">Edit</div><hr/>
-            <div class="menu_item">Settings</div><hr/>
-            <div class="menu_item">About</div>
+            <div class="menu_item" onclick="button_menu_search()">Search</div><hr/>
+            <div class="menu_item" onclick="button_menu_spray()">Spray</div><hr/>
+            <div class="menu_item" onclick="button_menu_ticks()">Ticks</div><hr/>
+            <div class="menu_item" onclick="button_menu_offline_content()">Offline Content</div><hr/>
+            <div class="menu_item" onclick="button_menu_edit()">Edit</div><hr/>
+            <div class="menu_item" onclick="button_menu_settings()">Settings</div><hr/>
+            <div class="menu_item" onclick="button_menu_about()">About</div>
         </div>
         
         <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
