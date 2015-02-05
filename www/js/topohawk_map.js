@@ -54,6 +54,7 @@
             }
             
             /* Overridable Functions */
+            this.on_area_change             = function () {};
             this.on_area_click              = function (area_obj) {};
             this.on_destination_click       = function (destination_obj) {};
             this.on_route_click             = function (route_obj) {};
@@ -159,15 +160,23 @@
         set_area: function (area_id) {
             for (var i=0; i<this.areas.features.length; i++) {
                 if (this.areas.features[i].properties.area_id == area_id) {
-                    this.selected_area = this.areas.features[i];
-                    
-                    var area_zoom = this.selected_area.properties.click_zoom_to;
-                    var latlng = L.latLng(this.selected_area.geometry.coordinates[1], this.selected_area.geometry.coordinates[0]);
-                    
-                    this.set_view(latlng, area_zoom);
+                    set_area_object(this.areas.features[i], true);
                     break;
                 }
             }
+        },
+        
+        set_area_object: function (area_obj, zoom_to) {
+            this.selected_area = area_obj;
+            
+            if (zoom_to === true) {
+                var area_zoom = this.selected_area.properties.click_zoom_to;
+                var latlng = L.latLng(this.selected_area.geometry.coordinates[1], this.selected_area.geometry.coordinates[0]);
+                this.set_view(latlng, area_zoom);
+            }
+            
+            /* Call overidable call back function */
+            this.on_area_change();
         },
         
         set_destination: function (destination_id) {

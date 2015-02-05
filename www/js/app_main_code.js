@@ -46,11 +46,27 @@ function bind_swipes() {
 }
 
 function bread_crumb_area_click() {
-
+    map.selected_route = {};
+    current_mode       = MODE_AREA;
 }
 
 function bread_crumb_destination_click() {
+    map.selected_area  = {};
+    map.selected_route = {};
+    current_mode       = MODE_DESTINATION;
+    $("#breadcrumbs_div_2").html("");
+}
 
+function bread_crumb_logo_click() {
+    map.selected_area        = {};
+    map.selected_destination = {};
+    map.selected_route       = {};
+    current_mode             = MODE_NONE;
+    
+    $("#breadcrumbs_div_1").html("TopoHawk");
+    $("#breadcrumbs_div_2").html("");
+    $("#screen_info_title").html("");
+    button1_click();
 }
 
 function button1_click() {
@@ -93,6 +109,13 @@ function button_menu_click() {
         $("#menu_popup").css('left', left);
         $("#menu_popup").css('visibility','visible');
     }
+}
+
+function button_menu_search() {
+    buttons_reset();
+    $("#screen_search").css('visibility','visible');
+    $("#menu_popup").css('visibility','hidden');
+    $("#breadcrumbs_div_2").html("• Search");
 }
 
 function buttons_reset() {
@@ -178,7 +201,13 @@ function change_route(route_id) {
 }
 
 function click_stream_item(route_id, area_id, destination_id) {
-
+    if (route_id > 0) {
+        
+    } else if (area_id > 0) {
+    
+    } else if (destination_id > 0) {
+    
+    }
 }
 
 function create_area_list() {
@@ -296,7 +325,6 @@ function create_photo_canvas(photos) {
 
 function create_photo_stream_html(stream_json) {
     var html = "";
-    var on_click;
     var reload_at = 6;
     
     if (stream_json.result_code > 0) {
@@ -306,14 +334,7 @@ function create_photo_stream_html(stream_json) {
             var photo_name = stream_json.photos[i].photo_name;
             var photo_file = "t" + stream_json.photos[i].photo_file;
             var photo_url  = "http://topohawk.com/images/routes/" +  photo_file;
-            
-            if (stream_json.photos[i].route_id > 0) {
-                on_click   = "onclick='click_stream_item(" + stream_json.photos[i].route_id + "," + stream_json.photos[i].area_id + "," + stream_json.photos[i].destination_id + ")'";
-            } else if (stream_json.photos[i].area_id > 0) {
-            
-            } else if (stream_json.photos[i].destination_id > 0) {
-            
-            }
+            var on_click   = "onclick='click_stream_item(" + stream_json.photos[i].route_id + "," + stream_json.photos[i].area_id + "," + stream_json.photos[i].destination_id + ")'";
             
             html = html + "<div class='stream_photo'>";
             html = html + "<img src='" + photo_url + "' alt='" + photo_name + "'" + on_click + " width='300'/>";
@@ -535,6 +556,9 @@ function photo_show_previous() {
 
 function resize_window() {
     $("#screen_map").height($(window).height()-80).width($(window).width());
+    var search_box_width = ($(window).width() - 48);
+    
+    $("#search_box").css({"width": search_box_width});
     map.invalidate_size();
 }
 

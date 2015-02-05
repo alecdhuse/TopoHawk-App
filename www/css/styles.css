@@ -184,6 +184,12 @@ body {
     overflow-y: hidden;
 }
 
+.search_box_div {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 8px;
+}
+
 .search_filter {
     padding-left: 8px;
     padding-right: 16px;
