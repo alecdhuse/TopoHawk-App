@@ -10,8 +10,16 @@ var photo_index   = 0;
 var photo_topo    = new PT();
 var stream_offset = 0;
 var stream_scroll = false;
+var stream_update = false;
 var swipe_binded  = false;
 var user_id       = -1;
+var welcome_html  = "";
+
+var stream_last   = {
+    destination_id: 0,
+    area_id:        0,
+    route_id:       0
+};
 
 /* Map Setup */
 var map = TH.map('screen_map', {
@@ -54,7 +62,9 @@ function bread_crumb_destination_click() {
     map.selected_area  = {};
     map.selected_route = {};
     current_mode       = MODE_DESTINATION;
+    
     $("#breadcrumbs_div_2").html("");
+    destination_info_loaded();
 }
 
 function bread_crumb_logo_click() {
@@ -66,7 +76,10 @@ function bread_crumb_logo_click() {
     $("#breadcrumbs_div_1").html("TopoHawk");
     $("#breadcrumbs_div_2").html("");
     $("#screen_info_title").html("");
+    $("#screen_info_inner").html(welcome_html);
+    
     button1_click();
+    create_destination_list();
 }
 
 function button1_click() {
@@ -201,12 +214,17 @@ function change_route(route_id) {
 }
 
 function click_stream_item(route_id, area_id, destination_id) {
-    if (route_id > 0) {
-        
-    } else if (area_id > 0) {
+    /* Update last stream clicks */
+    stream_last.destination_id = destination_id;
+    stream_last.area_id        = area_id;
+    stream_last.route_id       = route_id;
     
-    } else if (destination_id > 0) {
-    
+    /* Get destination data, if new destination */
+    if (map.selected_destination.destination_id != destination_id) {
+        map.set_destination(destination_id);
+        stream_update = true;
+    } else {
+        proccess_stream_change(stream_last);
     }
 }
 
@@ -407,15 +425,20 @@ function create_route_list(area_id) {
 }
 
 function destination_info_loaded() {
-    var route_count    = 0;
-
     $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
     $("#breadcrumbs_div_2").html("");
     $("#screen_info_inner").html(map.selected_destination.description);
     $("#screen_info_title").html(map.selected_destination.destination_name);
     $("#destination_search_filter").val("");
     
+    photo_topo.set_destination(map.selected_destination);
     create_area_list();
+    
+    if (stream_update === true) {
+        /* Stream Item was clicked and we needed to wait for the destination info to be loaded */
+        stream_update = false;
+        proccess_stream_change(stream_last);
+    }
 }
 
 function filter_list() {
@@ -552,6 +575,16 @@ function photo_show_previous() {
     }
     
     change_photo_topo_photo(photo_ids[photo_index]);
+}
+
+function proccess_stream_change(stream_last_obj) {
+    /* Finishes the stream click action after the new destination has been loaded */
+    if (stream_last_obj.route_id > 0) {
+        change_area(stream_last_obj.area_id);
+        change_route(stream_last_obj.route_id);
+    } else if (stream_last_obj.area_id > 0) {
+        change_area(stream_last_obj.area_id);
+    }
 }
 
 function resize_window() {

@@ -160,7 +160,7 @@
         set_area: function (area_id) {
             for (var i=0; i<this.areas.features.length; i++) {
                 if (this.areas.features[i].properties.area_id == area_id) {
-                    set_area_object(this.areas.features[i], true);
+                    this.set_area_object(this.areas.features[i], true);
                     break;
                 }
             }
