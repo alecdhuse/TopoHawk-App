@@ -14,6 +14,11 @@
         <link rel="icon" sizes="192x192" href="images/touch-icon-192x192.png">
             
         <title>TopoHawk</title>
+        
+        <meta property='og:image' content='images/logo.png' />
+        <meta property='og:url'   content='//m.topohawk.com/' />
+        <meta property='og:title' content='TopoHawk Mobile' />
+        <meta property='og:description' content='Rock climbing topo maps and more.' />
     </head>
     
     <body>
@@ -72,19 +77,30 @@
             </div>
             
             <div id="screen_edit" class="screen">
-                <div class="screen_inner"></div>
+                <div class="screen_inner">
+                    <p>The editing feature is still under development.</p>
+                    <p>We hope to have it finished soon.</p>
+                </div>
             </div>
             
             <div id="screen_info" class="screen">
                 <div id="screen_info_title"></div>
                 <div class="screen_inner" id="screen_info_inner">
-                    Welcome
+                    <div style="margin-left:auto;margin-right:auto;">
+                        <img src="images/logo-black.svg" />
+                        <p stlye="text-align:center;">Welcome</p>
+                    </div>
                 </div>
             </div>
             
             <div id="screen_map" class="screen"></div>
             
-            <div id="screen_offline_content" class="screen"></div>
+            <div id="screen_offline_content" class="screen">
+                <div class="screen_inner" id="screen_info_inner">
+                    <p>The offline content feature is still under development.</p>
+                    <p>We hope to have it finished soon.</p>
+                </div>
+            </div>
             
             <div id="screen_photo" class="screen">
                 <canvas id='photo_topo_canvas'></canvas>
@@ -103,8 +119,9 @@
             </div>
             
             <div id="screen_settings" class="screen">
-                <input type="checkbox" name="settings_high_res_photos" value="settings_high_res_photos"> Use High Resolution Photos<br>
-
+                <div class="screen_inner">
+                    <input type="checkbox" name="settings_high_res_photos" value="settings_high_res_photos"> Use High Resolution Photos<br>
+                </div>
             </div>
             
             <div id="screen_stream" class="screen">
