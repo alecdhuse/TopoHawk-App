@@ -376,6 +376,7 @@ function create_photo_canvas(photos) {
         
         photo_bullets_update();
         photo_topo.init('photo_topo_canvas', photos[0]);
+        photo_topo.show_small_photos = true;
         photo_topo.resize([$("#photo_topo_canvas").height(), $("#photo_topo_canvas").width()]);
     } else {
         /* No Photo */

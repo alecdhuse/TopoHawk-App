@@ -37,7 +37,8 @@ function PT(canvas_id) {
     this.route_markers_outer = [];
     this.route_marker_points = [];
     this.route_marker_text   = [];
-
+    this.show_small_photos   = false;
+    
     this.type_colors = {
         'Aid':      "#d3d3d3",
         'Alpine':   "#ffffff",
@@ -239,7 +240,13 @@ PT.prototype._load_photo = function(result) {
     var pt_obj = this;
     
     paper = pt_obj.paper_scope;
-    this.photo_url = "https://topohawk.com/images/routes/" + result.photo_file;
+    
+    if (this.show_small_photos == false) {
+        this.photo_url = "https://topohawk.com/images/routes/" + result.photo_file;
+    } else {
+        this.photo_url = "https://topohawk.com/images/routes/t" + result.photo_file;
+    }
+    
     this.photo_raster = new Raster(this.photo_url);
     
     this.photo_raster.onLoad = function () {
