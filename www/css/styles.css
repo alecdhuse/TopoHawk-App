@@ -72,6 +72,19 @@ body {
     width: 100%;
 }
 
+.comments {
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.comments_header {
+    font-weight: bold;
+}
+
+.comment_meta_info {
+    font-style: italic;
+}
+
 .destination_list_element {
     margin-top: 5px;
 }

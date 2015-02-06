@@ -221,7 +221,8 @@ function change_photo_topo_photo(photo_id) {
 }
 
 function change_route(route_id) {
-    var tilte_html = "";
+    var title_html = "";
+    var inner_html = "";
     
     current_mode = MODE_ROUTE;
     map.set_route(route_id);
@@ -233,23 +234,52 @@ function change_route(route_id) {
     /* Get rating in prefered scale */
     var route_grade = TH.util.grades.convert_common_to(map.get_grade_systems()[map.selected_route.properties.route_type], map.selected_route.properties.route_grade);
     
-    tilte_html += "<span>" + map.selected_route.properties.name + "</span><br/>";
-    tilte_html += "<span id='screen_info_title_second_line'>";
-    tilte_html += "<span>" + route_grade + "</span> ";
-    tilte_html += "<span>" + map.selected_route.properties.route_type + "</span> ";
+    title_html += "<span>" + map.selected_route.properties.name + "</span><br/>";
+    title_html += "<span id='screen_info_title_second_line'>";
+    title_html += "<span>" + route_grade + "</span> ";
+    title_html += "<span>" + map.selected_route.properties.route_type + "</span> ";
     
     if (map.selected_route.properties.pitches > 1) {
-        tilte_html += "<span>Multipitch</span>";
+        title_html += "<span>Multipitch</span>";
     }
     
-    tilte_html += "</span><br/>"
-    tilte_html += "<span>" + TH.util.get_star_html(map.selected_route.properties.rating, true).substr(5) + "</span>";
+    title_html += "</span><br/>"
+    title_html += "<span>" + TH.util.get_star_html(map.selected_route.properties.rating, true).substr(5) + "</span>";
     
-    $("#screen_info_title").html(tilte_html);
-    $("#screen_info_inner").html(map.selected_route.properties.description);
+    $("#screen_info_title").html(title_html);
     
-    /* TODO: Change info screen to have comments */
+    /* Add route rescription */
+    inner_html += "<div id='route_description'>" + map.selected_route.properties.description + "</div><br />";
     
+    /* Add route comments */
+    inner_html += "<div class='comments_header'>";
+    
+    if (map.selected_route.route_comments.length > 0) {
+        inner_html += map.selected_route.route_comments.length;
+
+        if (map.selected_route.route_comments.length == 1) {
+            inner_html += " Comment</div>";
+        } else {
+            inner_html += " Comments</div>";
+        }
+        
+        inner_html += "<div class='comments'>";
+        
+        for (var i=0; i<map.selected_route.route_comments.length; i++) {
+            inner_html += map.selected_route.route_comments[i].comment;
+            inner_html += "<div class='comment_meta_info'>";
+            inner_html += map.selected_route.route_comments[i].user_name + " on ";
+            inner_html += map.selected_route.route_comments[i].comment_date;
+            inner_html += "</div>";
+        }
+        
+        inner_html += "</div>";
+    } else {
+        inner_html += "No Comments</div>";
+    }
+    
+    /* Set inner screen html */
+    $("#screen_info_inner").html(inner_html);
     
     /* Change screen to info view */
     button1_click();
