@@ -16,6 +16,8 @@
         TopoHawk Team
     </author>
 
+    <content src="www/index.html" />
+
     <preference name="orientation"                value="portrait" />
     <preference name="target-device"              value="universal" />
     <preference name="fullscreen"                 value="true" />

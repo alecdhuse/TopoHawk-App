@@ -582,17 +582,35 @@ function get_user_info() {
 }
 
 function photo_bullets_update() {
-    if (photo_index === 0) {
-        photo_bullets = "<span id='photo_bullet_selected'>•</span>";
-    } else {
-        photo_bullets = "•";
-    }
+    var bullet_div_width = $(window).width() - 58;
+    var max_bullets      = bullet_div_width / 24;
+    var hidden_bullets   = photo_ids.length - max_bullets;
+    var left_ellipsis    = false;
+    var photo_bullets    = "";
     
-    for (var i=1; i<photo_ids.length; i++) {
-        if (photo_index == i) {
-            photo_bullets += " <span id='photo_bullet_selected'>•</span>";
+    for (var i=0; i<photo_ids.length; i++) {
+        if (i < max_bullets && photo_index < max_bullets) {
+            if (photo_index == i) {
+                photo_bullets += " <span id='photo_bullet_selected'>•</span>";
+            } else {
+                photo_bullets += " •";
+            }
         } else {
-            photo_bullets += " •";
+            if (photo_index >= max_bullets) {
+                if (i < hidden_bullets && left_ellipsis == false) {
+                    photo_bullets += " …";
+                    left_ellipsis  = true;
+                } else if (i > hidden_bullets) {
+                    if (photo_index == i) {
+                        photo_bullets += " <span id='photo_bullet_selected'>•</span>";
+                    } else {
+                        photo_bullets += " •";
+                    }
+                }
+            } else {
+                photo_bullets += " …";
+                break;
+            }
         }
     }
     
