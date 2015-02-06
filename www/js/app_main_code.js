@@ -598,7 +598,7 @@ function photo_bullets_update() {
         } else {
             if (photo_index >= max_bullets) {
                 if (i < hidden_bullets && left_ellipsis == false) {
-                    photo_bullets += " …";
+                    photo_bullets += " ⋯";
                     left_ellipsis  = true;
                 } else if (i > hidden_bullets) {
                     if (photo_index == i) {
@@ -608,7 +608,7 @@ function photo_bullets_update() {
                     }
                 }
             } else {
-                photo_bullets += " …";
+                photo_bullets += " ⋯";
                 break;
             }
         }
