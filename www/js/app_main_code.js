@@ -270,7 +270,7 @@ function change_route(route_id) {
             inner_html += "<div class='comment_meta_info'>";
             inner_html += map.selected_route.route_comments[i].user_name + " on ";
             inner_html += map.selected_route.route_comments[i].comment_date;
-            inner_html += "</div>";
+            inner_html += "</div><br />";
         }
         
         inner_html += "</div>";
@@ -512,6 +512,10 @@ function destination_info_loaded() {
         stream_update = false;
         proccess_stream_change(stream_last);
     }
+}
+
+function do_search() {
+
 }
 
 function filter_list() {
