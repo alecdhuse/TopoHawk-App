@@ -222,7 +222,7 @@ body {
 #top_bar_div {
     background-color: rgb(0,0,0);
     height: 30px;
-    position: absolute;
+    position: fixed;
     top: 0px;
     width: 100%;
 }
