@@ -511,6 +511,10 @@
                                     
                                     map_obj.show_area_popup(feature);
                                 });
+                            } else {
+                                newCircle.on("click", function () {
+                                    map_obj.on_area_click(feature);
+                                });
                             }
                             
                             return newCircle;
@@ -808,6 +812,10 @@
                                 if (map_obj._options.mobile === false) {
                                     new_marker.on("click", function () {
                                         map_obj.show_route_popup(feature);
+                                    });
+                                } else {
+                                    new_marker.on("click", function () {
+                                        map_obj.on_route_click(feature);
                                     });
                                 }
                                   
