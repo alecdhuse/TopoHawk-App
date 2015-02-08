@@ -937,7 +937,7 @@
             var map_obj = this;
             
             this._sat_tiles = L.tileLayer(
-                '//{s}.tiles.mapbox.com/v3/scarletshark.h68kpm4j/{z}/{x}/{y}.png', {
+                'http://{s}.tiles.mapbox.com/v3/scarletshark.h68kpm4j/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="http://www.mapbox.com/about/maps/" target="_blank">Mapbox</a>',
                     maxZoom: 19
                 }
