@@ -37,6 +37,7 @@ function PT(canvas_id) {
     this.route_markers_outer = [];
     this.route_marker_points = [];
     this.route_marker_text   = [];
+    this.selected_route_id   = 0;
     this.show_small_photos   = false;
     
     this.type_colors = {
@@ -330,7 +331,11 @@ PT.prototype.draw_path = function(path, route_object, left_margin, top_margin, p
         strokeWidth:    4
     });
     
-    new_path.strokeColor = this.path_color;
+    if (this.selected_route_id == route_object.properties.route_id) {
+        new_path.strokeColor = this.path_color_selected;
+    } else {
+        new_path.strokeColor = this.path_color;
+    }
     
     for (var i=0; i < path.points.length; i++) {
         x = parseFloat(path.points[i][0]) * width_diff;
@@ -432,7 +437,10 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     marker_point_text.onMouseLeave = function(event) {
         /* Hide Route Info Popoup */
         $("#route_popup").css('visibility', 'hidden');
-        path.strokeColor = photo_topo_obj.path_color;
+        
+        if (photo_topo_obj.selected_route_id != route.properties.route_id) {
+            path.strokeColor = photo_topo_obj.path_color;
+        }
     };
 };
 

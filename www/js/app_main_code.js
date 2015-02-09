@@ -205,6 +205,9 @@ function change_area(area_id) {
     $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
     $("#screen_info_title").html(map.selected_area.properties.name);
     $("#screen_info_inner").html(map.selected_area.properties.description);
+    
+    /* Remove selected route on Photo_Topo */
+    photo_topo.selected_route_id = 0;
 }
 
 function change_destination(destination_id) {
@@ -213,6 +216,9 @@ function change_destination(destination_id) {
     
     current_mode = MODE_DESTINATION;
     map.set_destination(destination_id);
+    
+    /* Remove selected route on Photo_Topo */
+    photo_topo.selected_route_id = 0;
 }
 
 function change_photo_topo_photo(photo_id) {
@@ -226,6 +232,9 @@ function change_route(route_id, screen_switch) {
     
     current_mode = MODE_ROUTE;
     map.set_route(route_id);
+    
+    /* Update selected route on Photo_Topo */
+    photo_topo.selected_route_id = route_id;
     
     /* Center map on route latlng */
     var route_latlng = L.latLng(map.selected_route.geometry.coordinates[1], map.selected_route.geometry.coordinates[0]);
