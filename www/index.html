@@ -113,6 +113,11 @@
             </div>
             
             <div id="screen_search" class="screen">
+                <div class="loading_full_screen" id="search_loading_screen" style="visibility:hidden">
+                    <div class="loading_screen_center">
+                        <img src="images/ui-anim_basic_96x96.gif" class="loading_screen_spinner" />
+                    </div>
+                </div>
                 <div class="search_box_div">
                     <input class="search_text" type="text" name="search_box" id="search_box"/>
                     <img id="search_image" src="images/search.svg" onclick="do_search()" style='float:right;margin-top: 5px;'/>

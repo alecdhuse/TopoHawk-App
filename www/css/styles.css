@@ -108,6 +108,26 @@ body {
     font-size: 10px;
 }
 
+.loading_full_screen {
+    background-color: rgba(24,24,24,0.4);
+    position: fixed;
+    height: 100%;
+    top: 0px;
+    width: 100%;
+}
+
+.loading_screen_center {
+    background-color: white;
+    border-radius: 25px;
+    height: 150px;
+    width: 150px;
+}
+
+.loading_screen_spinner {
+    margin-left: 27px;
+    margin-top: 27px;
+}
+
 #logo_image {
     float: left;
     margin-right: 8px;

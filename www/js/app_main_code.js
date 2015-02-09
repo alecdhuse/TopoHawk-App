@@ -212,6 +212,9 @@ function change(destination_id, area_id, route_id, change_screen) {
     
     destination_callback = true;
     change_destination(destination_id);
+    
+    /* Show loading screen */
+    $("#search_loading_screen").css('visibility','visible');
 }
 
 function change_area(area_id) {
@@ -533,7 +536,7 @@ function create_route_list(area_id) {
 
 function create_search_result_html(search_results) {
     var seach_results_html = "";
-    // change(destination_id, area_id, route_id, change_screen)
+    
     for (var i=0; i<search_results.length; i++) {
         if (search_results[i].type == "destination") {
             seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].id + ",0,0,true)'>";
@@ -782,6 +785,9 @@ function proccess_destination_callback(destination_callback_change_obj) {
             button1_click();
         }
     }
+    
+    /* Hide any loading screens */
+    $("#search_loading_screen").css('visibility','hidden');
 }
 
 function resize_window() {
@@ -793,6 +799,11 @@ function resize_window() {
     
     $("#search_box").css({"width": search_box_width});
     map.invalidate_size();
+    
+    var load_center_top  = ($(window).height() / 2.0) - 75;
+    var load_center_left = ($(window).width() / 2.0) - 75;
+    $(".loading_screen_center").css({"margin-top": load_center_top});
+    $(".loading_screen_center").css({"margin-left": load_center_left});
 }
 
 function show_photo_stream() {
