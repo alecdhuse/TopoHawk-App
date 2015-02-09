@@ -3,20 +3,21 @@ var MODE_DESTINATION = 1;
 var MODE_AREA        = 2;
 var MODE_ROUTE       = 3;
 
-var current_mode  = MODE_NONE;
-var map_finished  = false;
-var photo_ids     = [];
-var photo_index   = 0;
-var photo_topo    = new PT();
-var photos_loaded = false;
-var stream_offset = 0;
-var stream_scroll = false;
-var stream_update = false;
-var swipe_binded  = false;
-var user_id       = -1;
-var welcome_html  = "";
+var current_mode         = MODE_NONE;
+var destination_callback = false;
+var map_finished         = false;
+var photo_ids            = [];
+var photo_index          = 0;
+var photo_topo           = new PT();
+var photos_loaded        = false;
+var stream_offset        = 0;
+var stream_scroll        = false;
+var swipe_binded         = false;
+var user_id              = -1;
+var welcome_html         = "";
 
-var stream_last   = {
+var destination_callback_change   = {
+    change_screen:  false,
     destination_id: 0,
     area_id:        0,
     route_id:       0
@@ -197,6 +198,22 @@ function buttons_reset() {
      $("#screen_ticks").css('visibility','hidden');
 }
 
+/* Proccesses a change in destination, area, or route
+    destination_id - Int: The ID to change the destination to, required if changing area or route.
+    area_id        - Int: The ID to change the area to, or < 1 if no area change is wanted.
+    route_id       - Int: The ID to change the route to, or < 1 id no route change is wanted.
+    change_screen  - Boolean: Automaticaly change to info sceen or not.
+*/
+function change(destination_id, area_id, route_id, change_screen) {
+    destination_callback_change.change_screen  = change_screen;
+    destination_callback_change.destination_id = destination_id;
+    destination_callback_change.area_id        = area_id;
+    destination_callback_change.route_id       = route_id;
+    
+    destination_callback = true;
+    change_destination(destination_id);
+}
+
 function change_area(area_id) {
     $("#destination_search_filter").val("");
     
@@ -303,16 +320,17 @@ function change_route(route_id, screen_switch) {
 
 function click_stream_item(route_id, area_id, destination_id) {
     /* Update last stream clicks */
-    stream_last.destination_id = destination_id;
-    stream_last.area_id        = area_id;
-    stream_last.route_id       = route_id;
+    destination_callback_change.change_screen  = true;
+    destination_callback_change.destination_id = destination_id;
+    destination_callback_change.area_id        = area_id;
+    destination_callback_change.route_id       = route_id;
     
     /* Get destination data, if new destination */
     if (map.selected_destination.destination_id != destination_id) {
         map.set_destination(destination_id);
-        stream_update = true;
+        destination_callback = true;
     } else {
-        proccess_stream_change(stream_last);
+        proccess_destination_callback(destination_callback_change);
     }
 }
 
@@ -515,9 +533,17 @@ function create_route_list(area_id) {
 
 function create_search_result_html(search_results) {
     var seach_results_html = "";
-    
+    // change(destination_id, area_id, route_id, change_screen)
     for (var i=0; i<search_results.length; i++) {
-        seach_results_html += "<div class='seach_result_div'>";
+        if (search_results[i].type == "destination") {
+            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].id + ",0,0,true)'>";
+        } else if (search_results[i].type == "area") {
+            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + "," + search_results[i].id + ",0,true)'>";
+        } else if (search_results[i].type == "route") {
+            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + ",0," + search_results[i].id + ",true)'>";
+        } else {
+            seach_results_html += "<div class='seach_result_div'>";
+        }
         
         seach_results_html += "<div class='destination_list_name'>" + search_results[i].title + "</div>";
         seach_results_html += "<div class='destination_list_location'>" + search_results[i].location + "</div>";
@@ -541,10 +567,10 @@ function destination_info_loaded() {
     photo_topo.set_destination(map.selected_destination);
     create_area_list();
     
-    if (stream_update === true) {
+    if (destination_callback === true) {
         /* Stream Item was clicked and we needed to wait for the destination info to be loaded */
-        stream_update = false;
-        proccess_stream_change(stream_last);
+        destination_callback = false;
+        proccess_destination_callback(destination_callback_change);
     }
 }
 
@@ -740,17 +766,28 @@ function photo_show_previous() {
     change_photo_topo_photo(photo_ids[photo_index]);
 }
 
-function proccess_stream_change(stream_last_obj) {
-    /* Finishes the stream click action after the new destination has been loaded */
-    if (stream_last_obj.route_id > 0) {
-        change_area(stream_last_obj.area_id);
-        change_route(stream_last_obj.route_id, true);
-    } else if (stream_last_obj.area_id > 0) {
-        change_area(stream_last_obj.area_id);
+function proccess_destination_callback(destination_callback_change_obj) {
+    /* Finishes the destination callback action after the new destination has been loaded */
+    if (destination_callback_change_obj.route_id > 0) {
+        change_area(destination_callback_change_obj.area_id);
+        change_route(destination_callback_change_obj.route_id, destination_callback_change_obj.change_screen);
+    } else if (destination_callback_change_obj.area_id > 0) {
+        change_area(destination_callback_change_obj.area_id);
+        
+        if (destination_callback_change_obj.change_screen === true) {
+            button1_click();
+        }
+    } else if (destination_callback_change_obj.destination_id > 0) {
+        if (destination_callback_change_obj.change_screen === true) {
+            button1_click();
+        }
     }
 }
 
 function resize_window() {
+    var max_crumb_width = ($(window).width() - 45)
+    $("#breadcrumbs_div").css({"max-width": max_crumb_width});
+
     $("#screen_map").height($(window).height()-80).width($(window).width());
     var search_box_width = ($(window).width() - 48);
     
