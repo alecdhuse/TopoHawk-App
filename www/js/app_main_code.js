@@ -220,7 +220,7 @@ function change_photo_topo_photo(photo_id) {
     photo_bullets_update();
 }
 
-function change_route(route_id) {
+function change_route(route_id, screen_switch) {
     var title_html = "";
     var inner_html = "";
     
@@ -282,7 +282,9 @@ function change_route(route_id) {
     $("#screen_info_inner").html(inner_html);
     
     /* Change screen to info view */
-    button1_click();
+    if (screen_switch === true) {
+        button1_click();
+    }
 }
 
 function click_stream_item(route_id, area_id, destination_id) {
@@ -468,7 +470,7 @@ function create_route_list(area_id) {
             if (current_route.properties.area_id == area_id) {
                 route_grade = TH.util.grades.convert_common_to(grade_system[current_route.properties.route_type], current_route.properties.route_grade);
                 
-                route_list_html += "<div class='destination_list_element' onclick='change_route(" + current_route.properties.route_id + ")'>";
+                route_list_html += "<div class='destination_list_element' onclick='change_route(" + current_route.properties.route_id + ", true)'>";
                 route_list_html += "<div class='destination_list_name'>" + current_route.properties.name + " ";
                 route_list_html += "<span>" + TH.util.get_star_html(current_route.properties.rating, true).substr(5) + "</span>";
                 route_list_html += "</div>";
@@ -623,7 +625,7 @@ function map_area_clicked(area_obj) {
 }
 
 function map_route_clicked(route_obj) {
-    change_route(route_obj.properties.route_id);
+    change_route(route_obj.properties.route_id, false);
 }
 
 function photo_bullets_update() {
@@ -686,7 +688,7 @@ function proccess_stream_change(stream_last_obj) {
     /* Finishes the stream click action after the new destination has been loaded */
     if (stream_last_obj.route_id > 0) {
         change_area(stream_last_obj.area_id);
-        change_route(stream_last_obj.route_id);
+        change_route(stream_last_obj.route_id, true);
     } else if (stream_last_obj.area_id > 0) {
         change_area(stream_last_obj.area_id);
     }

@@ -141,6 +141,7 @@ body {
 }
 
 #photo_bullets {
+    color: #636363;
     font-size: 20px;
     height: 30px;
     text-align: center;
@@ -197,7 +198,7 @@ body {
 }
 
 #screen_photo {
-    background: #444;
+    background: #242424;
     overflow-x: hidden;
     overflow-y: hidden;
 }
