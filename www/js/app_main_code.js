@@ -8,6 +8,7 @@ var map_finished  = false;
 var photo_ids     = [];
 var photo_index   = 0;
 var photo_topo    = new PT();
+var photos_loaded = false;
 var stream_offset = 0;
 var stream_scroll = false;
 var stream_update = false;
@@ -72,6 +73,7 @@ function bread_crumb_logo_click() {
     map.selected_destination = {};
     map.selected_route       = {};
     current_mode             = MODE_NONE;
+    photos_loaded            = false;
     
     $("#breadcrumbs_div_1").html("TopoHawk");
     $("#breadcrumbs_div_2").html("");
@@ -208,6 +210,7 @@ function change_area(area_id) {
     
     /* Remove selected route on Photo_Topo */
     photo_topo.selected_route_id = 0;
+    photos_loaded = false;
 }
 
 function change_destination(destination_id) {
@@ -219,6 +222,7 @@ function change_destination(destination_id) {
     
     /* Remove selected route on Photo_Topo */
     photo_topo.selected_route_id = 0;
+    photos_loaded = false;
 }
 
 function change_photo_topo_photo(photo_id) {
@@ -235,6 +239,7 @@ function change_route(route_id, screen_switch) {
     
     /* Update selected route on Photo_Topo */
     photo_topo.selected_route_id = route_id;
+    photos_loaded = false;
     
     /* Center map on route latlng */
     var route_latlng = L.latLng(map.selected_route.geometry.coordinates[1], map.selected_route.geometry.coordinates[0]);
@@ -599,7 +604,7 @@ function get_photo_ids() {
         make_request = false;
     }
 
-    if (make_request == true) {
+    if (make_request === true && photos_loaded === false) {
         $.ajax({
            type:     'POST',
            url:      'https://topohawk.com/api/v1/get_photos.php',
@@ -607,6 +612,7 @@ function get_photo_ids() {
            data:     data,
            success:  function(response) {
                 if (response.result_code > 0) {
+                    photos_loaded = true;
                     create_photo_canvas(response.photo_ids);
                 } else {
                     console.log("Error " + response.result);
@@ -617,7 +623,9 @@ function get_photo_ids() {
            }
         });
     } else {
-        console.log("Function get_photo_ids has incorrect parameters.");
+        if (photos_loaded === false) {
+            console.log("Function get_photo_ids has incorrect parameters.");
+        }
     }
 }
 
