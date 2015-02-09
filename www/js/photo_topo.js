@@ -268,10 +268,8 @@ PT.prototype.change_photo = function(photo_id) {
             paper.view.center = this._canvas_center_1st;
         }
         
-        //this._destination_loaded = false;
         this._paths_drawn        = false;
         this._photo_loaded       = false;
-        //this.destination         = null;
         this.last_segment_index  = 0;
         this.line_started        = false;
         this.new_path_points     = []
@@ -354,27 +352,42 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     paper = this.paper_scope;
     
     var photo_topo_obj = this;
+    var marker_x = first_point.x;
     var marker_y = first_point.y;
     var y_adjust = 20;
     
+    /* Check to see if marker wil lbe off the screen, and adjust if nessessary */
     if (first_point.y > ($('#' + this._canvas_id).height() - 20)) {
         y_adjust = 5;
     }
     
     marker_y = first_point.y + y_adjust;
     
+    /* Make sure route markers do not overlap */
+    for (var i=0; i<this.route_marker_points.length; i++) {
+        if ((marker_x - 11) < this.route_marker_points[i][0] && (marker_x + 11) > this.route_marker_points[i][0]) {
+            /* X Overlap */
+            if (marker_x < this.route_marker_points[i][0]) {
+                marker_x -= (this.route_marker_points[i][0] - marker_x) + 6;
+            } else {
+                marker_x += (marker_x - this.route_marker_points[i][0]) + 6;
+            }
+        }
+    }
+    
     /* Create Route Markers */
-    var route_label_outer = new Path.Circle(new Point(first_point.x, marker_y), 11);
+    var route_label_outer = new Path.Circle(new Point(marker_x, marker_y), 11);
     route_label_outer.fillColor = 'black';
     
-    var route_label = new Path.Circle(new Point(first_point.x, marker_y), 10);
+    var route_label = new Path.Circle(new Point(marker_x, marker_y), 10);
     route_label.fillColor = this.type_colors[route.properties.route_type];
 
     this.route_markers.push(route_label);
-    this.route_marker_points.push([first_point.x, marker_y]);
+    this.route_marker_points.push([marker_x, marker_y]);
     this.route_markers_outer.push(route_label_outer);
     
     if (route.properties.display_order > 0) {
+        /* The route desplay order is setm so display its numberical order */
         var marker_text = route.properties.display_order;
         var font_size   = 14;
         var y_offset    = 25;
@@ -401,7 +414,7 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     }
     
     var marker_point_text = new PointText({
-        point: [first_point.x - text_position_offset, first_point.y + y_offset],
+        point: [marker_x - text_position_offset, first_point.y + y_offset],
         content: marker_text,
         fillColor: 'white',
         fontFamily: 'Courier New',
