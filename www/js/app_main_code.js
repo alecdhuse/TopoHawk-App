@@ -579,6 +579,8 @@ function destination_info_loaded() {
 
 function do_search() {
     var search_query = $("#search_box").val();
+    var loading_html = "<div style='margin-top:5px;text-align:center;'>Searching <img src='images/ui-anim_basic_16x16.gif'></div>"
+    $("#search_results").html(loading_html);
     
     var search_data = {
         query:  search_query,
@@ -599,7 +601,7 @@ function do_search() {
             }
        },
        error: function (req, status, error) {
-           console.log("Error performing seach: " + error);
+           $("#search_results").html("Error performing seach: " + error));
        }
     });
 }
