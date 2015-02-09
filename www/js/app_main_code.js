@@ -513,6 +513,22 @@ function create_route_list(area_id) {
     }
 }
 
+function create_search_result_html(search_results) {
+    var seach_results_html = "";
+    
+    for (var i=0; i<search_results.length; i++) {
+        seach_results_html += "<div class='seach_result_div'>";
+        
+        seach_results_html += "<div class='destination_list_name'>" + search_results[i].title + "</div>";
+        seach_results_html += "<div class='destination_list_location'>" + search_results[i].location + "</div>";
+        
+        seach_results_html += "";
+        seach_results_html += "</div>";
+    }
+    
+    $("#search_results").html(seach_results_html);
+}
+
 function destination_info_loaded() {
     current_mode = MODE_DESTINATION;
     
@@ -533,7 +549,30 @@ function destination_info_loaded() {
 }
 
 function do_search() {
-
+    var search_query = $("#search_box").val();
+    
+    var search_data = {
+        query:  search_query,
+        offset: 0,
+        limit:  20
+    };
+    
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1/search.php',
+       dataType: 'json',
+       data:     search_data,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                create_search_result_html(response.search_results);
+            } else {
+                console.log("Error " + response.result);
+            }
+       },
+       error: function (req, status, error) {
+           console.log("Error performing seach: " + error);
+       }
+    });
 }
 
 function filter_list() {
@@ -781,6 +820,12 @@ document.onreadystatechange = function(e) {
                 }
             }
          }
+    });
+    
+    $("#search_box").keypress(function(e) {
+        if(e.which == 13) {
+            do_search();
+        }
     });
 };
 
