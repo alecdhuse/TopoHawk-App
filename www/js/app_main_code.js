@@ -821,6 +821,7 @@ function settings_load() {
 
 function settings_update_photo_res() {
     photo_topo.show_small_photos = $("#settings_high_res_photos").is(":checked");
+    photos_loaded = false;
 }
 
 function show_photo_stream() {
