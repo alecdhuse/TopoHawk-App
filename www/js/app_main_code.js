@@ -601,7 +601,7 @@ function do_search() {
             }
        },
        error: function (req, status, error) {
-           $("#search_results").html("Error performing seach: " + error));
+           $("#search_results").html("Error performing seach: " + error);
        }
     });
 }
@@ -806,6 +806,10 @@ function resize_window() {
     var load_center_left = ($(window).width() / 2.0) - 75;
     $(".loading_screen_center").css({"margin-top": load_center_top});
     $(".loading_screen_center").css({"margin-left": load_center_left});
+}
+
+function settings_update_photo_res() {
+    photo_topo.show_small_photos = $("#settings_high_res_photos").attr('checked');
 }
 
 function show_photo_stream() {
