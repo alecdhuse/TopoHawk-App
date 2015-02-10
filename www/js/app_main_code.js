@@ -9,6 +9,7 @@ var map_finished         = false;
 var photo_ids            = [];
 var photo_index          = 0;
 var photo_topo           = new PT();
+var photo_topo_init      = false;
 var photos_loaded        = false;
 var stream_offset        = 0;
 var stream_scroll        = false;
@@ -210,6 +211,7 @@ function change(destination_id, area_id, route_id, change_screen) {
     destination_callback_change.area_id        = area_id;
     destination_callback_change.route_id       = route_id;
     
+    photos_loaded = false;
     destination_callback = true;
     change_destination(destination_id);
     
@@ -254,12 +256,12 @@ function change_route(route_id, screen_switch) {
     var title_html = "";
     var inner_html = "";
     
-    current_mode = MODE_ROUTE;
+    current_mode  = MODE_ROUTE;
+    photos_loaded = false;
     map.set_route(route_id);
     
     /* Update selected route on Photo_Topo */
     photo_topo.selected_route_id = route_id;
-    photos_loaded = false;
     
     /* Center map on route latlng */
     var route_latlng = L.latLng(map.selected_route.geometry.coordinates[1], map.selected_route.geometry.coordinates[0]);
@@ -435,16 +437,20 @@ function create_photo_canvas(photos) {
     photo_ids   = photos;
     
     if (photos.length > 0) {
-        var max_height = $(window).height() - 120;
-        var max_width  = $(window).width();
-    
-        $("#photo_topo_canvas").css({"height": max_height});
-        $("#photo_topo_canvas").css({"width": max_width});
-        
-        photo_bullets_update();
-        photo_topo.init('photo_topo_canvas', photos[0]);
-        photo_topo.show_small_photos = true;
-        photo_topo.resize([$("#photo_topo_canvas").height(), $("#photo_topo_canvas").width()]);
+        if (photo_topo_init === false) {
+            var max_height = $(window).height() - 120;
+            var max_width  = $(window).width();
+
+            $("#photo_topo_canvas").css({"height": max_height});
+            $("#photo_topo_canvas").css({"width": max_width});
+            
+            photo_topo.init('photo_topo_canvas', photos[0]);
+            photo_topo.resize([$("#photo_topo_canvas").height(), $("#photo_topo_canvas").width()]);
+            photo_topo_init = true;
+            photo_bullets_update();
+        } else {
+            change_photo_topo_photo(photos[0]);
+        }
     } else {
         /* No Photo */
         var t=0;
@@ -808,8 +814,13 @@ function resize_window() {
     $(".loading_screen_center").css({"margin-left": load_center_left});
 }
 
+function settings_load() {
+    /* TODO: Actualy load the settings */
+    photo_topo.show_small_photos = true;
+}
+
 function settings_update_photo_res() {
-    photo_topo.show_small_photos = $("#settings_high_res_photos").attr('checked');
+    photo_topo.show_small_photos = $("#settings_high_res_photos").is(":checked");
 }
 
 function show_photo_stream() {
@@ -856,6 +867,7 @@ document.onreadystatechange = function(e) {
     get_user_info();
     button1_click();
     resize_window();
+    settings_load();
     
     $("#stream_inner").scroll(function() {
          if ($("#stream_inner").is(":visible")) {
