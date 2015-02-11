@@ -317,6 +317,9 @@ function change_route(route_id, screen_switch) {
     /* Set inner screen html */
     $("#screen_info_inner").html(inner_html);
     
+    /* Refresh Map */
+    map.redraw_map();
+    
     /* Change screen to info view */
     if (screen_switch === true) {
         button1_click();
@@ -691,6 +694,7 @@ function get_photo_ids() {
                     photos_loaded = true;
                     create_photo_canvas(response.photo_ids);
                 } else {
+                    create_photo_canvas([0]);
                     console.log("Error " + response.result);
                 }
            },
