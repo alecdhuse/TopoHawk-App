@@ -568,11 +568,39 @@ function create_search_result_html(search_results) {
 }
 
 function destination_info_loaded() {
+    var current_amenity;
+    var camping   = [];
+    var info_html = "";
+    var lodging   = [];
+    
     current_mode = MODE_DESTINATION;
+    info_html += "<div>" + map.selected_destination.description + "</div>";
+    
+    for (var i=0; i<map.selected_destination.amenities.features.length; i++) {
+        current_amenity = map.selected_destination.amenities.features[i];
+        
+        if (current_amenity.properties.amenity_type == "Camping") {
+            camping.push(current_amenity);
+        } else if (current_amenity.properties.amenity_type == "Lodging") {
+            lodging.push(current_amenity);
+        }
+    }
+    
+    if (camping.length > 0) {
+        info_html += "<br /><div>";
+        info_html += "<div style='font-weight:bold;margin-bottom:5px;'><img src='images/campsite-12.svg' align='top' height='20; width='20'> Camping:</div>";
+        
+        for (var i=0; i<camping.length; i++) {
+            info_html += "<div style='margin-left:12px;'><div class='amenity_name'>" + camping[i].properties.name + "</div>";
+            info_html += "<div class='amenity_description'>" + camping[i].properties.description + "</div></div><br />";
+        }
+        
+        info_html += "<div>";
+    }
     
     $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
     $("#breadcrumbs_div_2").html("");
-    $("#screen_info_inner").html(map.selected_destination.description);
+    $("#screen_info_inner").html(info_html);
     $("#screen_info_title").html(map.selected_destination.destination_name);
     $("#destination_search_filter").val("");
     

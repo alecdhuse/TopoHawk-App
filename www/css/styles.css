@@ -9,6 +9,15 @@ body {
     overflow-y: hidden;
 }
 
+.amenity_description {
+    font-size: 12px;
+}
+
+.amenity_name {
+    font-size: 13px;
+    font-weight:bold;
+}
+
 #arrow_left {
     float: left;
 }
@@ -21,6 +30,8 @@ body {
     color: white;
     float: left;
     margin-left: 5px;
+    max-height: 30px;
+    overflow: hidden;
 }
 
 .breadcrumb_div {
