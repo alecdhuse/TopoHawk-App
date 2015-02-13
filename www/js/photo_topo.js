@@ -2,43 +2,43 @@ function PT(canvas_id) {
     this._canvas_center;
     this._canvas_center_1st;
     this._canvas_id;
-    this._destination_loaded = false;
-    this._locked             = false;
-    this._mouse_dragging     = false;
-    this._mouse_drag_start_x = 0;
-    this._mouse_drag_start_y = 0;
-    this._paths_drawn        = false;
-    this._photo_loaded       = false;
+    this._destination_loaded  = false;
+    this._locked              = false;
+    this._mouse_dragging      = false;
+    this._mouse_drag_start_x  = 0;
+    this._mouse_drag_start_y  = 0;
+    this._paths_drawn         = false;
+    this._photo_loaded        = false;
     
-    this.canvas              = '';
+    this.canvas               = '';
     this.destination;
-    this.last_segment_index  = 0;
-    this.line_started        = false;
+    this.last_segment_index   = 0;
+    this.line_started         = false;
     this.loading_path;
-    this.new_path_points     = []
+    this.new_path_points      = []
     this.paper_scope;
-    this.path_color          = 'rgba(23,  157, 150, 0.7)';
-    this.path_color_selected = 'rgba(255,   0,   0, 0.3)';
-    this.paths               = [];
-    this.paths_json          = [];
-    this.photo_area          = 0;
-    this.photo_destination   = 0;
-    this.photo_id            = 0;
-    this.photo_left_margin   = 0;
-    this.photo_top_margin    = 0;
-    this.photo_topo_loaded   = function() {};
-    this.photo_url           = '';
+    this.path_color           = 'rgba(23,  157, 150, 0.7)';
+    this.path_color_selected  = 'rgba(255,   0,   0, 0.3)';
+    this.paths                = [];
+    this.paths_json           = [];
+    this.photo_area           = 0;
+    this.photo_destination    = 0;
+    this.photo_id             = 0;
+    this.photo_left_margin    = 0;
+    this.photo_top_margin     = 0;
+    this.photo_topo_loaded    = function() {};
+    this.photo_url            = '';
     this.photo_raster;
-    this.photo_resized       = function() {};
-    this.photo_scale         = 1;
-    this.photo_height_scaled = 0;
-    this.photo_width_scaled  = 0;
-    this.route_markers       = [];
-    this.route_markers_outer = [];
-    this.route_marker_points = [];
-    this.route_marker_text   = [];
-    this.selected_route_id   = 0;
-    this.show_small_photos   = false;
+    this.photo_resized        = function() {};
+    this.photo_scale          = 1;
+    this.photo_height_scaled  = 0;
+    this.photo_width_scaled   = 0;
+    this.route_markers        = [];
+    this.route_markers_outer  = [];
+    this.route_marker_points  = [];
+    this.route_marker_text    = [];
+    this.selected_route_id    = 0;
+    this.show_high_res_photos = true;
     
     this.type_colors = {
         'Aid':      "#d3d3d3",
@@ -242,7 +242,7 @@ PT.prototype._load_photo = function(result) {
     
     paper = pt_obj.paper_scope;
     
-    if (this.show_small_photos == false) {
+    if (this.show_high_res_photos === true) {
         this.photo_url = "https://topohawk.com/images/routes/" + result.photo_file;
     } else {
         this.photo_url = "https://topohawk.com/images/routes/t" + result.photo_file;

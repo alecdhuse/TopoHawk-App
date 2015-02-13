@@ -847,13 +847,37 @@ function resize_window() {
 }
 
 function settings_load() {
+    var use_high_res_photos = false;
+    
     /* TODO: Actualy load the settings */
-    photo_topo.show_small_photos = true;
+    if(typeof(Storage) !== "undefined") {
+        if (typeof(localStorage.use_high_res_photos) !== "undefined") {
+            use_high_res_photos = (localStorage.use_high_res_photos == "true") ? true : false;
+        }
+
+        photo_topo.show_high_res_photos = use_high_res_photos;
+        
+        if (use_high_res_photos === true) {
+            $("#settings_high_res_photos").prop('checked', "checked");
+        } else {
+            $("#settings_high_res_photos").prop('checked', false);
+        }
+    }
+}
+
+function setting_save() {
+    if(typeof(Storage) !== "undefined") {
+        var use_high_res_photos = Boolean($("#settings_high_res_photos").is(":checked"));
+        localStorage.setItem("use_high_res_photos", use_high_res_photos);
+    } else {
+        console.log("Error: no local storage.");
+    }
 }
 
 function settings_update_photo_res() {
-    photo_topo.show_small_photos = $("#settings_high_res_photos").is(":checked");
+    photo_topo.show_high_res_photos = $("#settings_high_res_photos").is(":checked");
     photos_loaded = false;
+    setting_save();
 }
 
 function show_photo_stream() {
