@@ -66,6 +66,7 @@ PT.prototype.init = function(canvas_id, photo_id, destination) {
     $('body').append("<div class='leaflet-label' id='route_popup' style='position:absolute;visibility:hidden;'></div>");
     
     paper.install(window);
+    
     this.photo_id    = photo_id;
     this._canvas_id  = canvas_id;
     this.canvas      = document.getElementById(canvas_id);
@@ -75,8 +76,10 @@ PT.prototype.init = function(canvas_id, photo_id, destination) {
     if (typeof destination !== "undefined") {
         /* Destination supplied */
         this.destination = destination;
+        this._destination_loaded = true;
     }
     
+    paper = this.paper_scope;
     this._get_photo_info(photo_id);
     
     /* Bind Scroll Events */
@@ -109,6 +112,7 @@ PT.prototype.init = function(canvas_id, photo_id, destination) {
     /* Bind Events for panning while zoomed */
     $(j_canvas_id).mousedown(function(e) {
         if (this._locked == false) {
+            paper = pt_obj.paper_scope;
             pt_obj._mouse_drag_start_x = parseInt(e.pageX);
             pt_obj._mouse_drag_start_y = parseInt(e.pageY);
             pt_obj._canvas_center      = paper.view.center;
@@ -117,10 +121,11 @@ PT.prototype.init = function(canvas_id, photo_id, destination) {
     });
     
     $(j_canvas_id).mousemove(function(e) {
+        paper = pt_obj.paper_scope;
+        
         if (paper.view.zoom > 1 && pt_obj._mouse_dragging === true) {
             var x_delta = parseInt(pt_obj._mouse_drag_start_x - e.pageX);
             var y_delta = parseInt(pt_obj._mouse_drag_start_y - e.pageY);
-            
             paper.view.center = new Point((pt_obj._canvas_center.x + x_delta), (pt_obj._canvas_center.y + y_delta));
         }
     });
@@ -250,7 +255,7 @@ PT.prototype._load_photo = function(result) {
     
     this.photo_raster = new Raster(this.photo_url);
     
-    this.photo_raster.onLoad = function () {
+    pt_obj.photo_raster.onLoad = function () {
         pt_obj._photo_loaded = true;
         pt_obj.resize();
     };
@@ -261,7 +266,6 @@ PT.prototype.change_photo = function(photo_id) {
     
     if (typeof this.paper_scope !== 'undefined' && this.paper_scope !== null) {
         this.paper_scope.project.clear();
-        
         paper = this.paper_scope;
         
         if (paper.view.zoom > 1) {
@@ -352,7 +356,18 @@ PT.prototype.draw_path = function(path, route_object, left_margin, top_margin, p
     this.draw_route_marker(first_point, new_path, route_object);
     this.paths.push(new_path);
 };
-    
+
+PT.prototype.get_height_from_width = function(given_width) {
+    if (this._photo_loaded === true) {
+        var ratio  = pt_obj.paths_json[0].height / pt_obj.paths_json[0].width;
+        var height = ratio * given_width;
+        
+        return height;
+    } else {
+        return 0;
+    }
+}
+
 PT.prototype.draw_route_marker = function(first_point, path, route) {
     paper = this.paper_scope;
     
@@ -445,7 +460,6 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
 };
 
 PT.prototype.resize = function(canvas_size) {
-    
     paper = this.paper_scope;
     
     if (typeof paper !== "undefined") {
