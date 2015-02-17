@@ -887,7 +887,10 @@
                 .replace('{x}', x)
                 .replace('{y}', tilePoint.y);
 
-                if (err_count == 1 || (zoom < 13)) {
+                if ((this._options.offline === true) && (zoom < 6)) {
+                    url = 'images/tiles/' + tile;
+                    img.src = url;
+                } else if (err_count == 1 || (zoom < 13)) {
                     url = 'http://a.tiles.mapbox.com/v3/scarletshark.h69c7n2p/' + tile;
                     img.src = url;
                 } else {
