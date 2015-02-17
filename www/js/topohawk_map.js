@@ -1347,7 +1347,7 @@
         destinations.push(new_destination);
  
         /* Re-save tiles */
-        localStorage.setItem('offline_destinations',JSON.stringify(destinations));
+        localStorage.setItem('offline_destinations', JSON.stringify(destinations));
     };
  
     TH.util.offline.get_offline_destinations = function () {
