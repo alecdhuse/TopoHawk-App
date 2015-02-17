@@ -1333,6 +1333,56 @@
     });
  
     TH.util = {};
+    TH.util.offline = {};
+ 
+    TH.util.offline.add_offline_destination = function (destination_obj) {
+        var destinations = TH.util.offline.get_offline_destinations();
+ 
+        var new_destination = {
+            'destination_id':   destination_obj.destination_id,
+            'destination_name': destination_obj.destination_name,
+            'destination_data': destination_obj
+        };
+ 
+        destinations.push(new_destination);
+ 
+        /* Re-save tiles */
+        localStorage.setItem('offline_destinations',JSON.stringify(destinations));
+    };
+ 
+    TH.util.offline.get_offline_destinations = function () {
+        if(typeof(Storage) !== "undefined") {
+            if (typeof(localStorage.offline_destinations) !== "undefined") {
+                var offline_destinations = JSON.parse(localStorage.getItem('offline_destinations'));
+                return offline_destinations;
+            } else {
+                /* No destinations stored, return empty array */
+                return new Array();
+            }
+        } else {
+            console.log("TH.util.offline.get_offline_destinations() - Cannot access local storage.");
+        }
+    };
+ 
+    TH.util.offline.remove_offline_destination = function (destination_id) {
+        var destinations = TH.util.offline.get_offline_destinations();
+        var destination_removed = false;
+ 
+        for (var i=0; i<destinations.length; i++) {
+            if (destinations[i].destination_id == destination_id) {
+                destinations.splice(i, 1);
+                destination_removed = true;
+                break;
+            }
+        }
+ 
+        /* Re-save tiles */
+        localStorage.setItem('offline_destinations',JSON.stringify(destinations));
+ 
+        /* TODO: Remove Tiles */
+ 
+        return destination_removed;
+    };
  
     TH.util.convert_lat_lngs_to_string = function (latLngs) {
         var returnString = " ";
