@@ -575,6 +575,7 @@ function destination_info_loaded() {
     
     current_mode = MODE_DESTINATION;
     info_html += "<div>" + map.selected_destination.description + "</div>";
+    //info_html += "<div id='download_destination'><img src='images/button-download.svg'/> Download</div>";
     
     for (var i=0; i<map.selected_destination.amenities.features.length; i++) {
         current_amenity = map.selected_destination.amenities.features[i];
@@ -600,8 +601,10 @@ function destination_info_loaded() {
     
     $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
     $("#breadcrumbs_div_2").html("");
-    $("#screen_info_inner").html(info_html);
+    
+    /* Change title info */
     $("#screen_info_title").html(map.selected_destination.destination_name);
+    $("#screen_info_inner").html(info_html);
     $("#destination_search_filter").val("");
     
     photo_topo.set_destination(map.selected_destination);
@@ -641,6 +644,14 @@ function do_search() {
            $("#search_results").html("Error performing seach: " + error);
        }
     });
+}
+
+function download_selected_destination() {
+    TH.util.offline.add_offline_destination(map.selected_destination);
+    
+    /* Change Downloaded Image */
+    
+    /* TODO Download tiles */
 }
 
 function filter_list() {
