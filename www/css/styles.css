@@ -114,6 +114,10 @@ body {
     width:100%;
 }
 
+#download_destination {
+    margin-top: 8px;
+}
+
 #filter_hidden_items {
     color: rgb(68,68,68);
     font-size: 10px;
@@ -216,7 +220,6 @@ body {
 #screen_info_title {
     font-weight: bold;
     margin: 8px;
-    text-align: center;
 }
 
 #screen_info_title_second_line {
