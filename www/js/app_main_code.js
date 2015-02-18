@@ -575,7 +575,6 @@ function destination_info_loaded() {
     
     current_mode = MODE_DESTINATION;
     info_html += "<div>" + map.selected_destination.description + "</div>";
-    //info_html += "<div id='download_destination'><img src='images/button-download.svg'/> Download</div>";
     
     for (var i=0; i<map.selected_destination.amenities.features.length; i++) {
         current_amenity = map.selected_destination.amenities.features[i];
@@ -603,7 +602,11 @@ function destination_info_loaded() {
     $("#breadcrumbs_div_2").html("");
     
     /* Change title info */
-    $("#screen_info_title").html(map.selected_destination.destination_name);
+    var title_html = "<div>" + map.selected_destination.destination_name;
+    title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
+    title_html += "<img id='download_destination' src='images/button-download.svg'/></div>";
+    
+    $("#screen_info_title").html(title_html);
     $("#screen_info_inner").html(info_html);
     $("#destination_search_filter").val("");
     
