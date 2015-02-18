@@ -1339,7 +1339,13 @@
         var destinations = TH.util.offline.get_offline_destinations();
         destinations.push(destination_obj);
  
-        /* Re-save tiles */
+        /* TODO: Download Map Tiles */
+ 
+        /* TODO: Download Photos Topos */
+ 
+        /* TODO: Download Photos */
+ 
+        /* Re-save destination JSON */
         localStorage.setItem('offline_destinations', JSON.stringify(destinations));
     };
  
