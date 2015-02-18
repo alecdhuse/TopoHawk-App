@@ -1341,7 +1341,7 @@
  
         /* TODO: Download Map Tiles */
  
-        /* TODO: Download Photos */
+        /* Download Photos */
         $.ajax({
            type:     'POST',
            url:      'https://topohawk.com/api/v1/get_photos.php',
@@ -1464,8 +1464,16 @@
         return destination_removed;
     };
  
-    TH.util.offline.remove_offline_photos = function (destination_id) {
-        /* TODO add code for removing photos */
+    TH.util.offline.remove_offline_photos = function (destination_id) { 
+        var offline_photos = TH.util.offline.get_offline_photos();
+ 
+        for (var property in offline_photos) {
+            if (offline_photos.hasOwnProperty(property)) {
+                if (property.destination_id == destination_id) {
+                    delete offline_photos[property];
+                }
+            }
+        }
     };
  
     /* Other Utils */
