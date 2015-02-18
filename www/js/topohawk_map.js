@@ -1341,25 +1341,103 @@
  
         /* TODO: Download Map Tiles */
  
-        /* TODO: Download Photos Topos */
- 
         /* TODO: Download Photos */
+        $.ajax({
+           type:     'POST',
+           url:      'https://topohawk.com/api/v1/get_photos.php',
+           dataType: 'json',
+           data:     { destination_id: destination_obj.destination_id },
+           success:  function(response) {
+                if (response.result_code > 0) {
+                    for (var i=0; i<response.photo_ids.length; i++) {
+                        TH.util.get_photo_info(response.photo_ids[i], TH.util.offline.add_offline_photo);
+                    }
+                } else {
+                    console.log("Error " + response.result);
+                }
+           },
+           error: function (req, status, error) {
+               console.log("Error retrieving photo_ids.");
+           }
+        });
  
         /* Re-save destination JSON */
         localStorage.setItem('offline_destinations', JSON.stringify(destinations));
     };
  
+    TH.util.offline.add_offline_photo = function (photo_obj) {
+        var image_file = "t" + photo_obj.photo_file;
+ 
+         $.ajax({
+           type:     'GET',
+           url:      'https://topohawk.com/api/v1/get_route_image_data_url.php',
+           data:     { file: image_file },
+           success:  function(response) {
+                var offline_photos = TH.util.offline.get_offline_photos();
+
+                photo_obj.photo_file = response;
+                offline_photos[photo_obj.photo_id] = photo_obj;
+
+                /* Re-save photos JSON */
+                localStorage.setItem('offline_photos', JSON.stringify(offline_photos));
+           },
+           error: function (req, status, error) {
+               console.log("Error retrieving photo_ids.");
+           }
+        });
+    };
+ 
+    TH.util.offline.destination_is_offline = function (destination_id) {
+         var offline_destinations = TH.util.offline.get_offline_destinations();
+         var result = false;
+        
+         for (var i=0; i<offline_destinations.length; i++) {
+            if (offline_destinations[i].destination_id == destination_id) {
+                result = true;
+                break;
+            }
+         }
+        
+         return result;
+    };
+ 
+    TH.util.offline.get_image_data_url = function (image) {
+        var canvas = document.createElement("canvas");
+        canvas.width  = image.width;
+        canvas.height = image.height;
+
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0);
+
+        var data_url = canvas.toDataURL("image/png");
+        data_url = data_url.replace(/^data:image\/(png|jpg);base64,/, "");
+ 
+        return data_url;
+    };
+ 
     TH.util.offline.get_offline_destinations = function () {
         if(typeof(Storage) !== "undefined") {
             if (typeof(localStorage.offline_destinations) !== "undefined") {
-                var offline_destinations = JSON.parse(localStorage.getItem('offline_destinations'));
-                return offline_destinations;
+                return JSON.parse(localStorage.getItem('offline_destinations'));
             } else {
                 /* No destinations stored, return empty array */
                 return new Array();
             }
         } else {
             console.log("TH.util.offline.get_offline_destinations() - Cannot access local storage.");
+        }
+    };
+ 
+    TH.util.offline.get_offline_photos = function () {
+         if(typeof(Storage) !== "undefined") {
+            if (typeof(localStorage.offline_photos) !== "undefined") {
+                return JSON.parse(localStorage.getItem('offline_photos'));
+            } else {
+                /* No photos stored, return empty object */
+                return {};
+            }
+        } else {
+            console.log("TH.util.offline.get_offline_photos() - Cannot access local storage.");
         }
     };
  
@@ -1380,8 +1458,17 @@
  
         /* TODO: Remove Tiles */
  
+        /* Remove Photos for this destination */
+        TH.util.offline.remove_offline_photos(destination_id);
+ 
         return destination_removed;
     };
+ 
+    TH.util.offline.remove_offline_photos = function (destination_id) {
+        /* TODO add code for removing photos */
+    };
+ 
+    /* Other Utils */
  
     TH.util.convert_lat_lngs_to_string = function (latLngs) {
         var returnString = " ";
@@ -1403,6 +1490,27 @@
         fixed = fixed.replace("&#8217;","’");
  
         return fixed;
+    };
+ 
+    TH.util.get_photo_info = function (photo_id, callback) {
+        $.ajax({
+           type:        'GET',
+           dataType:    'json',
+           url:         'https://topohawk.com/api/v1.1/get_photo_info.php',
+           data: {
+               'photo_id': photo_id
+           },
+           success: function(response) {
+                if (response.result_code > 0) {
+                    callback(response.result);
+                } else {
+                    console.log("Error getting photo info: " + response.result);
+                }
+            },
+            error: function (req, status, error) {
+                console.log("Error getting photo info: " + error);
+            }
+        });
     };
  
     TH.util.get_star_html = function (rating, small) {

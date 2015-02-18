@@ -627,7 +627,7 @@ function destination_info_loaded() {
     var title_html = "<div>" + map.selected_destination.destination_name;
     title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
     
-    if (destination_is_offline(map.selected_destination.destination_id) === true) {
+    if (TH.util.offline.destination_is_offline(map.selected_destination.destination_id) === true) {
         title_html += "<img id='download_destination' src='images/button-download-selected.svg'/></div>";
     } else {
         title_html += "<img id='download_destination' src='images/button-download.svg' onclick='download_selected_destination()'/></div>";
@@ -645,20 +645,6 @@ function destination_info_loaded() {
         destination_callback = false;
         proccess_destination_callback(destination_callback_change);
     }
-}
-
-function destination_is_offline(destination_id) {
-     var offline_destinations = TH.util.offline.get_offline_destinations();
-     var result = false;
-    
-     for (var i=0; i<offline_destinations.length; i++) {
-        if (offline_destinations[i].destination_id == destination_id) {
-            result = true;
-            break;
-        }
-     }
-    
-     return result;
 }
 
 function do_search() {
