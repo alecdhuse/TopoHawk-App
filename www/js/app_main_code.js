@@ -147,6 +147,8 @@ function button_menu_offline_content() {
     $("#menu_popup").css('visibility','hidden');
     $("#screen_offline_content").css('visibility','visible');
     $("#breadcrumbs_div_2").html("• Offline Content");
+    
+    $("#screen_offline_inner").html(create_offline_destinations_list());
 }
 
 function button_menu_search() {
@@ -433,6 +435,26 @@ function create_destination_list() {
     }
 }
 
+function create_offline_destinations_list() {
+    var list_html = "<div>";
+    var offline_destinations = TH.util.offline.get_offline_destinations();
+    
+    if (offline_destinations.length > 0) {
+        for (var i=0; i<offline_destinations.length; i++) {
+            list_html += "<div class='destination_list_offline'>"
+            list_html += "<div class='destination_list_name_offline'>" + offline_destinations[i].destination_name + "</div>";
+            list_html += "<div class='destination_list_name_offline_delete' onclick='remove_offline_destination(" + offline_destinations[i].destination_id + ")'>✖</div>";
+            list_html += "</div>"
+        }
+    } else {
+        list_html += "No offline destinations saved.";
+    }
+    
+    list_html += "</div>";
+    
+    return list_html;
+}
+
 function create_photo_canvas(photos) {
     var photo_bullets;
     
@@ -604,7 +626,12 @@ function destination_info_loaded() {
     /* Change title info */
     var title_html = "<div>" + map.selected_destination.destination_name;
     title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
-    title_html += "<img id='download_destination' src='images/button-download.svg'/></div>";
+    
+    if (destination_is_offline(map.selected_destination.destination_id) === true) {
+        title_html += "<img id='download_destination' src='images/button-download-selected.svg'/></div>";
+    } else {
+        title_html += "<img id='download_destination' src='images/button-download.svg' onclick='download_selected_destination()'/></div>";
+    }
     
     $("#screen_info_title").html(title_html);
     $("#screen_info_inner").html(info_html);
@@ -618,6 +645,20 @@ function destination_info_loaded() {
         destination_callback = false;
         proccess_destination_callback(destination_callback_change);
     }
+}
+
+function destination_is_offline(destination_id) {
+     var offline_destinations = TH.util.offline.get_offline_destinations();
+     var result = false;
+    
+     for (var i=0; i<offline_destinations.length; i++) {
+        if (offline_destinations[i].destination_id == destination_id) {
+            result = true;
+            break;
+        }
+     }
+    
+     return result;
 }
 
 function do_search() {
@@ -653,6 +694,7 @@ function download_selected_destination() {
     TH.util.offline.add_offline_destination(map.selected_destination);
     
     /* Change Downloaded Image */
+    $('#download_destination').attr('src', 'images/button-download-selected.svg');
     
     /* TODO Download tiles */
 }
@@ -842,6 +884,11 @@ function proccess_destination_callback(destination_callback_change_obj) {
     
     /* Hide any loading screens */
     $("#search_loading_screen").css('visibility','hidden');
+}
+
+function remove_offline_destination(destination_id) {
+    TH.util.offline.remove_offline_destination(destination_id);
+    button_menu_offline_content();
 }
 
 function resize_window() {

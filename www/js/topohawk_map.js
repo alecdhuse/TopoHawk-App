@@ -1337,14 +1337,7 @@
  
     TH.util.offline.add_offline_destination = function (destination_obj) {
         var destinations = TH.util.offline.get_offline_destinations();
- 
-        var new_destination = {
-            'destination_id':   destination_obj.destination_id,
-            'destination_name': destination_obj.destination_name,
-            'destination_data': destination_obj
-        };
- 
-        destinations.push(new_destination);
+        destinations.push(destination_obj);
  
         /* Re-save tiles */
         localStorage.setItem('offline_destinations', JSON.stringify(destinations));

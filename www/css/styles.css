@@ -106,8 +106,24 @@ body {
     font-weight: normal;
 }
 
+.destination_list_offline {
+    float: left;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    width: 100%;
+}
+
 .destination_list_name {
     
+}
+
+.destination_list_name_offline {
+    float: left;
+}
+
+.destination_list_name_offline_delete {
+    float: right;
+    font-size: 20px;
 }
 
 #destination_search_results {
