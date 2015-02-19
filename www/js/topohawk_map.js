@@ -886,13 +886,16 @@
                         /* Change JSON Format */
                         for (var i=0; i<offline_destinations.length; i++) {
                             var destination = {
+                                "type": "Feature",
                                 geometry: {
-                                    coordinates: [offline_destinations[i].destination_lng, offline_destinations[i].destination_lat],
-                                    type:        "Point"
+                                    type:        "Point",
+                                    coordinates: [offline_destinations[i].destination_lng, offline_destinations[i].destination_lat]
                                 },
                                 properties: {
                                     click_zoom_to:  offline_destinations[i].destination_zoom,
+                                    description:    offline_destinations[i].description,
                                     destination_id: offline_destinations[i].destination_id,
+                                    location:       offline_destinations[i].destination_location,
                                     max_zoom:       offline_destinations[i].destination_zoom,
                                     name:           offline_destinations[i].destination_name
                                 }
