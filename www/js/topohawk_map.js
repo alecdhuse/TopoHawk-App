@@ -843,7 +843,7 @@
                    map_obj._update_destination_data(response);
                },
                error: function (req, status, error) {
-                    if (status  == "timeout") {
+                    if (status  == "timeout" || status == "error") {
                         /* Check local cache if there is no connection */
                         var offline_destinations = TH.util.offline.get_offline_destinations();
                    
@@ -875,10 +875,33 @@
                     map_obj._update_destinations(response, map_obj);
                 },
                 error: function (req, status, error) {
-                    if (status  == "timeout") {
+                    if (status  == "timeout" || status == "error") {
                         /* Check local cache if there is no connection */
                         var offline_destinations = TH.util.offline.get_offline_destinations();
-                        map_obj._update_destinations(offline_destinations, map_obj);
+                   
+                        var offline_response = {
+                            features: []
+                        };
+                   
+                        /* Change JSON Format */
+                        for (var i=0; i<offline_destinations.length; i++) {
+                            var destination = {
+                                geometry: {
+                                    coordinates: [offline_destinations[i].destination_lng, offline_destinations[i].destination_lat],
+                                    type:        "Point"
+                                },
+                                properties: {
+                                    click_zoom_to:  offline_destinations[i].destination_zoom,
+                                    destination_id: offline_destinations[i].destination_id,
+                                    max_zoom:       offline_destinations[i].destination_zoom,
+                                    name:           offline_destinations[i].destination_name
+                                }
+                            };
+                   
+                            offline_response.features.push(destination);
+                        }
+                   
+                        map_obj._update_destinations(offline_response, map_obj);
                     } else {
                         console.log('Error getting destinations: ' + error);
                     }
@@ -1478,7 +1501,7 @@
  
         for (var property in offline_photos) {
             if (offline_photos.hasOwnProperty(property)) {
-                if (property.destination_id == dest_id) {
+                if (property.dest == destination_id) {
                     delete offline_photos[property];
                 }
             }
