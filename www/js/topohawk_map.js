@@ -1371,7 +1371,7 @@
          $.ajax({
            type:     'GET',
            url:      'https://topohawk.com/api/v1/get_route_image_data_url.php',
-           data:     { file: image_file },
+           data:     { file_name: image_file },
            success:  function(response) {
                 var offline_photos = TH.util.offline.get_offline_photos();
 
@@ -1455,7 +1455,7 @@
  
         for (var property in offline_photos) {
             if (offline_photos.hasOwnProperty(property)) {
-                if (property.destination_id == destination_id) {
+                if (property.destination_id == dest_id) {
                     delete offline_photos[property];
                 }
             }
