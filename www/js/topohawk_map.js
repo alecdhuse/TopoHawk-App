@@ -829,6 +829,7 @@
         
         _get_destination_data: function (destination_id) {
             var map_obj = this;
+            var offline_destination_found = false;
             
             $.ajax({
                type:    'POST',
@@ -842,7 +843,23 @@
                    map_obj._update_destination_data(response);
                },
                error: function (req, status, error) {
-                   console.log('Error getting destination data: ' + error);
+                    if (status  == "timeout") {
+                        /* Check local cache if there is no connection */
+                        var offline_destinations = TH.util.offline.get_offline_destinations();
+                   
+                        for (var i=0; i<offline_destinations.length; i++) {
+                            if (offline_destinations[i].destination_id == destination_id) {
+                                offline_destination_found = true;
+                                map_obj._update_destination_data(offline_destinations[i]);
+                            }
+                        }
+                   
+                        if (offline_destination_found == false) {
+                            console.log('No connection and destination was not found in offline cache: ' + error);
+                        }
+                    } else {
+                        console.log('Error getting destination data: ' + error);
+                    }
                }
             });
         },
@@ -858,7 +875,13 @@
                     map_obj._update_destinations(response, map_obj);
                 },
                 error: function (req, status, error) {
-                    console.log('Error getting destinations: ' + error);
+                    if (status  == "timeout") {
+                        /* Check local cache if there is no connection */
+                        var offline_destinations = TH.util.offline.get_offline_destinations();
+                        map_obj._update_destinations(offline_destinations, map_obj);
+                    } else {
+                        console.log('Error getting destinations: ' + error);
+                    }
                 }
             });
         },
