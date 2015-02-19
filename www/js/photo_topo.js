@@ -39,6 +39,7 @@ function PT(canvas_id) {
     this.route_marker_text    = [];
     this.selected_route_id    = 0;
     this.show_high_res_photos = true;
+    this.use_offline_images   = true;
     
     this.type_colors = {
         'Aid':      "#d3d3d3",
@@ -203,35 +204,50 @@ PT.prototype._get_destination_data = function(destination_id) {
 
 PT.prototype._get_photo_info = function(photo_id) {
     var pt_obj = this;
+    var use_online_photo = true;
     
-    $.ajax({
-       type:        'POST',
-       dataType:    'json',
-       url:         'https://topohawk.com/api/v1/get_photo_info.php',
-       data: {
-           'photo_id': photo_id
-       },
-       success: function(response) {
-            if (response.result_code > 0) {
-                if (typeof pt_obj.destination === "undefined" || pt_obj.destination === null) {
-                    pt_obj._get_destination_data(response.result.dest_id);
-                    this._photo_loaded = true;
-                } else {
-                    this._photo_loaded = true;
-                }
-           
-                pt_obj.paths_json = response.result.photo_topos;
-                pt_obj.photo_area = response.result.area_id;
-                pt_obj.photo_destination = response.result.dest_id;
-                pt_obj._load_photo(response.result);
-            } else {
-                console.log("Error getting photo info: " + response.result);
-            }
-        },
-        error: function (req, status, error) {
-            console.log("Error getting photo info: " + error);
+    if (pt_obj.use_offline_images === true) {
+        var offline_photos = TH.util.offline.get_offline_photos();
+        
+        if (offline_photos.hasOwnProperty(photo_id)) {
+            pt_obj.paths_json = offline_photos[photo_id].photo_topos;
+            pt_obj.photo_area = offline_photos[photo_id].area_id;
+            pt_obj.photo_destination = offline_photos[photo_id].dest_id;
+            pt_obj._load_photo(offline_photos[photo_id]);
+            use_online_photo = false;
         }
-   });
+    }
+    
+    if (use_online_photo === true) {
+        $.ajax({
+           type:        'POST',
+           dataType:    'json',
+           url:         'https://topohawk.com/api/v1/get_photo_info.php',
+           data: {
+               'photo_id': photo_id
+           },
+           success: function(response) {
+                if (response.result_code > 0) {
+                    if (typeof pt_obj.destination === "undefined" || pt_obj.destination === null) {
+                        pt_obj._get_destination_data(response.result.dest_id);
+                        this._photo_loaded = true;
+                    } else {
+                        this._photo_loaded = true;
+                    }
+               
+                    pt_obj.paths_json = response.result.photo_topos;
+                    pt_obj.photo_area = response.result.area_id;
+                    pt_obj.photo_destination = response.result.dest_id;
+                    pt_obj._load_photo(response.result);
+                } else {
+                    console.log("Error getting photo info: " + response.result);
+                }
+            },
+            error: function (req, status, error) {
+                console.log("Error getting photo info: " + error);
+            }
+       });
+    }
 };
 
 PT.prototype._get_route_from_id = function(route_id) {
@@ -244,13 +260,16 @@ PT.prototype._get_route_from_id = function(route_id) {
 
 PT.prototype._load_photo = function(result) {
     var pt_obj = this;
-    
     paper = pt_obj.paper_scope;
     
-    if (this.show_high_res_photos === true) {
-        this.photo_url = "https://topohawk.com/images/routes/" + result.photo_file;
+    if (pt_obj.use_offline_images === false) {
+        if (this.show_high_res_photos === true) {
+            this.photo_url = "https://topohawk.com/images/routes/" + result.photo_file;
+        } else {
+            this.photo_url = "https://topohawk.com/images/routes/t" + result.photo_file;
+        }
     } else {
-        this.photo_url = "https://topohawk.com/images/routes/t" + result.photo_file;
+        this.photo_url = result.photo_file;
     }
     
     this.photo_raster = new Raster(this.photo_url);

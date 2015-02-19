@@ -1401,20 +1401,6 @@
          return result;
     };
  
-    TH.util.offline.get_image_data_url = function (image) {
-        var canvas = document.createElement("canvas");
-        canvas.width  = image.width;
-        canvas.height = image.height;
-
-        var ctx = canvas.getContext("2d");
-        ctx.drawImage(image, 0, 0);
-
-        var data_url = canvas.toDataURL("image/png");
-        data_url = data_url.replace(/^data:image\/(png|jpg);base64,/, "");
- 
-        return data_url;
-    };
- 
     TH.util.offline.get_offline_destinations = function () {
         if(typeof(Storage) !== "undefined") {
             if (typeof(localStorage.offline_destinations) !== "undefined") {
@@ -1464,7 +1450,7 @@
         return destination_removed;
     };
  
-    TH.util.offline.remove_offline_photos = function (destination_id) { 
+    TH.util.offline.remove_offline_photos = function (destination_id) {
         var offline_photos = TH.util.offline.get_offline_photos();
  
         for (var property in offline_photos) {
