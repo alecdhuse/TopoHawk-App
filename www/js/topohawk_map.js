@@ -1469,8 +1469,27 @@
         return destination_removed;
     };
  
-    TH.util.offline.remove_offline_photos = function (destination_id) {
+    TH.util.offline.remove_offline_photos = function (destination_id, db) {
+         if (typeof db !== 'undefined') {
+            var transaction = db.transaction("photos", "readwrite");
+            var store       = transaction.objectStore("photos");
+            var index       = store.index("by_destination_id");
+            var request     = index.openCursor(IDBKeyRange.only(destination_id.toString()));
  
+            request.onsuccess = function() {
+                var cursor = request.result;
+ 
+                if (cursor) {
+                    cursor.delete();
+                    cursor.continue();
+                }
+            };
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.offline.remove_offline_photos(destination_id, db_init);
+            });
+        }
     };
  
     /* Storage Utils */
