@@ -226,7 +226,7 @@ PT.prototype._load_photo = function(result) {
     var pt_obj = this;
     paper = pt_obj.paper_scope;
     
-    if (pt_obj.use_offline_images === false) {
+    if (result.photo_file.slice(0, 4) != "data") {
         if (this.show_high_res_photos === true) {
             this.photo_url = "https://topohawk.com/images/routes/" + result.photo_file;
         } else {
