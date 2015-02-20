@@ -840,7 +840,7 @@
                    'user_id':        this._user_id
                },
                success: function(response) {
-                   map_obj._update_destination_data(response);
+                   map_obj._update_destination_data(response.data);
                },
                error: function (req, status, error) {
                     if (status  == "timeout" || status == "error") {
@@ -1030,11 +1030,11 @@
         },
 
         _update_destination_data: function (data) {
-            this.amenities   = data.result.amenities;
-            this.areas       = data.result.areas;
-            this.paths       = data.result.paths;
-            this.polygons    = data.result.polygons;
-            this.routes      = data.result.routes;
+            this.amenities   = data.amenities;
+            this.areas       = data.areas;
+            this.paths       = data.paths;
+            this.polygons    = data.polygons;
+            this.routes      = data.routes;
             
             if (this._first_location_fix == true) {
                 if (this._options.area_id > 0) {
@@ -1051,11 +1051,11 @@
             /* Set selected destination and clear out selected area and route. */
             this.selected_area          = {};
             this.selected_route         = {};
-            this.selected_destination   = data.result;
+            this.selected_destination   = data;
                         
             /* Zoom into destination location */
-            var latlng = L.latLng(data.result.destination_lat, data.result.destination_lng);
-            var zoom   = data.result.destination_zoom;
+            var latlng = L.latLng(data.destination_lat, data.destination_lng);
+            var zoom   = data.destination_zoom;
             this.set_view(latlng, zoom);
             
             this.destination_info_loaded(data);
