@@ -840,7 +840,7 @@
                    'user_id':        this._user_id
                },
                success: function(response) {
-                   map_obj._update_destination_data(response.data);
+                   map_obj._update_destination_data(response.result);
                },
                error: function (req, status, error) {
                     if (status  == "timeout" || status == "error") {
@@ -1383,6 +1383,7 @@
  
     TH.util = {};
     TH.util.offline = {};
+    TH.util.storage = {};
  
     TH.util.offline.add_offline_destination = function (destination_obj) {
         var destinations = TH.util.offline.get_offline_destinations();
@@ -1415,25 +1416,7 @@
     };
  
     TH.util.offline.add_offline_photo = function (photo_obj) {
-        var image_file = "t" + photo_obj.photo_file;
- 
-         $.ajax({
-           type:     'GET',
-           url:      'https://topohawk.com/api/v1/get_route_image_data_url.php',
-           data:     { file_name: image_file },
-           success:  function(response) {
-                var offline_photos = TH.util.offline.get_offline_photos();
-
-                photo_obj.photo_file = response;
-                offline_photos[photo_obj.photo_id] = photo_obj;
-
-                /* Re-save photos JSON */
-                localStorage.setItem('offline_photos', JSON.stringify(offline_photos));
-           },
-           error: function (req, status, error) {
-               console.log("Error retrieving photo_ids.");
-           }
-        });
+        TH.util.storage.add_photo(photo_obj);
     };
  
     TH.util.offline.destination_is_offline = function (destination_id) {
@@ -1462,20 +1445,7 @@
             console.log("TH.util.offline.get_offline_destinations() - Cannot access local storage.");
         }
     };
- 
-    TH.util.offline.get_offline_photos = function () {
-         if(typeof(Storage) !== "undefined") {
-            if (typeof(localStorage.offline_photos) !== "undefined") {
-                return JSON.parse(localStorage.getItem('offline_photos'));
-            } else {
-                /* No photos stored, return empty object */
-                return {};
-            }
-        } else {
-            console.log("TH.util.offline.get_offline_photos() - Cannot access local storage.");
-        }
-    };
- 
+
     TH.util.offline.remove_offline_destination = function (destination_id) {
         var destinations = TH.util.offline.get_offline_destinations();
         var destination_removed = false;
@@ -1500,17 +1470,102 @@
     };
  
     TH.util.offline.remove_offline_photos = function (destination_id) {
-        var offline_photos = TH.util.offline.get_offline_photos();
  
-        for (var property in offline_photos) {
-            if (offline_photos.hasOwnProperty(property)) {
-                if (property.dest == destination_id) {
-                    delete offline_photos[property];
+    };
+ 
+    /* Storage Utils */
+ 
+    TH.util.storage.add_photo = function (photo_obj, db) {
+        if (typeof db !== 'undefined') {
+            var image_file = "t" + photo_obj.photo_file;
+
+            $.ajax({
+                type:     'GET',
+                url:      'https://topohawk.com/api/v1/get_route_image_data_url.php',
+                data:     { file_name: image_file },
+                success:  function(response) {
+                    var tx = db.transaction("photos", "readwrite");
+                    var store = tx.objectStore("photos");
+                   
+                    photo_obj.photo_file = response;
+                    store.put({photo_id: photo_obj.photo_id, destination_id: photo_obj.dest_id, json: JSON.stringify(photo_obj)});
+
+                    tx.oncomplete = function() {
+                        console.log("Photo downloaded: " + photo_obj.photo_id);
+                    };
+                },
+                error: function (req, status, error) {
+                   console.log("Error retrieving photo_ids.");
                 }
-            }
+            });
+ 
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.add_photo(photo_obj, db_init);
+            });
         }
     };
  
+    TH.util.storage.get_photo = function (photo_id, callback, db) {
+        if (typeof db !== 'undefined') {
+            var transaction = db.transaction("photos", IDBTransaction.READ_ONLY);
+            var store   = transaction.objectStore("photos");
+            var index   = store.index("by_photo_id");
+            var request = index.get(photo_id);
+ 
+            request.onsuccess = function() {
+                var matching = request.result;
+
+                if (matching !== undefined) {
+                    var photo_obj = JSON.parse(matching.json);
+                    callback(photo_id, photo_obj);
+                } else {
+                    console.log("Photo_id not in local db. " + photo_id);
+                    callback(photo_id, null);
+                }
+            };
+ 
+            request.onerror = function() {
+                console.log("Error getting photo_id from local db. " + photo_id);
+            };
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.get_photo(photo_id, callback, db_init);
+            });
+        }
+    }
+ 
+    TH.util.storage.init = function (callback) {
+        var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
+        var request = indexedDB.open("TopoHawk-Offline", 2);
+ 
+        request.onupgradeneeded = function(event) {
+            var db = event.target.result;
+
+            // Create photo db
+            var photo_store = db.createObjectStore("photos", {keyPath: "photo_id"});
+            var photo_id_index = photo_store.createIndex("by_photo_id",        "photo_id", {unique: true});
+            var dest_id_index  = photo_store.createIndex("by_destination_id",  "destination_id");
+
+            // Create destination db
+            var destination_store = db.createObjectStore("destinations", {keyPath: "destination_id"});
+            var destination_id_index = destination_store.createIndex("by_destination_id", "destination_id", {unique: true});
+
+            callback(db);
+        };
+
+        request.onsuccess = function(event) {
+            callback(event.target.result);
+        };
+ 
+        request.onerror = function(event) {
+            console.log("error: " + event);
+        };
+ 
+    };
+
     /* Other Utils */
  
     TH.util.convert_lat_lngs_to_string = function (latLngs) {

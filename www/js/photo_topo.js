@@ -204,49 +204,13 @@ PT.prototype._get_destination_data = function(destination_id) {
 
 PT.prototype._get_photo_info = function(photo_id) {
     var pt_obj = this;
-    var use_online_photo = true;
     
     if (pt_obj.use_offline_images === true) {
-        var offline_photos = TH.util.offline.get_offline_photos();
-        
-        if (offline_photos.hasOwnProperty(photo_id)) {
-            pt_obj.paths_json = offline_photos[photo_id].photo_topos;
-            pt_obj.photo_area = offline_photos[photo_id].area_id;
-            pt_obj.photo_destination = offline_photos[photo_id].dest_id;
-            pt_obj._load_photo(offline_photos[photo_id]);
-            use_online_photo = false;
-        }
-    }
-    
-    if (use_online_photo === true) {
-        $.ajax({
-           type:        'POST',
-           dataType:    'json',
-           url:         'https://topohawk.com/api/v1/get_photo_info.php',
-           data: {
-               'photo_id': photo_id
-           },
-           success: function(response) {
-                if (response.result_code > 0) {
-                    if (typeof pt_obj.destination === "undefined" || pt_obj.destination === null) {
-                        pt_obj._get_destination_data(response.result.dest_id);
-                        this._photo_loaded = true;
-                    } else {
-                        this._photo_loaded = true;
-                    }
-               
-                    pt_obj.paths_json = response.result.photo_topos;
-                    pt_obj.photo_area = response.result.area_id;
-                    pt_obj.photo_destination = response.result.dest_id;
-                    pt_obj._load_photo(response.result);
-                } else {
-                    console.log("Error getting photo info: " + response.result);
-                }
-            },
-            error: function (req, status, error) {
-                console.log("Error getting photo info: " + error);
-            }
-       });
+        TH.util.storage.get_photo(photo_id, function(photo_id, photo_obj) {
+            pt_obj.update_photo_object(photo_id, photo_obj, pt_obj);
+        });
+    } else {
+        pt_obj._make_photo_request(photo_id);
     }
 };
 
@@ -278,6 +242,36 @@ PT.prototype._load_photo = function(result) {
         pt_obj._photo_loaded = true;
         pt_obj.resize();
     };
+};
+
+PT.prototype._make_photo_request = function(photo_id) {
+    var pt_obj = this;
+    
+    $.ajax({
+       type:        'POST',
+       dataType:    'json',
+       url:         'https://topohawk.com/api/v1/get_photo_info.php',
+       data: {
+           'photo_id': photo_id
+       },
+       success: function(response) {
+            if (response.result_code > 0) {
+                if (typeof pt_obj.destination === "undefined" || pt_obj.destination === null) {
+                    pt_obj._get_destination_data(response.result.dest_id);
+                    this._photo_loaded = true;
+                } else {
+                    this._photo_loaded = true;
+                }
+           
+                pt_obj.update_photo_object(photo_id, response.result, pt_obj);
+            } else {
+                console.log("Error getting photo info: " + response.result);
+            }
+        },
+        error: function (req, status, error) {
+            console.log("Error getting photo info: " + error);
+        }
+   });
 };
 
 PT.prototype.change_photo = function(photo_id) {
@@ -615,4 +609,15 @@ PT.prototype.undo_last_segment = function () {
     this.last_segment_index = this.last_segment_index - 1;
     this.new_path_points.pop();
     paper.view.update();
+};
+
+PT.prototype.update_photo_object = function(photo_id, photo_obj, pt_obj) {
+    if (typeof photo_obj !== 'undefined' && photo_obj !== null) {
+        pt_obj.paths_json = photo_obj.photo_topos;
+        pt_obj.photo_area = photo_obj.area_id;
+        pt_obj.photo_destination = photo_obj.dest_id;
+        pt_obj._load_photo(photo_obj);
+    } else {
+        pt_obj._make_photo_request(photo_id);
+    }
 };
