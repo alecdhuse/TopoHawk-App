@@ -1482,6 +1482,7 @@
                 if (cursor) {
                     cursor.delete();
                     cursor.continue();
+                    console.log("Photo deleted: " + cursor.value.photo_id);
                 }
             };
         } else {
