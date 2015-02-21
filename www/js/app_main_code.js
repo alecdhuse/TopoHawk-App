@@ -997,7 +997,7 @@ document.onreadystatechange = function(e) {
         if(e.which == 13) {
             do_search();
         }
-    });
+    });    
 };
 
 function onDeviceReady() {

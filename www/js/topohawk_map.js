@@ -1557,9 +1557,25 @@
         }
     }
  
+    TH.util.storage.delete_indexedDB = function (callback) {
+        var req = indexedDB.deleteDatabase("TopoHawk-Cache");
+ 
+        req.onsuccess = function () {
+            console.log("Deleted database successfully");
+        };
+ 
+        req.onerror = function () {
+            console.log("Couldn't delete database");
+        };
+ 
+        req.onblocked = function () {
+            console.log("Couldn't delete database due to the operation being blocked");
+        };
+    };
+ 
     TH.util.storage.init = function (callback) {
         var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
-        var request = indexedDB.open("TopoHawk-Offline", 2);
+        var request = indexedDB.open("TopoHawk-Cache", 1);
  
         request.onupgradeneeded = function(event) {
             var db = event.target.result;
