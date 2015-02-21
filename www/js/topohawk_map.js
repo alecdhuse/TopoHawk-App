@@ -1565,14 +1565,24 @@
             var db = event.target.result;
 
             // Create photo db
-            var photo_store = db.createObjectStore("photos", {keyPath: "photo_id"});
-            var photo_id_index = photo_store.createIndex("by_photo_id",        "photo_id", {unique: true});
-            var dest_id_index  = photo_store.createIndex("by_destination_id",  "destination_id");
-
-            // Create destination db
-            var destination_store = db.createObjectStore("destinations", {keyPath: "destination_id"});
-            var destination_id_index = destination_store.createIndex("by_destination_id", "destination_id", {unique: true});
-
+            if (!db.objectStoreNames.contains("photos")) {
+                var photo_store = db.createObjectStore("photos", {keyPath: "photo_id"});
+                var photo_id_index = photo_store.createIndex("by_photo_id",        "photo_id", {unique: true});
+                var dest_id_index  = photo_store.createIndex("by_destination_id",  "destination_id");
+            }
+ 
+            if (!db.objectStoreNames.contains("destinations")) {
+                // Create destination db
+                var destination_store = db.createObjectStore("destinations", {keyPath: "destination_id"});
+                var destination_id_index = destination_store.createIndex("by_destination_id", "destination_id", {unique: true});
+            }
+ 
+            if (!db.objectStoreNames.contains("map_tiles")) {
+                // Create Map Tiles db
+                var tiles_store = db.createObjectStore("map_tiles", {keyPath: "tile_id"});
+                var tile_id_index = tiles_store.createIndex("by_tile_id", ["tile_id"], {unique: true});
+            }
+ 
             callback(db);
         };
 
