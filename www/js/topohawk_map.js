@@ -1527,6 +1527,41 @@
         }
     };
  
+    TH.util.storage.add_tile = function (x, y, z, db) {
+        if (typeof db !== 'undefined') {
+             $.ajax({
+                url: "http://foldingmap.co/map/get_tile.php",
+                type: 'POST',
+                data: {
+                    'x': x,
+                    'y': y,
+                    'z': z,
+                },
+                success: function (data) {
+                    var tx = db.transaction("map_tiles", "readwrite");
+                    var store = tx.objectStore("map_tiles");
+                    var tile_key = x + "," + y + "," + z;
+                    
+                    store.put({
+                        tile_id: tile_key,
+                        tile: data,
+                        x: x,
+                        y: y,
+                        z: z                        
+                    });
+                },
+                error: function (req, status, error) {
+                   console.log("Error retrieving map tile: " + x + ", " + y + ", " + z + " error: "+ error);
+                }
+            });
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.add_tile(x, y, z, db_init);
+            });
+        }
+    };
+ 
     TH.util.storage.get_photo = function (photo_id, callback, db) {
         if (typeof db !== 'undefined') {
             var transaction = db.transaction("photos", IDBTransaction.READ_ONLY);
