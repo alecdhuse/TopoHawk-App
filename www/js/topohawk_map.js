@@ -1547,7 +1547,7 @@
                         tile: data,
                         x: x,
                         y: y,
-                        z: z                        
+                        z: z
                     });
                 },
                 error: function (req, status, error) {
@@ -1590,7 +1590,39 @@
                 TH.util.storage.get_photo(photo_id, callback, db_init);
             });
         }
-    }
+    };
+ 
+    TH.util.storage.get_tile = function (x, y, z, callback, db) {
+        if (typeof db !== 'undefined') {
+            var transaction = db.transaction("map_tiles", IDBTransaction.READ_ONLY);
+            var store       = transaction.objectStore("map_tiles");
+            var index       = store.index("by_tile_id");
+            var tile_key    = x + "," + y + "," + z;
+            var request     = index.get(tile_key);
+ 
+            request.onsuccess = function() {
+                var matching = request.result
+ 
+                if (matching !== undefined) {
+                    var map_tile = matching.tile;
+                    callback(map_tile);
+                } else {
+                    console.log("Photo_id not in local db. " + photo_id);
+                    callback(null);
+                }
+ 
+            };
+ 
+            request.onerror = function() {
+                console.log("Error getting map tile from local db. " + tile_key);
+            };
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.get_tile(x, y, z, callback, db_init);
+            });
+        }
+    };
  
     TH.util.storage.delete_indexedDB = function (callback) {
         var req = indexedDB.deleteDatabase("TopoHawk-Cache");
