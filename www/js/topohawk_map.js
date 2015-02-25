@@ -827,7 +827,7 @@
             }
         },
         
-        _get_destination_data: function (destination_id) {
+        _get_destination_data: function (destination_id, fail_callback) {
             var map_obj = this;
             var offline_destination_found = false;
             
@@ -856,6 +856,10 @@
                    
                         if (offline_destination_found == false) {
                             console.log('No connection and destination was not found in offline cache: ' + error);
+                   
+                            if (typeof fail_callback !== 'undefined') {
+                                fail_callback(status);
+                            }
                         }
                     } else {
                         console.log('Error getting destination data: ' + error);
@@ -1560,6 +1564,31 @@
                 TH.util.storage.add_tile(x, y, z, db_init);
             });
         }
+     };
+ 
+     TH.util.storage.download_destination_tiles = function (destination_id) {
+        $.ajax({
+            url:        'https://topohawk.com/api/v1/get_destination_tiles.php',
+            dataType:   'json',
+            type:       'GET',
+            data: {
+                destination_id: destination_id
+            },
+            success: function (data) {
+                if (data.result_code > 0) {
+                    TH.util.storage.init(function(db) {
+                        for (var i=0; i<data.result.length; i++) {
+                            TH.util.storage.add_tile(data.result[i][0], data.result[i][1], data.result[i][2], db);
+                        }                                         
+                    });
+                } else {
+                    console.log("Error: " + data.result);
+                }
+            },
+            error: function (req, status, error) {
+               console.log("Error: " + error);
+            }
+        });
     };
  
     TH.util.storage.get_photo = function (photo_id, callback, db) {

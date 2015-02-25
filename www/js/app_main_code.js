@@ -683,7 +683,8 @@ function download_selected_destination() {
     /* Change Downloaded Image */
     $('#download_destination').attr('src', 'images/button-download-selected.svg');
     
-    /* TODO Download tiles */
+    /* Download tiles */
+    TH.util.storage.download_destination_tiles(map.selected_destination.destination_id);
 }
 
 function filter_list() {
