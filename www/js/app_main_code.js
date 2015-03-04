@@ -678,13 +678,12 @@ function do_search() {
 }
 
 function download_selected_destination() {
-    TH.util.offline.add_offline_destination(map.selected_destination);
+    /* TODO: start download animation */
     
-    /* Change Downloaded Image */
-    $('#download_destination').attr('src', 'images/button-download-selected.svg');
-    
-    /* Download tiles */
-    TH.util.storage.download_destination_tiles(map.selected_destination.destination_id);
+    TH.util.offline.add_offline_destination(map.selected_destination, function() {
+        /* Change Downloaded Image */
+        $('#download_destination').attr('src', 'images/button-download-selected.svg');
+    });
 }
 
 function filter_list() {

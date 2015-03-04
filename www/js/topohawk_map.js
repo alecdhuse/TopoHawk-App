@@ -1389,11 +1389,9 @@
     TH.util.offline = {};
     TH.util.storage = {};
  
-    TH.util.offline.add_offline_destination = function (destination_obj) {
+    TH.util.offline.add_offline_destination = function (destination_obj, callback) {
         var destinations = TH.util.offline.get_offline_destinations();
         destinations.push(destination_obj);
- 
-        /* TODO: Download Map Tiles */
  
         /* Download Photos */
         $.ajax({
@@ -1417,6 +1415,9 @@
  
         /* Re-save destination JSON */
         localStorage.setItem('offline_destinations', JSON.stringify(destinations));
+ 
+        /* Download Map Tiles */
+        TH.util.storage.download_destination_tiles(destination_obj.destination_id, callback);
     };
  
     TH.util.offline.add_offline_photo = function (photo_obj) {
@@ -1462,10 +1463,11 @@
             }
         }
  
-        /* Re-save tiles */
+        /* Re-save destination */
         localStorage.setItem('offline_destinations',JSON.stringify(destinations));
  
-        /* TODO: Remove Tiles */
+        /* Remove Map Tiles */
+        TH.util.storage.remove_destination_tiles(destination_id);
  
         /* Remove Photos for this destination */
         TH.util.offline.remove_offline_photos(destination_id);
@@ -1531,7 +1533,7 @@
         }
     };
  
-    TH.util.storage.add_tile = function (x, y, z, db) {
+    TH.util.storage.add_tile = function (x, y, z, db, callback) {
         if (typeof db !== 'undefined') {
              $.ajax({
                 url: "http://foldingmap.co/map/get_tile.php",
@@ -1546,6 +1548,8 @@
                     var store = tx.objectStore("map_tiles");
                     var tile_key = x + "," + y + "," + z;
                     
+                    /* console.log("Downloading tile: " + tile_key); */
+                    
                     store.put({
                         tile_id: tile_key,
                         tile: data,
@@ -1553,6 +1557,10 @@
                         y: y,
                         z: z
                     });
+                    
+                    if (typeof callback !== 'undefined') {
+                        callback();
+                    }
                 },
                 error: function (req, status, error) {
                    console.log("Error retrieving map tile: " + x + ", " + y + ", " + z + " error: "+ error);
@@ -1561,13 +1569,41 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.add_tile(x, y, z, db_init);
+                TH.util.storage.add_tile(x, y, z, db_init, callback);
             });
         }
      };
  
-     TH.util.storage.download_destination_tiles = function (destination_id) {
-        $.ajax({
+     TH.util.storage.remove_destination_tiles = function (destination_id, db) {
+        if (typeof db !== 'undefined') {
+            var transaction = db.transaction("map_tiles", "readwrite");
+            var store       = transaction.objectStore("map_tiles");
+
+            /* TODO: actualy remove the tiles */
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.offline.remove_destination_tiles(destination_id, db_init);
+            });
+        }
+     };
+ 
+     TH.util.storage.download_destination_tiles = function (destination_id, callback) {
+        TH.util.storage.get_destination_tiles(destination_id, function(data) {
+            TH.util.storage.init(function(db) {
+                for (var i=0; i<(data.result.length - 1); i++) {
+                    TH.util.storage.add_tile(data.result[i][0], data.result[i][1], data.result[i][2], db);
+                }
+                
+                /* Special case for last tile se we can know if this operation is complete */
+                var i = (data.result.length - 1);
+                TH.util.storage.add_tile(data.result[i][0], data.result[i][1], data.result[i][2], db, callback);
+            });
+        });
+    };
+ 
+    TH.util.storage.get_destination_tiles = function (destination_id, callback) {
+         $.ajax({
             url:        'https://topohawk.com/api/v1/get_destination_tiles.php',
             dataType:   'json',
             type:       'GET',
@@ -1576,11 +1612,7 @@
             },
             success: function (data) {
                 if (data.result_code > 0) {
-                    TH.util.storage.init(function(db) {
-                        for (var i=0; i<data.result.length; i++) {
-                            TH.util.storage.add_tile(data.result[i][0], data.result[i][1], data.result[i][2], db);
-                        }                                         
-                    });
+                    callback(data);
                 } else {
                     console.log("Error: " + data.result);
                 }
