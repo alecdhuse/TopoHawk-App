@@ -1576,14 +1576,33 @@
  
      TH.util.storage.remove_destination_tiles = function (destination_id, db) {
         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("map_tiles", "readwrite");
-            var store       = transaction.objectStore("map_tiles");
-
             /* TODO: actualy remove the tiles */
+            TH.util.storage.get_destination_tiles(destination_id, function(data) {
+                for (var i=0; i<(data.result.length - 1); i++) {
+                    if (parseInt(data.result[i][2]) > 12) {
+                        /* If zoom level is greater than 12 then remove it */
+                        var transaction = db.transaction("map_tiles", "readwrite");
+                        var store       = transaction.objectStore("map_tiles");
+                        var index       = store.index("by_tile_id");
+                        var tile_key = data.result[i][0].toString() + "," + data.result[i][1].toString() + "," + data.result[i][2].toString();
+                        var request = index.openCursor(IDBKeyRange.only(tile_key));
+
+                        request.onsuccess = function() {
+                            var cursor = request.result;
+             
+                            if (cursor) {
+                                cursor.delete();
+                                cursor.continue();
+                                console.log("Tile deleted: " + cursor.value.tile_key);
+                            }
+                        };
+                    }
+                }
+            });
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.offline.remove_destination_tiles(destination_id, db_init);
+                TH.util.storage.remove_destination_tiles(destination_id, db_init);
             });
         }
      };
