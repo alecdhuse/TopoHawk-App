@@ -629,10 +629,12 @@ function destination_info_loaded() {
     title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
     
     if (TH.util.offline.destination_is_offline(map.selected_destination.destination_id) === true) {
-        title_html += "<img id='download_destination' src='images/button-download-selected.svg'/></div>";
+        title_html += "<div class='download_icon' id='destination_downloaded'>";
     } else {
-        title_html += "<img id='download_destination' src='images/button-download.svg' onclick='download_selected_destination()'/></div>";
+        title_html += "<div class='download_icon' id='destination_download' onclick='download_selected_destination()'>";
     }
+    
+    title_html += "<svg width='36' height='34'><g transform='scale(1,1) translate(0,0)' ><circle class='download_outer_circle' cx='175' cy='20' r='14' transform='rotate(-90, 95, 95)'/><g><path style='stroke:none;stroke-opacity:1;fill-opacity:1'd='m 15,14.013038 c -0.288333,-0.296648 -0.120837,-0.785812 0.379028,-0.785812 0.65373,0 1.306936,0 1.960405,0 0,-2.427829 0,-4.855658 0,-7.283712 0,-0.250992 0.244035,-0.4603768 0.536562,-0.4603768 1.450579,0 2.900896,0 4.350688,0 0.292527,0 0.536563,0.2093848 0.536563,0.4603768 0,2.428054 0,4.855883 0,7.283712 0.653468,0 1.306674,0 1.960405,0 0.499865,0 0.667361,0.489164 0.379027,0.785812 -1.557262,1.605358 -3.114787,3.210716 -4.67205,4.816075 -0.114285,0.118072 -0.249277,0.160801 -0.379288,0.153158 -0.130013,0.0077 -0.264481,-0.03531 -0.37929,-0.153158 -1.557263,-1.605359 -3.114787,-3.210717 -4.67205,-4.816075 z' /><rect y='22' x='13' height='0.17780706' width='14' style='opacity:1;fill-opacity:1;fill-rule:evenodd;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' /></g></svg></div>";
     
     $("#screen_info_title").html(title_html);
     $("#screen_info_inner").html(info_html);
@@ -678,11 +680,13 @@ function do_search() {
 }
 
 function download_selected_destination() {
-    /* TODO: start download animation */
+    /* Start download animation */
+    $(".download_icon").attr("id","destination_downloading");
+    /* TODO: Set as animation if switching between destinations */
     
     TH.util.offline.add_offline_destination(map.selected_destination, function() {
         /* Change Downloaded Image */
-        $('#download_destination').attr('src', 'images/button-download-selected.svg');
+        $(".download_icon").attr("id","destination_downloaded");
     });
 }
 

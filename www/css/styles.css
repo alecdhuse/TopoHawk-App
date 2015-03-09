@@ -124,7 +124,7 @@ body {
   fill: #00bbe0;
 }
 
-#destination_downloading .outer_circle {
+#destination_downloading .download_outer_circle {
   stroke-dashoffset: 0;
   -webkit-animation: show 2s;
   -webkit-animation-iteration-count: infinite;
