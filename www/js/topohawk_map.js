@@ -1470,36 +1470,23 @@
         TH.util.storage.remove_destination_tiles(destination_id);
  
         /* Remove Photos for this destination */
-        TH.util.offline.remove_offline_photos(destination_id);
+        TH.util.storage.remove_offline_photos(destination_id);
  
         return destination_removed;
     };
  
-    TH.util.offline.remove_offline_photos = function (destination_id, db) {
-         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("photos", "readwrite");
-            var store       = transaction.objectStore("photos");
-            var index       = store.index("by_destination_id");
-            var request     = index.openCursor(IDBKeyRange.only(destination_id.toString()));
+    /* Storage Utils */
  
-            request.onsuccess = function() {
-                var cursor = request.result;
- 
-                if (cursor) {
-                    cursor.delete();
-                    cursor.continue();
-                    console.log("Photo deleted: " + cursor.value.photo_id);
-                }
-            };
+     TH.util.storage.add_destination = function (destination_obj, db) {
+        if (typeof db !== 'undefined') {
+
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.offline.remove_offline_photos(destination_id, db_init);
+                TH.util.storage.add_destination(destination_obj, db_init);
             });
         }
     };
- 
-    /* Storage Utils */
  
     TH.util.storage.add_photo = function (photo_obj, db) {
         if (typeof db !== 'undefined') {
@@ -1617,7 +1604,31 @@
         }
      };
  
-     TH.util.storage.download_destination_tiles = function (destination_id, callback) {
+     TH.util.storage.remove_offline_photos = function (destination_id, db) {
+         if (typeof db !== 'undefined') {
+            var transaction = db.transaction("photos", "readwrite");
+            var store       = transaction.objectStore("photos");
+            var index       = store.index("by_destination_id");
+            var request     = index.openCursor(IDBKeyRange.only(destination_id.toString()));
+ 
+            request.onsuccess = function() {
+                var cursor = request.result;
+ 
+                if (cursor) {
+                    cursor.delete();
+                    cursor.continue();
+                    console.log("Photo deleted: " + cursor.value.photo_id);
+                }
+            };
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.remove_offline_photos(destination_id, db_init);
+            });
+        }
+    };
+ 
+    TH.util.storage.download_destination_tiles = function (destination_id, callback) {
         TH.util.storage.get_destination_tiles(destination_id, function(data) {
             TH.util.storage.init(function(db) {
                 for (var i=0; i<(data.result.length - 1); i++) {
