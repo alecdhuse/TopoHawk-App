@@ -1548,9 +1548,7 @@
                     var store = tx.objectStore("map_tiles");
                     var tile_key = x + "," + y + "," + z;
                     
-                    /* console.log("Downloading tile: " + tile_key); */
-                    
-                    store.put({
+                    var result = store.put({
                         tile_id: tile_key,
                         tile: data,
                         x: x,
@@ -1558,9 +1556,21 @@
                         z: z
                     });
                     
-                    if (typeof callback !== 'undefined') {
-                        callback();
-                    }
+                    result.onsuccess = function(ev) {
+                        console.log("Stored tile: " + tile_key);
+                    
+                        if (typeof callback !== 'undefined') {
+                            callback();
+                        }                        
+                    };
+                    
+                    result.onerror = function(ev) {
+                        console.log("Failed to stored tile: " + tile_key + " - " + ev.srcElement.error.message);
+                    
+                        if (typeof callback !== 'undefined') {
+                            callback();
+                        }
+                    };
                 },
                 error: function (req, status, error) {
                    console.log("Error retrieving map tile: " + x + ", " + y + ", " + z + " error: "+ error);
@@ -1576,7 +1586,7 @@
  
      TH.util.storage.remove_destination_tiles = function (destination_id, db) {
         if (typeof db !== 'undefined') {
-            /* TODO: actualy remove the tiles */
+            /* Remove the tiles */
             TH.util.storage.get_destination_tiles(destination_id, function(data) {
                 for (var i=0; i<(data.result.length - 1); i++) {
                     if (parseInt(data.result[i][2]) > 12) {
@@ -1588,7 +1598,7 @@
                         var request = index.openCursor(IDBKeyRange.only(tile_key));
 
                         request.onsuccess = function() {
-                            var cursor = request.result;
+                            var cursor = this.result;
              
                             if (cursor) {
                                 cursor.delete();
