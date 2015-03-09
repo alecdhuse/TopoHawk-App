@@ -1,5 +1,15 @@
 @charset "UTF-8";
 
+@-webkit-keyframes show {
+  from { stroke-dashoffset: 500; }
+  to { stroke-dashoffset: 400; }
+}
+
+@keyframes show {
+  from { stroke-dashoffset: 500; }
+  to { stroke-dashoffset: 400; }
+}
+
 body {
     height:100%;
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
@@ -97,6 +107,31 @@ body {
     font-style: italic;
 }
 
+#destination_download {
+  stroke:#000;
+  fill: #000;
+}
+
+#destination_downloaded {
+  stroke:#00bbe0;
+  fill: #00bbe0;
+  -webkit-animation-play-state: paused;
+  animation-play-state: paused;
+}
+
+#destination_downloading {
+  stroke:#00bbe0;
+  fill: #00bbe0;
+}
+
+#destination_downloading .outer_circle {
+  stroke-dashoffset: 0;
+  -webkit-animation: show 2s;
+  -webkit-animation-iteration-count: infinite;
+  animation: show 2s;
+  animation-iteration-count: infinite;
+}
+
 .destination_list_element {
     margin-top: 5px;
 }
@@ -134,6 +169,14 @@ body {
 #download_destination {
     float: right;
     margin-top: -35px;
+}
+
+.download_outer_circle {
+  fill: transparent;
+  stroke-width: 2;
+  stroke-dasharray: 500;
+  -webkit-animation-play-state: running;
+  animation-play-state: running;
 }
 
 #filter_hidden_items {
