@@ -202,7 +202,7 @@
                     }
                 },
                 error: function (req, status, error) {
-                    console.log("Error retrieving localization info.");
+                    TH.util.logging.log("Test");("Error retrieving localization info.");
                 }
             });
         },
@@ -263,11 +263,11 @@
                        
                             map_obj.user_info_loaded();
                         } else {
-                            console.log("Error retrieving user info.");
+                            TH.util.logging.log("Test");("Error retrieving user info.");
                         }
                    },
                    error: function (req, status, error) {
-                       console.log("Error retrieving user info.");
+                       TH.util.logging.log("Test");("Error retrieving user info.");
                    }
                 });
             }
@@ -855,14 +855,14 @@
                         }
                    
                         if (offline_destination_found == false) {
-                            console.log('No connection and destination was not found in offline cache: ' + error);
+                            TH.util.logging.log("Test");('No connection and destination was not found in offline cache: ' + error);
                    
                             if (typeof fail_callback !== 'undefined') {
                                 fail_callback(status);
                             }
                         }
                     } else {
-                        console.log('Error getting destination data: ' + error);
+                        TH.util.logging.log("Test");('Error getting destination data: ' + error);
                     }
                }
             });
@@ -910,7 +910,7 @@
                    
                         map_obj._update_destinations(offline_response, map_obj);
                     } else {
-                        console.log('Error getting destinations: ' + error);
+                        TH.util.logging.log("Test");('Error getting destinations: ' + error);
                     }
                 }
             });
@@ -1103,7 +1103,7 @@
                             
                 map_obj.user_info_loaded();
             } else {
-                console.log("Error getting route grading.");
+                TH.util.logging.log("Test");("Error getting route grading.");
             }
         }
     });
@@ -1386,8 +1386,13 @@
     });
  
     TH.util = {};
+    TH.util.logging = {};
     TH.util.offline = {};
     TH.util.storage = {};
+ 
+    TH.util.logging.log = function (message) {
+        console.log(message);
+    };
  
     TH.util.offline.add_offline_destination = function (destination_obj, callback) {
         var destinations = TH.util.offline.get_offline_destinations();
@@ -1405,11 +1410,11 @@
                         TH.util.get_photo_info(response.photo_ids[i], TH.util.offline.add_offline_photo);
                     }
                 } else {
-                    console.log("Error " + response.result);
+                    TH.util.logging.log("Test");("Error " + response.result);
                 }
            },
            error: function (req, status, error) {
-               console.log("Error retrieving photo_ids.");
+               TH.util.logging.log("Test");("Error retrieving photo_ids.");
            }
         });
  
@@ -1447,7 +1452,7 @@
                 return new Array();
             }
         } else {
-            console.log("TH.util.offline.get_offline_destinations() - Cannot access local storage.");
+            TH.util.logging.log("Test");("TH.util.offline.get_offline_destinations() - Cannot access local storage.");
         }
     };
 
@@ -1504,11 +1509,11 @@
                     store.put({photo_id: photo_obj.photo_id, destination_id: photo_obj.dest_id, json: JSON.stringify(photo_obj)});
 
                     tx.oncomplete = function() {
-                        console.log("Photo downloaded: " + photo_obj.photo_id);
+                        TH.util.logging.log("Test");("Photo downloaded: " + photo_obj.photo_id);
                     };
                 },
                 error: function (req, status, error) {
-                   console.log("Error retrieving photo_ids.");
+                   TH.util.logging.log("Test");("Error retrieving photo_ids.");
                 }
             });
  
@@ -1544,7 +1549,7 @@
                     });
                     
                     result.onsuccess = function(ev) {
-                        console.log("Stored tile: " + tile_key);
+                        TH.util.logging.log("Test");("Stored tile: " + tile_key);
                     
                         if (typeof callback !== 'undefined') {
                             callback();
@@ -1552,7 +1557,7 @@
                     };
                     
                     result.onerror = function(ev) {
-                        console.log("Failed to stored tile: " + tile_key + " - " + ev.srcElement.error.message);
+                        TH.util.logging.log("Test");("Failed to stored tile: " + tile_key + " - " + ev.srcElement.error.message);
                     
                         if (typeof callback !== 'undefined') {
                             callback();
@@ -1560,7 +1565,7 @@
                     };
                 },
                 error: function (req, status, error) {
-                   console.log("Error retrieving map tile: " + x + ", " + y + ", " + z + " error: "+ error);
+                   TH.util.logging.log("Test");("Error retrieving map tile: " + x + ", " + y + ", " + z + " error: "+ error);
                 }
             });
         } else {
@@ -1590,7 +1595,7 @@
                             if (cursor) {
                                 cursor.delete();
                                 cursor.continue();
-                                console.log("Tile deleted: " + cursor.value.tile_key);
+                                TH.util.logging.log("Test");("Tile deleted: " + cursor.value.tile_key);
                             }
                         };
                     }
@@ -1617,7 +1622,7 @@
                 if (cursor) {
                     cursor.delete();
                     cursor.continue();
-                    console.log("Photo deleted: " + cursor.value.photo_id);
+                    TH.util.logging.log("Test");("Photo deleted: " + cursor.value.photo_id);
                 }
             };
         } else {
@@ -1654,11 +1659,11 @@
                 if (data.result_code > 0) {
                     callback(data);
                 } else {
-                    console.log("Error: " + data.result);
+                    TH.util.logging.log("Test");("Error: " + data.result);
                 }
             },
             error: function (req, status, error) {
-               console.log("Error: " + error);
+               TH.util.logging.log("Test");("Error: " + error);
             }
         });
     };
@@ -1677,13 +1682,13 @@
                     var photo_obj = JSON.parse(matching.json);
                     callback(photo_id, photo_obj);
                 } else {
-                    console.log("Photo_id not in local db. " + photo_id);
+                    TH.util.logging.log("Test");("Photo_id not in local db. " + photo_id);
                     callback(photo_id, null);
                 }
             };
  
             request.onerror = function() {
-                console.log("Error getting photo_id from local db. " + photo_id);
+                TH.util.logging.log("Test");("Error getting photo_id from local db. " + photo_id);
             };
         } else {
             /* DB is not given, get it */
@@ -1708,14 +1713,14 @@
                     var map_tile = matching.tile;
                     callback(map_tile);
                 } else {
-                    console.log("Photo_id not in local db. " + photo_id);
+                    TH.util.logging.log("Test");("Photo_id not in local db. " + photo_id);
                     callback(null);
                 }
  
             };
  
             request.onerror = function() {
-                console.log("Error getting map tile from local db. " + tile_key);
+                TH.util.logging.log("Test");("Error getting map tile from local db. " + tile_key);
             };
         } else {
             /* DB is not given, get it */
@@ -1729,15 +1734,15 @@
         var req = indexedDB.deleteDatabase("TopoHawk-Cache");
  
         req.onsuccess = function () {
-            console.log("Deleted database successfully");
+            TH.util.logging.log("Test");("Deleted database successfully");
         };
  
         req.onerror = function () {
-            console.log("Couldn't delete database");
+            TH.util.logging.log("Test");("Couldn't delete database");
         };
  
         req.onblocked = function () {
-            console.log("Couldn't delete database due to the operation being blocked");
+            TH.util.logging.log("Test");("Couldn't delete database due to the operation being blocked");
         };
     };
  
@@ -1775,7 +1780,7 @@
         };
  
         request.onerror = function(event) {
-            console.log("error: " + event);
+            TH.util.logging.log("Test");("error: " + event);
         };
  
     };
@@ -1816,11 +1821,11 @@
                 if (response.result_code > 0) {
                     callback(response.result);
                 } else {
-                    console.log("Error getting photo info: " + response.result);
+                    TH.util.logging.log("Test");("Error getting photo info: " + response.result);
                 }
             },
             error: function (req, status, error) {
-                console.log("Error getting photo info: " + error);
+                TH.util.logging.log("Test");("Error getting photo info: " + error);
             }
         });
     };
