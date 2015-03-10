@@ -628,8 +628,12 @@ function destination_info_loaded() {
     var title_html = "<div>" + map.selected_destination.destination_name;
     title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
     
-    if (TH.util.offline.destination_is_offline(map.selected_destination.destination_id) === true) {
+    var offline_status = TH.util.storage.get_destination_status(destination_id);
+    
+    if (offline_status == "downloaded") {
         title_html += "<div class='download_icon' id='destination_downloaded'>";
+    } else if (offline_status == "downloading") {
+        title_html += "<div class='download_icon' id='destination_downloading'>";
     } else {
         title_html += "<div class='download_icon' id='destination_download' onclick='download_selected_destination()'>";
     }
@@ -687,6 +691,10 @@ function download_selected_destination() {
     TH.util.offline.add_offline_destination(map.selected_destination, function() {
         /* Change Downloaded Image */
         $(".download_icon").attr("id","destination_downloaded");
+        
+        /* Set download as completed */
+        var local_store_item = "offline_destination_id" + map.selected_destination.destination_id;
+        localStorage.setItem(local_store_item, "downloaded");
     });
 }
 
