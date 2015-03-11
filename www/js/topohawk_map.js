@@ -1404,19 +1404,6 @@
             TH.util.storage.download_destination_tiles(destination_obj.destination_id, callback, db_init);
         });
     };
- 
-    TH.util.offline.get_offline_destinations = function () {
-        if(typeof(Storage) !== "undefined") {
-            if (typeof(localStorage.offline_destinations) !== "undefined") {
-                return JSON.parse(localStorage.getItem('offline_destinations'));
-            } else {
-                /* No destinations stored, return empty array */
-                return new Array();
-            }
-        } else {
-            TH.util.logging.log("TH.util.offline.get_offline_destinations() - Cannot access local storage.");
-        }
-    };
 
     TH.util.offline.remove_offline_destination = function (destination_id) {
         /* Remove destination */
@@ -1438,7 +1425,11 @@
             var tx = db.transaction("destinations", "readwrite");
             var store = tx.objectStore("destinations");
  
-            store.put({destination_id: destination_obj.destination_id, json: JSON.stringify(destination_obj)});
+            store.put({
+                destination_id: destination_obj.destination_id,
+                timestamp: Math.floor(Date.now() / 1000),
+                json: JSON.stringify(destination_obj)
+            });
  
             var local_store_item = "offline_destination_id" + destination_obj.destination_id;
             localStorage.setItem(local_store_item, "downloading");
