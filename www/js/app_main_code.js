@@ -148,7 +148,8 @@ function button_menu_offline_content() {
     $("#screen_offline_content").css('visibility','visible');
     $("#breadcrumbs_div_2").html("• Offline Content");
     
-    $("#screen_offline_inner").html(create_offline_destinations_list());
+    $("#screen_offline_inner").html("<div style='margin-top:5px;text-align:center;'>Loading Offline List <img src='images/ui-anim_basic_16x16.gif'></div>");
+    create_offline_destinations_list();
 }
 
 function button_menu_search() {
@@ -436,23 +437,24 @@ function create_destination_list() {
 }
 
 function create_offline_destinations_list() {
-    var list_html = "<div>";
-    var offline_destinations = TH.util.offline.get_offline_destinations();
-    
-    if (offline_destinations.length > 0) {
-        for (var i=0; i<offline_destinations.length; i++) {
-            list_html += "<div class='destination_list_offline'>"
-            list_html += "<div class='destination_list_name_offline'>" + offline_destinations[i].destination_name + "</div>";
-            list_html += "<div class='destination_list_name_offline_delete' onclick='remove_offline_destination(" + offline_destinations[i].destination_id + ")'>✖</div>";
-            list_html += "</div>"
+    TH.util.storage.get_all_destinations( function (offline_destinations) {
+        var list_html = "<div>";
+        
+        if (offline_destinations.length > 0) {
+            for (var i=0; i<offline_destinations.length; i++) {
+                list_html += "<div class='destination_list_offline'>"
+                list_html += "<div class='destination_list_name_offline'>" + offline_destinations[i].destination_name + "</div>";
+                list_html += "<div class='destination_list_name_offline_delete' onclick='remove_offline_destination(" + offline_destinations[i].destination_id + ")'>✖</div>";
+                list_html += "</div>"
+            }
+        } else {
+            list_html += "No offline destinations saved.";
         }
-    } else {
-        list_html += "No offline destinations saved.";
-    }
-    
-    list_html += "</div>";
-    
-    return list_html;
+        
+        list_html += "</div>";
+        
+        $("#screen_offline_inner").html(list_html);
+    });
 }
 
 function create_photo_canvas(photos) {
@@ -628,7 +630,7 @@ function destination_info_loaded() {
     var title_html = "<div>" + map.selected_destination.destination_name;
     title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
     
-    var offline_status = TH.util.storage.get_destination_status(destination_id);
+    var offline_status = TH.util.storage.get_destination_status(map.selected_destination.destination_id);
     
     if (offline_status == "downloaded") {
         title_html += "<div class='download_icon' id='destination_downloaded'>";
@@ -985,6 +987,7 @@ document.onreadystatechange = function(e) {
     button1_click();
     resize_window();
     settings_load();
+    TH.util.storage.check_offline_statuses();
     
     $("#stream_inner").scroll(function() {
          if ($("#stream_inner").is(":visible")) {

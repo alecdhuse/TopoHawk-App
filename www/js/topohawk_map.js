@@ -846,7 +846,7 @@
                     if (status  == "timeout" || status == "error") {
                         /* Check local cache if there is no connection */
                         if (TH.util.storage.get_destination_status(destination_id) != "none") {
-                            TH.util.storage.get_destination = function (
+                            TH.util.storage.get_destination(
                                 destination_id,
                                 function (destination_obj) {
                                     map_obj._update_destination_data(destination_obj);
@@ -1398,7 +1398,7 @@
             TH.util.storage.add_destination(destination_obj, db_init);
 
             /* Download Photos */
-            TH.util.storage.download_destination_photos(destination_id, db_init);
+            TH.util.storage.download_destination_photos(destination_obj.destination_id, db_init);
      
             /* Download Map Tiles */
             TH.util.storage.download_destination_tiles(destination_obj.destination_id, callback, db_init);
@@ -1532,7 +1532,18 @@
         }
      };
  
-     TH.util.storage.get_all_destinations = function (callback, db) {
+    TH.util.storage.check_offline_statuses = function () {
+        /* Checks to see if any downloads are stuck */
+        for (var key in localStorage){
+            if (key.substring(0, 22) == "offline_destination_id") {
+                if (localStorage.getItem(key) == "downloading") {
+                    localStorage.removeItem(key);
+                }
+            }
+        }
+    };
+ 
+    TH.util.storage.get_all_destinations = function (callback, db) {
         if (typeof db !== 'undefined') {
             var transaction = db.transaction("destinations", "readwrite");
             var store       = transaction.objectStore("destinations");
@@ -1582,7 +1593,7 @@
         var local_store_item = "offline_destination_id" + destination_id;
         var local_val = localStorage.getItem(local_store_item);
  
-        if (local_val != null pr local_val != 'undefined') {
+        if (local_val !== null && local_val != 'undefined') {
             return local_val;
         } else {
             return "none";
@@ -1602,6 +1613,10 @@
                 if (cursor) {
                     cursor.delete();
                     cursor.continue();
+ 
+                    var local_store_item = "offline_destination_id" + cursor.value.destination_id;
+                    localStorage.removeItem(local_store_item);
+ 
                     TH.util.logging.log("Destination deleted: " + cursor.value.destination_id);
                 }
             };
@@ -1676,7 +1691,7 @@
                type:     'POST',
                url:      'https://topohawk.com/api/v1/get_photos.php',
                dataType: 'json',
-               data:     { destination_id: destination_obj.destination_id },
+               data:     { destination_id: destination_id },
                success:  function(response) {
                     if (response.result_code > 0) {
                         for (var i=0; i<response.photo_ids.length; i++) {
@@ -1820,31 +1835,71 @@
  
     TH.util.storage.init = function (callback) {
         var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
-        var request = indexedDB.open("TopoHawk-Cache", 1);
+        var request = indexedDB.open("TopoHawk-Cache", 7);
  
         request.onupgradeneeded = function(event) {
             var db = event.target.result;
-
-            // Create photo db
-            if (!db.objectStoreNames.contains("photos")) {
-                var photo_store = db.createObjectStore("photos", {keyPath: "photo_id"});
-                var photo_id_index = photo_store.createIndex("by_photo_id",        "photo_id", {unique: true});
-                var dest_id_index  = photo_store.createIndex("by_destination_id",  "destination_id");
-            }
+            var dest_db_created  = false;
+            var photo_db_created = false;
+            var tiles_db_created = false;
+            var callback_made    = false;
  
             if (!db.objectStoreNames.contains("destinations")) {
                 // Create destination db
                 var destination_store = db.createObjectStore("destinations", {keyPath: "destination_id"});
                 var destination_id_index = destination_store.createIndex("by_destination_id", "destination_id", {unique: true});
+ 
+                destination_store.transaction.oncomplete = function(event) {
+                    dest_db_created = true;
+     
+                    if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                        callback_made = true;
+                        callback(db);
+                    }
+                };
+            } else {
+                dest_db_created = true;
+            }
+ 
+            // Create photo db
+            if (!db.objectStoreNames.contains("photos")) {
+                var photo_store = db.createObjectStore("photos", {keyPath: "photo_id"});
+                var photo_id_index = photo_store.createIndex("by_photo_id",        "photo_id", {unique: true});
+                var dest_id_index  = photo_store.createIndex("by_destination_id",  "destination_id");
+ 
+                photo_store.transaction.oncomplete = function(event) {
+                    photo_db_created = true;
+     
+                    if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                        callback_made = true;
+                        callback(db);
+                    }
+                };
+            } else {
+                photo_db_created = true;
             }
  
             if (!db.objectStoreNames.contains("map_tiles")) {
                 // Create Map Tiles db
                 var tiles_store = db.createObjectStore("map_tiles", {keyPath: "tile_id"});
                 var tile_id_index = tiles_store.createIndex("by_tile_id", ["tile_id"], {unique: true});
+ 
+                tiles_store.transaction.oncomplete = function(event) {
+                    tiles_db_created = true;
+     
+                    if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                        callback_made = true;
+                        callback(db);
+                    }
+                };
+            } else {
+                tiles_db_created = true;
             }
  
-            callback(db);
+            if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                callback_made = true;
+                callback(db);
+            }
         };
 
         request.onsuccess = function(event) {
@@ -1852,7 +1907,7 @@
         };
  
         request.onerror = function(event) {
-            TH.util.logging.log("error: " + event);
+            TH.util.logging.log("error: " + event.target.errorCode);
         };
  
     };
