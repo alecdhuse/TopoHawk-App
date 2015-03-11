@@ -933,7 +933,7 @@
                 //mod to make sure requests are in range
                 x = ((x % max_tiles) + max_tiles) % max_tiles;
                 
-                tile = '{z}/{x}/{y}.png'
+                var tile = '{z}/{x}/{y}.png'
                 .replace('{z}', zoom)
                 .replace('{x}', x)
                 .replace('{y}', tilePoint.y);
@@ -942,19 +942,31 @@
                     url = 'images/tiles/' + tile;
                     img.src = url;
                 } else if (err_count == 1 || (zoom < 13)) {
-                    url = 'http://a.tiles.mapbox.com/v3/scarletshark.h69c7n2p/' + tile;
-                    img.src = url;
+                    TH.util.storage.get_tile(x, tilePoint.y, zoom, function(tile_data_url) {
+                        if (tile_data_url === null) {
+                            url = 'http://a.tiles.mapbox.com/v3/scarletshark.h69c7n2p/' + tile;
+                            img.src = url;
+                        } else {
+                            img.src = tile_data_url;
+                        }
+                    });
                 } else {
-                    //Look for custom topo tile first
-                    if (err_count == 0) {
-                        var url = 'http://foldingmap.co/map/' + tile;
-                        
-                        img.onerror = function() {
-                            map_obj._get_topo_tile(layer, canvas, tilePoint, zoom, 1)
-                        };
-                        
-                        img.src = url;
-                    }
+                    TH.util.storage.get_tile(x, tilePoint.y, zoom, function(tile_data_url) {
+                        if (tile_data_url === null) {
+                            //Look for custom topo tile first
+                            if (err_count == 0) {
+                                var url = 'http://foldingmap.co/map/' + tile;
+                                
+                                img.onerror = function() {
+                                    map_obj._get_topo_tile(layer, canvas, tilePoint, zoom, 1)
+                                };
+                                
+                                img.src = url;
+                            }
+                        } else {
+                            img.src = tile_data_url;
+                        }
+                    });
                 }
 
                 layer.tileDrawn(canvas);
@@ -1545,12 +1557,12 @@
  
     TH.util.storage.get_all_destinations = function (callback, db) {
         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("destinations", "readwrite");
-            var store       = transaction.objectStore("destinations");
+            var transaction  = db.transaction("destinations", "readonly");
+            var store        = transaction.objectStore("destinations");
+            var destinations = [];
  
             store.openCursor().onsuccess = function(event) {
                 var cursor       = event.target.result;
-                var destinations = [];
  
                 if (cursor) {
                     destinations.push(JSON.parse(cursor.value.json));
@@ -1562,7 +1574,7 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.get_destination(destination_id, callback, db_init);
+                TH.util.storage.get_all_destinations(callback, db_init);
             });
         }
      };
@@ -1800,7 +1812,7 @@
                     var map_tile = matching.tile;
                     callback(map_tile);
                 } else {
-                    TH.util.logging.log("Photo_id not in local db. " + photo_id);
+                    //TH.util.logging.log("Tile not in local db. " + tile_key);
                     callback(null);
                 }
  
