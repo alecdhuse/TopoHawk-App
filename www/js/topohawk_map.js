@@ -1838,6 +1838,10 @@
  
         req.onsuccess = function () {
             TH.util.logging.log("Deleted database successfully");
+ 
+            if (typeof db !== 'undefined') {
+                callback();
+            }
         };
  
         req.onerror = function () {
@@ -1851,8 +1855,8 @@
  
     TH.util.storage.init = function (callback) {
         var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
-        var request = indexedDB.open("TopoHawk-Cache", 7);
- 
+        var request = indexedDB.open("TopoHawk-Cache", 8);
+
         request.onupgradeneeded = function(event) {
             var db = event.target.result;
             var dest_db_created  = false;
@@ -1898,7 +1902,7 @@
             if (!db.objectStoreNames.contains("map_tiles")) {
                 // Create Map Tiles db
                 var tiles_store = db.createObjectStore("map_tiles", {keyPath: "tile_id"});
-                var tile_id_index = tiles_store.createIndex("by_tile_id", ["tile_id"], {unique: true});
+                var tile_id_index = tiles_store.createIndex("by_tile_id", "tile_id", {unique: true});
  
                 tiles_store.transaction.oncomplete = function(event) {
                     tiles_db_created = true;
