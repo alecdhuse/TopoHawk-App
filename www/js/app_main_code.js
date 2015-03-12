@@ -991,6 +991,8 @@ document.onreadystatechange = function(e) {
     settings_load();
     TH.util.storage.check_offline_statuses();
     
+    //TH.util.storage.delete_indexedDB();
+    
     $("#stream_inner").scroll(function() {
          if ($("#stream_inner").is(":visible")) {
             /* Code to test if new photos need to be loaded. */

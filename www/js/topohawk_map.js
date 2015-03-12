@@ -1401,7 +1401,11 @@
     TH.util.storage = {};
  
     TH.util.logging.log = function (message) {
-        console.log(message);
+        if (message !== 'undefined') {
+            console.log(message);
+        } else {
+            console.log("Unknown Error");
+        }
     };
  
     TH.util.offline.add_offline_destination = function (destination_obj, callback) {
@@ -1855,7 +1859,7 @@
  
     TH.util.storage.init = function (callback) {
         var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
-        var request = indexedDB.open("TopoHawk-Cache", 8);
+        var request = indexedDB.open("TopoHawk-Cache", 10);
 
         request.onupgradeneeded = function(event) {
             var db = event.target.result;
