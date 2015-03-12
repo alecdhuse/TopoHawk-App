@@ -1427,7 +1427,11 @@
         /* Remove Photos for this destination */
         TH.util.storage.remove_offline_photos(destination_id);
  
-        return destination_removed;
+        /* Remove local store data */
+        var local_store_item = "offline_destination_id" + destination_id;
+        localStorage.removeItem(local_store_item);
+ 
+        return true;
     };
  
     /* Storage Utils */
@@ -1617,7 +1621,7 @@
             var transaction = db.transaction("destinations", "readwrite");
             var store       = transaction.objectStore("destinations");
             var index       = store.index("by_destination_id");
-            var request     = index.openCursor(IDBKeyRange.only(destination_id.toString()));
+            var request     = index.openCursor(IDBKeyRange.only(destination_id));
  
             request.onsuccess = function() {
                 var cursor = request.result;
@@ -1626,10 +1630,10 @@
                     cursor.delete();
                     cursor.continue();
  
-                    var local_store_item = "offline_destination_id" + cursor.value.destination_id;
+                    var local_store_item = "offline_destination_id" + destination_id;
                     localStorage.removeItem(local_store_item);
  
-                    TH.util.logging.log("Destination deleted: " + cursor.value.destination_id);
+                    TH.util.logging.log("Destination data deleted: " + cursor.value.destination_id);
                 }
             };
         } else {

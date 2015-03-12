@@ -140,6 +140,8 @@ function button_menu_edit() {
     $("#menu_popup").css('visibility','hidden');
 
     $("#breadcrumbs_div_2").html("• Edit");
+    
+    $("#screen_edit").css('visibility','visible');
 }
 
 function button_menu_offline_content() {
