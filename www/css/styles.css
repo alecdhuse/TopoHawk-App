@@ -10,6 +10,11 @@
   to { stroke-dashoffset: 400; }
 }
 
+a {
+  outline: none;
+  color: #21759b;
+}
+
 body {
     height:100%;
     font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;

@@ -89,8 +89,25 @@
                     <div id="welcome_logo">
                         <br />
                         <img src="images/logo-black.svg" style="width:100%;"/>
-                        <p style="text-align:center;width:100%;">Welcome</p>
+                        <p style="font-size:x-large;text-align:center;width:100%;">Welcome</p>
+                        <p style="text-align:center;width:100%;"><a nohref onclick="show_signup()">Sign Up</a></p>
+                        <p style="text-align:center;width:100%;"><a nohref onclick="show_login()">Login</a></p>
                     </div>
+                </div>
+            </div>
+            
+            <div id="screen_login" class="screen">
+                <div class="screen_inner">
+                    <table width="100%" border="0">
+                        <tr>
+                            <td><label for='email'>Email:</label></td>
+                            <td><input type='email' name='email' id='email' value=''></td>
+                        </tr>
+                        <tr>			
+                            <td><label for="password">Password:</label></td>
+                            <td><input type="password" name="password" id="password"></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             
@@ -131,6 +148,25 @@
                 <div class="screen_inner">
                     <div class="page_header">App and Account Settings</div>
                     <input type="checkbox" name="settings_high_res_photos" id="settings_high_res_photos" onclick="settings_update_photo_res()"> Use High Resolution Photos<br>
+                </div>
+            </div>
+            
+            <div id="screen_signup" class="screen">
+                <div class="screen_inner">
+                    <table width="100%" border="0">
+                        <tr>
+                            <td width="151"><label for="username">Username:</label></td>
+                            <td width='197'><input type='text' name='username' id='username' value=''></td>
+                        </tr>
+                        <tr>
+                            <td><label for='email'>Email:</label></td>
+                            <td><input type='email' name='email' id='email' value=''></td>
+                        </tr>
+                        <tr>			
+                            <td><label for="password">Password:</label></td>
+                            <td><input type="password" name="password" id="password"></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             

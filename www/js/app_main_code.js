@@ -96,6 +96,10 @@ function button2_click() {
     buttons_reset();
     $("#button2_img").attr("src", "images/button-destinations-selected.svg");
     $("#screen_destinations").css('visibility','visible');
+    
+    if (current_mode == MODE_NONE) {
+        $("#breadcrumbs_div_2").html("• Destinations");
+    }
 }
 
 function button3_click() {
@@ -194,11 +198,13 @@ function buttons_reset() {
      $("#screen_destinations").css('visibility','hidden');
      $("#screen_edit").css('visibility','hidden');
      $("#screen_info").css('visibility','hidden');
+     $("#screen_login").css('visibility','hidden');
      $("#screen_map").css('visibility','hidden');
      $("#screen_offline_content").css('visibility','hidden');
      $("#screen_photo").css('visibility','hidden');
      $("#screen_search").css('visibility','hidden');
      $("#screen_settings").css('visibility','hidden');
+     $("#screen_signup").css('visibility','hidden');
      $("#screen_stream").css('visibility','hidden');
      $("#screen_spray").css('visibility','hidden');
      $("#screen_ticks").css('visibility','hidden');
@@ -944,6 +950,12 @@ function settings_update_photo_res() {
     setting_save();
 }
 
+function show_login() {
+    buttons_reset();
+    $("#breadcrumbs_div_2").html("• Login");
+    $("#screen_login").css('visibility','visible');
+}
+
 function show_photo_stream() {
     $.ajax({
         type: 'POST',
@@ -969,6 +981,12 @@ function show_photo_stream() {
            console.log("Error getting photo stream: " + error);
         }
     });
+}
+
+function show_signup() {
+    buttons_reset();
+    $("#breadcrumbs_div_2").html("• Sign Up");
+    $("#screen_signup").css('visibility','visible');
 }
 
 function user_info_loaded() {
