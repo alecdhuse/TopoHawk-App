@@ -601,7 +601,7 @@
                 
                 marker.options.angle = this._gps_orientation;
             } else {
-                var marker = L.circleMarker(e.latlng, {
+                var marker = L.circleMarker(this._gps_location, {
                     radius: 4,
                     fillColor: "#2E83FF",
                     color: "#000",
@@ -1777,7 +1777,7 @@
  
     TH.util.storage.get_photo = function (photo_id, callback, db) {
         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("photos", IDBTransaction.READ_ONLY);
+            var transaction = db.transaction("photos", "readonly");
             var store   = transaction.objectStore("photos");
             var index   = store.index("by_photo_id");
             var request = index.get(photo_id);
@@ -1785,7 +1785,7 @@
             request.onsuccess = function() {
                 var matching = request.result;
 
-                if (matching !== undefined) {
+                if (matching !== 'undefined' && matching !== null) {
                     var photo_obj = JSON.parse(matching.json);
                     callback(photo_id, photo_obj);
                 } else {
@@ -1807,7 +1807,7 @@
  
     TH.util.storage.get_tile = function (x, y, z, callback, db) {
         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("map_tiles", IDBTransaction.READ_ONLY);
+            var transaction = db.transaction("map_tiles", "readonly");
             var store       = transaction.objectStore("map_tiles");
             var index       = store.index("by_tile_id");
             var tile_key    = x + "," + y + "," + z;
@@ -1816,7 +1816,7 @@
             request.onsuccess = function() {
                 var matching = request.result
  
-                if (matching !== undefined) {
+                if (matching !== 'undefined' && matching !== null) {
                     var map_tile = matching.tile;
                     callback(map_tile);
                 } else {
