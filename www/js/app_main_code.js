@@ -337,6 +337,44 @@ function change_route(route_id, screen_switch) {
     }
 }
 
+function check_for_human() {
+    var user_latlng = map.get_location();
+    var user_location = [user_latlng.lat, user_latlng.lng];
+    var email_addr = $("#signup_email").val();
+    
+    /* $(".captcha_check").prop('checked', false); */
+    
+    var data = {
+        email: email_addr,
+        user_location: user_location
+    };
+    
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1/get_verification.php',
+       dataType: 'json',
+       data:     data,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                if (response.result.check == true) {
+                    $(".captcha_check_div").css('visibility','hidden');
+                    $(".captcha_question_div").css('visibility','visible');
+           
+                    $("#captcha_question_text").html(response.result.question);
+                    $("#captcha_question_img").attr('src', response.result.image);
+                } else {
+                    $("#verification_text").html("OK");
+                }
+            } else {
+                console.log("Error " + response.result);
+            }
+       },
+       error: function (req, status, error) {
+           console.log("Error performing human check: " + error);
+       }
+    });
+}
+
 function click_stream_item(route_id, area_id, destination_id) {
     /* Update last stream clicks */
     destination_callback_change.change_screen  = true;

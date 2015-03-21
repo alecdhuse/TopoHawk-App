@@ -41,6 +41,19 @@ body {
     float: right;
 }
 
+.big_button {
+    border: 2px solid #222;
+    border-radius: 10px;
+    font-size: 2em;
+    height: 2em;
+    width: 100%;
+}
+
+.big_textbox {
+    height: 2em;
+    width: 90%;
+}
+
 #breadcrumbs_div {
     color: white;
     float: left;
@@ -91,6 +104,49 @@ body {
     position: fixed;
     vertical-align: middle;
     width: 100%
+}
+
+.captcha {
+    border: 1px solid #222;
+    border-radius: 10px;
+    height: 104px;
+    margin: 10px;
+}
+
+.captcha_check {
+    height: 30px;
+    width: 30px;
+}
+
+.captcha_check_div {
+  height: 40px;
+  width: 240px ;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 32px;
+}
+
+#captcha_question_img {
+    border: 1px solid #fff;
+    border-radius: 10px;
+}
+
+.captcha_question_div {
+    margin-top: -70px;
+    width: 100%;
+}
+
+#captcha_question_text {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: medium;
+    width: 260px;    
+}
+
+.captcha_table {
+    border: "0";
+    height: "100px";
+    width: "100%";
 }
 
 #center_div {

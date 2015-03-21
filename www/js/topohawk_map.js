@@ -139,6 +139,10 @@
             return grade_system;
         },
         
+        get_location: function () {
+            return this._gps_location;
+        },
+        
         get_zoom: function () {
             return this._leaflet_map.getZoom();
         },

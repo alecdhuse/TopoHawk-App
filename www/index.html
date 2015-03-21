@@ -101,13 +101,15 @@
                     <table width="100%" border="0">
                         <tr>
                             <td><label for='email'>Email:</label></td>
-                            <td><input type='email' name='email' id='email' value=''></td>
+                            <td><input type='email' name='email' id='email' value='' class="big_textbox"></td>
                         </tr>
                         <tr>			
                             <td><label for="password">Password:</label></td>
-                            <td><input type="password" name="password" id="password"></td>
+                            <td><input type="password" name="password" id="password" class="big_textbox"></td>
                         </tr>
                     </table>
+                    <br />
+                    <input type="submit" name="submit" class="big_button" value="Login">
                 </div>
             </div>
             
@@ -155,18 +157,37 @@
                 <div class="screen_inner">
                     <table width="100%" border="0">
                         <tr>
-                            <td width="151"><label for="username">Username:</label></td>
-                            <td width='197'><input type='text' name='username' id='username' value=''></td>
+                            <td width="100"><label for="username">Username:</label></td>
+                            <td width='197'><input type='text' name='username' id='username' class="big_textbox" value=''></td>
                         </tr>
                         <tr>
                             <td><label for='email'>Email:</label></td>
-                            <td><input type='email' name='email' id='email' value=''></td>
+                            <td><input type='email' name='email' id='signup_email' class="big_textbox" value=''></td>
                         </tr>
                         <tr>			
                             <td><label for="password">Password:</label></td>
-                            <td><input type="password" name="password" id="password"></td>
+                            <td><input type="password" name="password" id="password" class="big_textbox"></td>
                         </tr>
                     </table>
+                    
+                    <div class="captcha">
+                        <div class="captcha_check_div"><input type="checkbox" class="captcha_check" name="captcha_check" value="am_human" onchange="check_for_human()"> <span id="verification_text" style="font-size:2em;">I am human</span></div>
+                        <div class="captcha_question_div" style="visibility:hidden;">
+                            <div id="captcha_question_text"></div>
+                            <div style="float:left;margin-left:2px;">
+                                <img id="captcha_question_img" />
+                            </div>
+                            <div style="float:right;margin-top:4px;width:140px;">
+                                <div style="font-size:medium;height:20px;">Answer:</div>
+                                <div style="font-size:1em;height:25px;">
+                                    <input type="text" name="captcha_answer" id="captcha_answer">
+                                </div>
+                                <div><button type="button" style="font-size:large;width:128px;">Submit</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <input type="submit" name="submit" class="big_button" value="Sign Up">
                 </div>
             </div>
             
