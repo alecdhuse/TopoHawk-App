@@ -362,9 +362,12 @@ function check_for_human() {
            
                     $("#captcha_question_text").html(response.result.question);
                     $("#captcha_question_img").attr('src', response.result.image);
+                    $("#captcha_answer").focus();
                 } else {
                     $("#verification_text").html("OK");
                 }
+           
+                window.verification_id = response.result.verification_id;
             } else {
                 console.log("Error " + response.result);
             }
@@ -727,6 +730,34 @@ function do_search() {
        },
        error: function (req, status, error) {
            $("#search_results").html("Error performing seach: " + error);
+       }
+    });
+}
+
+function do_sign_up() {
+
+    var data = {
+        username:        $("#signup_username").val(),
+        email:           $("#signup_email").val(),
+        password:        $("#signup_password").val(),
+        verification_id: window.verification_id,
+        answer:          $("#captcha_answer").val()
+    };
+
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1/user_signup.php',
+       dataType: 'json',
+       data:     data,
+       success:  function(response) {
+            if (response.result_code > 0) {
+           
+            } else {
+           
+            }
+       },
+       error: function (req, status, error) {
+           console.log("Error performing seach: " + error);
        }
     });
 }
