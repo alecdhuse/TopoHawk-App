@@ -1789,7 +1789,7 @@
             request.onsuccess = function() {
                 var matching = request.result;
 
-                if (matching !== 'undefined' && matching !== null) {
+                if (typeof(matching) !== 'undefined' && matching !== null) {
                     var photo_obj = JSON.parse(matching.json);
                     callback(photo_id, photo_obj);
                 } else {
@@ -1820,7 +1820,7 @@
             request.onsuccess = function() {
                 var matching = request.result
  
-                if (matching !== 'undefined' && matching !== null) {
+                if (typeof(matching) !== 'undefined' && matching !== null) {
                     var map_tile = matching.tile;
                     callback(map_tile);
                 } else {
