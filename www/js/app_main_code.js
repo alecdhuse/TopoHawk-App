@@ -193,7 +193,9 @@ function buttons_reset() {
      $("#button2_img").attr("src", "images/button-destinations.svg");
      $("#button3_img").attr("src", "images/button-photos.svg");
      $("#button4_img").attr("src", "images/button-map.svg");
-     
+    
+     $(".captcha_question_div").css('visibility','hidden');
+    
      $("#screen_about").css('visibility','hidden');
      $("#screen_destinations").css('visibility','hidden');
      $("#screen_edit").css('visibility','hidden');
@@ -344,6 +346,8 @@ function check_for_human() {
     
     /* $(".captcha_check").prop('checked', false); */
     
+    $("#verification_text").html("<img src='images/ui-anim_basic_16x16.gif' />");
+    
     var data = {
         email: email_addr,
         user_location: user_location
@@ -362,6 +366,7 @@ function check_for_human() {
            
                     $("#captcha_question_text").html(response.result.question);
                     $("#captcha_question_img").attr('src', response.result.image);
+                    $("#captcha_answer").val("");
                     $("#captcha_answer").focus();
                 } else {
                     $("#verification_text").html("OK");
@@ -1062,6 +1067,10 @@ function show_signup() {
     buttons_reset();
     $("#breadcrumbs_div_2").html("• Sign Up");
     $("#screen_signup").css('visibility','visible');
+    
+    if ($(".captcha_check_div").css('visibility') == 'hidden') {
+        $(".captcha_question_div").css('visibility','visible');
+    }
 }
 
 function user_info_loaded() {
