@@ -740,8 +740,8 @@ function do_sign_up() {
         username:        $("#signup_username").val(),
         email:           $("#signup_email").val(),
         password:        $("#signup_password").val(),
-        verification_id: window.verification_id,
-        answer:          $("#captcha_answer").val()
+        verification_id: (window.verification_id),
+        answer:          parseInt($("#captcha_answer").val())
     };
 
     $.ajax({
@@ -751,9 +751,15 @@ function do_sign_up() {
        data:     data,
        success:  function(response) {
             if (response.result_code > 0) {
-           
+                $("#signup_message").removeClass("red_text");
+                $("#signup_message").html(response.result);
             } else {
+                if (response.result_code == -5) {
+                    $("#captcha_answer").val("");
+                }
            
+                $("#signup_message").addClass("red_text");
+                $("#signup_message").html(response.result);
             }
        },
        error: function (req, status, error) {

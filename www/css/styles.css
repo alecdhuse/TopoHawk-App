@@ -113,6 +113,10 @@ body {
     margin: 10px;
 }
 
+#captcha_answer {
+    width: 90px;
+}
+
 .captcha_check {
     height: 30px;
     width: 30px;
@@ -315,6 +319,10 @@ body {
     margin-right: 8px;
 }
 
+.red_text {
+    color: red;
+}
+
 .route_list_rating {
     width: auto;
 }
@@ -384,6 +392,11 @@ body {
 .search_text {
     height: 2em;
     width: 100%;
+}
+
+#signup_message {
+    margin: 10px;
+    text-align: center;
 }
 
 #top_bar_div {
