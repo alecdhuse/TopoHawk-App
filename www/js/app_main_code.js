@@ -761,6 +761,7 @@ function do_sign_up() {
             } else {
                 if (response.result_code == -5) {
                     $("#captcha_answer").val("");
+                    check_for_human();
                 }
            
                 $("#signup_message").addClass("red_text");
