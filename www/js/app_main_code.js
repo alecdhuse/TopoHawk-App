@@ -3,6 +3,7 @@ var MODE_DESTINATION = 1;
 var MODE_AREA        = 2;
 var MODE_ROUTE       = 3;
 
+var api_key              = "";
 var current_mode         = MODE_NONE;
 var destination_callback = false;
 var map_finished         = false;
@@ -708,6 +709,33 @@ function destination_info_loaded() {
         destination_callback = false;
         proccess_destination_callback(destination_callback_change);
     }
+}
+
+function do_login() {
+    var login_data = {
+        email:    $('#login_email').val(),
+        password: $('#login_password').val(),
+        get_key: true
+    };
+    
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1/login.php',
+       dataType: 'json',
+       data:     login_data,
+       success:  function(response) {
+            if (response.result_code > 1) {
+                api_key = response.result.key;
+                localStorage.setItem("key", api_key);
+                $('#login_message').html('Login Successful');
+            } else {
+                $('#login_message').html(response.result);
+            }
+       },
+       error: function (req, status, error) {
+           $('#login_message').html("Error logging in: " + error);
+       }
+    });
 }
 
 function do_search() {

@@ -372,6 +372,11 @@ body {
     overflow: hidden;
 }
 
+.screen_message {
+    margin: 10px;
+    text-align: center;
+}
+
 #screen_photo {
     background: #242424;
     overflow-x: hidden;
@@ -393,11 +398,6 @@ body {
 .search_text {
     height: 2em;
     width: 100%;
-}
-
-#signup_message {
-    margin: 10px;
-    text-align: center;
 }
 
 #top_bar_div {
