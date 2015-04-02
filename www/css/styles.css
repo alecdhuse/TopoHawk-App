@@ -359,6 +359,10 @@ body {
     font-weight: normal;
 }
 
+#screen_info_inner::-webkit-scrollbar {
+    width: 0 !important;
+}
+
 .screen_inner {
     height: 100%;
     margin-left: 8px;
