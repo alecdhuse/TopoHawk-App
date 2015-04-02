@@ -90,6 +90,10 @@
                     }
                 }
             }
+            
+            if (this._options.show_location) {
+                this._leaflet_map.locate({setView: false, watch: false, enableHighAccuracy: true});
+            }
         },
         
         add_marker: function (lat, lng, marker_type) {
