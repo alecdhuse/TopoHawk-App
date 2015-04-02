@@ -815,10 +815,12 @@
                                 
                                 if (map_obj._options.mobile === false) {
                                     new_marker.on("click", function () {
+                                        map_obj.set_area(feature.properties.area_id);
                                         map_obj.show_route_popup(feature);
                                     });
                                 } else {
                                     new_marker.on("click", function () {
+                                        map_obj.set_area(feature.properties.area_id);
                                         map_obj.on_route_click(feature);
                                     });
                                 }

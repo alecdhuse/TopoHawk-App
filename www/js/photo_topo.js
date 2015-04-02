@@ -227,10 +227,14 @@ PT.prototype._load_photo = function(result) {
     paper = pt_obj.paper_scope;
     
     if (result.photo_file.slice(0, 4) != "data") {
-        if (this.show_high_res_photos === true) {
-            this.photo_url = "https://topohawk.com/images/routes/" + result.photo_file;
+        if (result.photo_file != "no-photo.png") {
+            if (this.show_high_res_photos === true) {
+                this.photo_url = "https://topohawk.com/images/routes/" + result.photo_file;
+            } else {
+                this.photo_url = "https://topohawk.com/images/routes/t" + result.photo_file;
+            }
         } else {
-            this.photo_url = "https://topohawk.com/images/routes/t" + result.photo_file;
+            this.photo_url = "images/no-photo.png";
         }
     } else {
         this.photo_url = result.photo_file;
