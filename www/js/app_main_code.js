@@ -728,7 +728,11 @@ function do_login() {
        success:  function(response) {
             if (response.result_code > 1) {
                 api_key = response.result.key;
+                user_id = response.result.user_id;
+           
                 localStorage.setItem("key", api_key);
+                localStorage.setItem("user_id", user_id);
+           
                 $('#login_message').html('Login Successful');
             } else {
                 $('#login_message').html(response.result);
@@ -914,8 +918,6 @@ function get_photo_ids() {
 }
 
 function get_route_ticks(user_id, route_id, callback) {
-    var api_key = localStorage.getItem("key");
-    
     data = {
         key:        api_key,
         route_id:   route_id,
@@ -1178,6 +1180,19 @@ document.onreadystatechange = function(e) {
     resize_window();
     settings_load();
     TH.util.storage.check_offline_statuses();
+    
+    //load key and user_id
+    if (localStorage.getItem("key") === null ) {
+        api_key = localStorage.getItem("key");
+    } else {
+        api_key = "";
+    }
+    
+    if (localStorage.getItem("user_id") === null ) {
+        user_id = localStorage.getItem("user_id");
+    } else {
+        user_id = -1;
+    }
     
     //TH.util.storage.delete_indexedDB();
     
