@@ -945,11 +945,22 @@ function get_route_ticks_html(user_id, route_id, html_element) {
         var html = "";
         
         for (var i=0; i<result.length; i++) {
-            html += "<div>";
+            if (i % 2 == 0) {
+                html += "<div class='route_tick_colored'>";
+            } else {
+                html += "<div class='route_tick'>";
+            }
+            
+            html += "<div class='route_tick_name'>";
             html += "<a nohref>" + result[i].route_name + "</a>";
-            html += "<span>" + result[i].send_type + "</span>";
-            html += "<span>" + result[i].send_date + "</span>";
-            html += "<span>" + result[i].send_comment + "</span>";
+            html += "<div class='route_tick_comment'>" + result[i].send_comment + "</div>";
+            html += "</div>";
+            
+            html += "<div class='route_tick_type'>";
+            html += "<div>" + result[i].send_type + "</div>";
+            html += "<div>" + result[i].send_date + "</div>";
+            html += "</div>";                        
+            
             html += "</div>";
         }
         

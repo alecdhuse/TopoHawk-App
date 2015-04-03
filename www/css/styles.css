@@ -332,6 +332,38 @@ body {
     width: auto;
 }
 
+.route_tick_colored {
+    background-color: #E7E3E3;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    min-height: 42px;
+    width: 100%;
+}
+
+.route_tick {
+    margin-bottom: 3px;
+    margin-top: 3px;
+    min-height: 42px;
+    width: 100%;
+}
+
+.route_tick_comment {
+    font-size: 12px;
+}
+
+.route_tick_name {
+    float: left;
+    min-height: 40px;
+    width: 60%;
+}
+
+.route_tick_type {
+    float: right;
+    height: 40px;
+    text-align: right;
+    width: 40%;
+}
+
 #search_results {
     margin-bottom: 140px;
     width:100%;
@@ -411,6 +443,11 @@ body {
     top: 0px;
     width: 100%;
     z-index: 9000;
+}
+
+#user_route_ticks {
+    height: 100%;
+    margin-bottom: 80px;
 }
 
 #welcome_logo {
