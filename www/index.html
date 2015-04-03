@@ -96,8 +96,10 @@
                             <p>Topo Hawk provides climbers with maps, topos, information and photos about climbing destinations around the world.</p>
                             <p>By creating an account climbers can add their knowledge of destinations, sharing it with our community.</p>
                         </div>
-                        <p style="text-align:center;font-size:x-large;"><a nohref onclick="show_signup()">Sign Up</a></p>
-                        <p style="text-align:center;font-size:x-large;"><a nohref onclick="show_login()">Login</a></p>
+                        <div id="welcome_account_links">
+                            <p style="text-align:center;font-size:x-large;"><a nohref onclick="show_signup()">Sign Up</a></p>
+                            <p style="text-align:center;font-size:x-large;"><a nohref onclick="show_login()">Login</a></p>
+                        </div>
                     </div>
                     <div style="height:100px;width:100%;"> </div>
                 </div>
@@ -246,13 +248,14 @@
         </div>
         
         <div id="menu_popup">
+            <div class="menu_item" onclick="button_menu_about()">About</div><hr/>
             <div class="menu_item" onclick="button_menu_search()">Search</div><hr/>
             <div class="menu_item" onclick="button_menu_spray()">Spray</div><hr/>
             <div class="menu_item" onclick="button_menu_ticks()">Ticks</div><hr/>
             <div class="menu_item" onclick="button_menu_offline_content()">Offline Content</div><hr/>
             <div class="menu_item" onclick="button_menu_edit()">Edit</div><hr/>
             <div class="menu_item" onclick="button_menu_settings()">Settings</div><hr/>
-            <div class="menu_item" onclick="button_menu_about()">About</div>
+            <div class="menu_item" id="menu_login_logout" onclick="button_login_logout()">Login</div>
         </div>
         
         <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>

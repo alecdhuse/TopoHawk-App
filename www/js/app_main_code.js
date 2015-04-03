@@ -149,6 +149,19 @@ function button_menu_edit() {
     $("#screen_edit").css('visibility','visible');
 }
 
+function button_login_logout() {
+    if (api_key.length > 0) {
+        //logout
+        api_key = "";
+        user_id = -1;
+        
+        localStorage.setItem("key", api_key);
+        localStorage.setItem("user_id", user_id);
+    }
+    
+    show_login();
+}
+
 function button_menu_offline_content() {
     buttons_reset();
     $("#menu_popup").css('visibility','hidden');
@@ -1182,13 +1195,15 @@ document.onreadystatechange = function(e) {
     TH.util.storage.check_offline_statuses();
     
     //load key and user_id
-    if (localStorage.getItem("key") === null ) {
+    if (localStorage.getItem("key") !== null ) {
         api_key = localStorage.getItem("key");
+        $("#welcome_account_links").css('visibility','hidden');
+        $("#menu_login_logout").html("Logout");
     } else {
         api_key = "";
     }
     
-    if (localStorage.getItem("user_id") === null ) {
+    if (localStorage.getItem("user_id") !== null ) {
         user_id = localStorage.getItem("user_id");
     } else {
         user_id = -1;
