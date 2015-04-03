@@ -185,6 +185,8 @@ function button_menu_ticks() {
     $("#menu_popup").css('visibility','hidden');
     $("#screen_ticks").css('visibility','visible');
     $("#breadcrumbs_div_2").html("• Route Ticks");
+    
+    get_route_ticks_html(0, 0, "#user_route_ticks");
 }
 
 function buttons_reset() {
@@ -909,6 +911,50 @@ function get_photo_ids() {
             console.log("Function get_photo_ids has incorrect parameters.");
         }
     }
+}
+
+function get_route_ticks(user_id, route_id, callback) {
+    var api_key = localStorage.getItem("key");
+    
+    data = {
+        key:        api_key,
+        route_id:   route_id,
+        user_id:    user_id
+    }
+
+    $.ajax({
+       type:     'GET',
+       url:      'https://topohawk.com/api/v1/get_route_ticks.php',
+       dataType: 'json',
+       data:     data,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                callback(response.result);
+            } else {
+                console.log("Error " + response.result);
+            }
+       },
+       error: function (req, status, error) {
+           console.log("Error retrieving route ticks.");
+       }
+    });
+}
+
+function get_route_ticks_html(user_id, route_id, html_element) {
+    get_route_ticks(user_id, route_id, function (result) {
+        var html = "";
+        
+        for (var i=0; i<result.length; i++) {
+            html += "<div>";
+            html += "<a nohref>" + result[i].route_name + "</a>";
+            html += "<span>" + result[i].send_type + "</span>";
+            html += "<span>" + result[i].send_date + "</span>";
+            html += "<span>" + result[i].send_comment + "</span>";
+            html += "</div>";
+        }
+        
+        $(html_element).html(html);
+    });
 }
 
 function get_user_info() {
