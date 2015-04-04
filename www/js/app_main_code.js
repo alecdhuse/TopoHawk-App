@@ -157,8 +157,10 @@ function button_login_logout() {
         
         localStorage.setItem("key", api_key);
         localStorage.setItem("user_id", user_id);
+        $("#menu_login_logout").html("Login");
     }
     
+    $("#menu_popup").css('visibility','hidden');
     show_login();
 }
 
@@ -1197,8 +1199,11 @@ document.onreadystatechange = function(e) {
     //load key and user_id
     if (localStorage.getItem("key") !== null ) {
         api_key = localStorage.getItem("key");
-        $("#welcome_account_links").css('visibility','hidden');
-        $("#menu_login_logout").html("Logout");
+        
+        if (api_key.length > 0) {
+            $("#welcome_account_links").css('visibility','hidden');
+            $("#menu_login_logout").html("Logout");
+        }
     } else {
         api_key = "";
     }
