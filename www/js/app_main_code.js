@@ -201,7 +201,11 @@ function button_menu_ticks() {
     $("#screen_ticks").css('visibility','visible');
     $("#breadcrumbs_div_2").html("• Route Ticks");
     
-    get_route_ticks_html(0, 0, "#user_route_ticks");
+    if (user_id >= 0) {
+        get_route_ticks_html(0, 0, "#user_route_ticks");
+    } else {
+        $("#user_route_ticks").html("You must be logged in to use the route ticks feature.");
+    }
 }
 
 function buttons_reset() {
@@ -975,7 +979,12 @@ function get_route_ticks_html(user_id, route_id, html_element) {
             
             html += "<div class='route_tick_type'>";
             html += "<div>" + result[i].send_type + "</div>";
-            html += "<div>" + result[i].send_date + "</div>";
+            html += "<div class='route_tick_date'>" + result[i].send_date + "</div>";
+            
+            if (user_id = window.user_id) {
+                html += "<div>Edit" + "</div>";
+            }
+            
             html += "</div>";                        
             
             html += "</div>";

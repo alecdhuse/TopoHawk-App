@@ -336,14 +336,14 @@ body {
     background-color: #E7E3E3;
     margin-bottom: 3px;
     margin-top: 3px;
-    min-height: 42px;
+    min-height: 56px;
     width: 100%;
 }
 
 .route_tick {
     margin-bottom: 3px;
     margin-top: 3px;
-    min-height: 42px;
+    min-height: 56px;
     width: 100%;
 }
 
@@ -351,15 +351,19 @@ body {
     font-size: 12px;
 }
 
+.route_tick_date {
+    font-size: 12px;
+}
+
 .route_tick_name {
     float: left;
-    min-height: 40px;
+    min-height: 55px;
     width: 60%;
 }
 
 .route_tick_type {
     float: right;
-    height: 40px;
+    height: 55px;
     text-align: right;
     width: 40%;
 }
