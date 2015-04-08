@@ -754,6 +754,9 @@ function do_login() {
                 localStorage.setItem("user_id", user_id);
            
                 $('#login_message').html('Login Successful');
+           
+                //Wait a bit
+                setTimeout(function() { button1_click(); }, 1000);           
             } else {
                 $('#login_message').html(response.result);
             }
@@ -1205,6 +1208,9 @@ document.onreadystatechange = function(e) {
     settings_load();
     TH.util.storage.check_offline_statuses();
     
+    $('#tick_date').datepicker({dateFormat: 'yy-mm-dd'});
+    //TH.util.storage.delete_indexedDB();
+    
     //load key and user_id
     if (localStorage.getItem("key") !== null ) {
         api_key = localStorage.getItem("key");
@@ -1222,8 +1228,6 @@ document.onreadystatechange = function(e) {
     } else {
         user_id = -1;
     }
-    
-    //TH.util.storage.delete_indexedDB();
     
     $("#stream_inner").scroll(function() {
          if ($("#stream_inner").is(":visible")) {

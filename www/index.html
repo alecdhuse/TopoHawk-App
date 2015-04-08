@@ -121,6 +121,11 @@
                     <input type="submit" name="submit" class="big_button" value="Login" onclick="do_login()">
                     
                     <div class='screen_message' id="login_message"></div>
+                    <br />
+                    <div style="text-align:center;">
+                        <p>Don't have an account?</p>
+                        <a nohref onclick="show_signup()">Sign Up</a>
+                    </div>
                 </div>
             </div>
             
@@ -233,7 +238,7 @@
                 <div class='control_header'>Comment:</div>
                 <textarea id='send_comment' rows='5' cols='45'></textarea>
                 <div class='control_header'>Date:</div>
-                <div id='date' style='float: left !important;'></div><br />
+                <div id='tick_date' style='float: left !important;'></div><br />
                 <div id='tick_below'>
                     <input type='checkbox' class='visible_check' name='public_visible' id='public_visible' value='public_visible' checked>Publicly Visible
                     <div id='submit_buttons'>
