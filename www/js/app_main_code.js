@@ -231,6 +231,7 @@ function buttons_reset() {
      $("#screen_signup").css('visibility','hidden');
      $("#screen_stream").css('visibility','hidden');
      $("#screen_spray").css('visibility','hidden');
+     $("#screen_tick_edit").css('visibility','hidden');
      $("#screen_ticks").css('visibility','hidden');
 }
 
@@ -980,12 +981,11 @@ function get_route_ticks_html(user_id, route_id, html_element) {
             html += "<div class='route_tick_type'>";
             html += "<div>" + result[i].send_type + "</div>";
             html += "<div class='route_tick_date'>" + result[i].send_date + "</div>";
+            html += "</div>";                        
             
             if (user_id = window.user_id) {
-                html += "<div>Edit" + "</div>";
+                //html += "<div style='text-align:center;'>Edit" + "</div>";
             }
-            
-            html += "</div>";                        
             
             html += "</div>";
         }
