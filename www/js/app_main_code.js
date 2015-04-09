@@ -16,6 +16,7 @@ var stream_offset        = 0;
 var stream_scroll        = false;
 var swipe_binded         = false;
 var user_id              = -1;
+var version              = "1.0.0"
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -364,7 +365,7 @@ function change_route(route_id, screen_switch) {
 
 function check_for_human() {
     var user_latlng = map.get_location();
-    var user_location = [user_latlng.lat, user_latlng.lng];
+    var user_location = [user_latlng.lat.toFixed(2), user_latlng.lng.toFixed(2)];
     var email_addr = $("#signup_email").val();
     
     /* $(".captcha_check").prop('checked', false); */
@@ -731,6 +732,19 @@ function destination_info_loaded() {
         destination_callback = false;
         proccess_destination_callback(destination_callback_change);
     }
+}
+
+function do_checkin() {
+    var logged_in       = (user_id >= 0) ? true : false;
+    var user_latlng     = map.get_location();
+    var user_location   = [user_latlng.lat.toFixed(2), user_latlng.lng.toFixed(2)];
+    
+    var data = {
+        user_agent: navigator.userAgent,
+        version:    version,
+        location:   user_location,
+        logged_in:  logged_in
+    };
 }
 
 function do_login() {
@@ -1252,7 +1266,9 @@ document.onreadystatechange = function(e) {
         if(e.which == 13) {
             do_search();
         }
-    });    
+    });
+    
+    do_checkin();
 };
 
 function onDeviceReady() {
