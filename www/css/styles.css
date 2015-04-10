@@ -276,6 +276,12 @@ body {
     margin-right: 8px;
 }
 
+.medium_button {
+    font-size: 1.5em;
+    height: 1.5em;
+    width: 45%;
+}
+
 #menu_div {
     float: right;
     margin-right: 5px;
@@ -438,6 +444,20 @@ body {
 .search_text {
     height: 2em;
     width: 100%;
+}
+
+#tick_below {
+    padding-top: 260px;
+}
+
+#tick_public_visible {
+    height: 2em;
+    width: 2em;
+}
+
+#tick_send_type {
+    font-size: 1.0em;
+    min-width: 120px;
 }
 
 #top_bar_div {

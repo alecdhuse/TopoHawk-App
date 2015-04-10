@@ -223,29 +223,38 @@
             </div>
             
             <div id="screen_tick_edit" class="screen">
-                <div class='control_header'>Send Type: &nbsp;
-                    <select name='send_id' id='send_type'>
-                        <option value='Project'>Project</option>
-                        <option value='Onsight'>Onsight</option>
-                        <option value='Flash'>Flash</option>
-                        <option value='Redpoint'>Redpoint</option>
-                        <option value='Pinkpoint'>Pinkpoint</option>
-                        <option value='Hangdog'>Hangdog</option>
-                        <option value='Top Rope'>Top Rope</option>
-                        <option value='Free Solo'>Free Solo</option>
-                    </select>
-                </div>
-                <div class='control_header'>Comment:</div>
-                <textarea id='send_comment' rows='5' cols='45'></textarea>
-                <div class='control_header'>Date:</div>
-                <div id='tick_date' style='float: left !important;'></div><br />
-                <div id='tick_below'>
-                    <input type='checkbox' class='visible_check' name='public_visible' id='public_visible' value='public_visible' checked>Publicly Visible
-                    <div id='submit_buttons'>
-                        <button class='tick_button' type='button' onClick='add_route_tick()'>Submit</button>
-                        <button class='tick_button' type='button' onclick='hide_route_tick()'>Cancel</button>
+                <div class="screen_inner">
+                    <div class='control_header'>Send Type: &nbsp;
+                        <select name='send_id' id='tick_send_type'>
+                            <option value='Project'>Project</option>
+                            <option value='Onsight'>Onsight</option>
+                            <option value='Flash'>Flash</option>
+                            <option value='Redpoint'>Redpoint</option>
+                            <option value='Pinkpoint'>Pinkpoint</option>
+                            <option value='Hangdog'>Hangdog</option>
+                            <option value='Top Rope'>Top Rope</option>
+                            <option value='Free Solo'>Free Solo</option>
+                        </select>
+                    </div>
+                    
+                    <br />
+                    
+                    <div class='control_header'>Comment:</div>
+                    <textarea id='tick_send_comment' rows='5' cols='40'></textarea><br />
+                    
+                    <div class='control_header'>Date:</div>
+                    <div id='tick_date' style='float: left !important;'></div><br />
+                    
+                    <div id='tick_below'>
+                        <div><input type='checkbox' name='public_visible' id='tick_public_visible' value='public_visible' checked>Publicly Visible</div>
+                        <br />
+                        <div id='submit_buttons'>
+                            <button class='medium_button' type='button' onClick='add_route_tick()'>Submit</button>
+                            <button class='medium_button' type='button' onclick='button_menu_ticks()'>Cancel</button>
+                        </div>
                     </div>
                 </div>
+                
             </div>
             
             <div id="screen_ticks" class="screen">

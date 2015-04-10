@@ -745,6 +745,23 @@ function do_checkin() {
         location:   user_location,
         logged_in:  logged_in
     };
+    
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1/app_checkin.php',
+       dataType: 'json',
+       data:     data,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                console.log(response.result);
+            } else {
+                console.log(response.result);
+            }
+       },
+       error: function (req, status, error) {
+           console.log("Error checking in: " + error);
+       }
+    });
 }
 
 function do_login() {
@@ -860,6 +877,17 @@ function download_selected_destination() {
     });
 }
 
+function edit_route_tick(tick_id, send_type, comment, date, public) {
+    var sel = "#tick_send_type option[value='" + send_type + "']";
+    $(sel).prop("selected", true)
+    $("#tick_send_comment").val(comment);
+    $("#tick_date").datepicker("setDate", new Date(date));
+    $("#tick_public_visible").prop('checked', public);
+    
+    buttons_reset();
+    $("#screen_tick_edit").css('visibility','visible');
+}
+
 function filter_list() {
     if (current_mode == MODE_NONE) {
         create_destination_list();
@@ -892,7 +920,7 @@ function finish_map_setup(max_slider_val) {
             }
         });
         
-        $("body select").msDropDown({
+        $(".filter_rating_dd").msDropDown({
             animStyle: 'none',
             on: {change:function(data, ui) {
                 map.route_filter.min_rating = parseInt(data.value);
@@ -984,10 +1012,12 @@ function get_route_ticks_html(user_id, route_id, html_element) {
         var html = "";
         
         for (var i=0; i<result.length; i++) {
+            var args = "edit_route_tick(" + result[i].tick_id + ", '" + result[i].send_type + "', '" + result[i].send_comment + "', '" + result[i].send_date + "', " + result[i].send_public + ")";
+            
             if (i % 2 == 0) {
-                html += "<div class='route_tick_colored'>";
+                html += "<div class='route_tick_colored' onclick=\"" + args + "\">";
             } else {
-                html += "<div class='route_tick'>";
+                html += "<div class='route_tick' onclick=\"" + args + "\">";
             }
             
             html += "<div class='route_tick_name'>";
@@ -1268,7 +1298,9 @@ document.onreadystatechange = function(e) {
         }
     });
     
-    do_checkin();
+    map.on_first_gps_fix = function (lat, lng) {
+        do_checkin();
+    };    
 };
 
 function onDeviceReady() {
