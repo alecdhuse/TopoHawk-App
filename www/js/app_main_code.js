@@ -883,6 +883,7 @@ function edit_route_tick(tick_id, send_type, comment, date, public) {
     $("#tick_send_comment").val(comment);
     $("#tick_date").datepicker("setDate", new Date(date));
     $("#tick_public_visible").prop('checked', public);
+    $("#edit_tick_id").val(tick_id);
     
     buttons_reset();
     $("#screen_tick_edit").css('visibility','visible');
@@ -1230,6 +1231,49 @@ function show_signup() {
     if ($(".captcha_check_div").css('visibility') == 'hidden') {
         $(".captcha_question_div").css('visibility','visible');
     }
+}
+
+function update_current_route_tick() {
+    var tick_comment = $("#tick_send_comment").val();
+    var tick_id      = parseInt($("#edit_tick_id").val());
+    var tick_public  = $("#tick_public_visible").is(":checked");
+    var tick_type    = $("#tick_send_type").val();
+    
+    //Get Send Date
+    var day1   = $("#tick_date").datepicker('getDate').getDate();
+    var month1 = $("#tick_date").datepicker('getDate').getMonth() + 1;
+    var year1  = $("#tick_date").datepicker('getDate').getFullYear();
+    var tick_date = year1 + "-" + month1 + "-" + day1;
+    
+    var data = {
+        'user_id':       user_id,
+        'key':           api_key,
+        'tick_id':       tick_id,
+        'tick_type':     tick_type,
+        'tick_date':     tick_date,
+        'tick_comment':  tick_comment,
+        'is_public':     tick_public
+    };
+    
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1/edit_route_tick.php',
+       dataType: 'json',
+       data:     data,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                console.log(response.result);
+                button_menu_ticks();
+            } else {
+                console.log(response.result);
+            }
+       },
+       error: function (req, status, error) {
+           console.log("Error updating tick: " + error);
+       }
+    });
+    
+    //TODO: Handle Errors
 }
 
 function user_info_loaded() {
