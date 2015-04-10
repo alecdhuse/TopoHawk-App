@@ -44,6 +44,10 @@ map.on_user_info_loaded         = function ()                { user_info_loaded(
 map.destination_info_loaded     = function (destination_obj) { create_destination_list() };
 map.on_destination_info_loaded  = function ()                { destination_info_loaded() };
 
+function add_tick() {
+
+}
+
 function bind_swipes() {
     if (swipe_binded === false) {
         $("#screen_photo").on( "swipeleft", function() {
@@ -318,6 +322,7 @@ function change_route(route_id, screen_switch) {
     
     title_html += "</span><br/>"
     title_html += "<span>" + TH.util.get_star_html(map.selected_route.properties.rating, true).substr(5) + "</span>";
+    title_html += "<span style='float:right;margin-top:-30px;'><img src='images/tick_route.svg' onclick='add_tick()' /></span>";
     
     $("#screen_info_title").html(title_html);
     
