@@ -45,7 +45,18 @@ map.destination_info_loaded     = function (destination_obj) { create_destinatio
 map.on_destination_info_loaded  = function ()                { destination_info_loaded() };
 
 function add_tick() {
-
+    var route_id = map.selected_route.properties.route_id;
+    var sel = "#tick_send_type option[value='Project']";
+    
+    $(sel).prop("selected", true)
+    $("#tick_send_comment").val("");
+    $("#tick_date").datepicker("setDate", new Date());
+    $("#tick_public_visible").prop('checked', true);
+    $("#edit_tick_id").val(0);
+    $("#new_tick_route_id").val(route_id);
+    
+    buttons_reset();
+    $("#screen_tick_edit").css('visibility','visible');
 }
 
 function bind_swipes() {
@@ -238,6 +249,14 @@ function buttons_reset() {
      $("#screen_spray").css('visibility','hidden');
      $("#screen_tick_edit").css('visibility','hidden');
      $("#screen_ticks").css('visibility','hidden');
+}
+
+function cancel_tick() {
+    if ($("#edit_tick_id").val(0) > 0) {
+        button_menu_ticks();
+    } else {
+        button1_click();
+    }
 }
 
 /* Proccesses a change in destination, area, or route
@@ -889,6 +908,7 @@ function edit_route_tick(tick_id, send_type, comment, date, public) {
     $("#tick_date").datepicker("setDate", new Date(date));
     $("#tick_public_visible").prop('checked', public);
     $("#edit_tick_id").val(tick_id);
+    $("#new_tick_route_id").val(0);
     
     buttons_reset();
     $("#screen_tick_edit").css('visibility','visible');
@@ -1243,6 +1263,7 @@ function update_current_route_tick() {
     var tick_id      = parseInt($("#edit_tick_id").val());
     var tick_public  = $("#tick_public_visible").is(":checked");
     var tick_type    = $("#tick_send_type").val();
+    var route_id     = $("#new_tick_route_id").val();
     
     //Get Send Date
     var day1   = $("#tick_date").datepicker('getDate').getDate();
@@ -1250,33 +1271,47 @@ function update_current_route_tick() {
     var year1  = $("#tick_date").datepicker('getDate').getFullYear();
     var tick_date = year1 + "-" + month1 + "-" + day1;
     
-    var data = {
-        'user_id':       user_id,
-        'key':           api_key,
-        'tick_id':       tick_id,
-        'tick_type':     tick_type,
-        'tick_date':     tick_date,
-        'tick_comment':  tick_comment,
-        'is_public':     tick_public
-    };
-    
-    $.ajax({
-       type:     'POST',
-       url:      'https://topohawk.com/api/v1/edit_route_tick.php',
-       dataType: 'json',
-       data:     data,
-       success:  function(response) {
-            if (response.result_code > 0) {
-                console.log(response.result);
-                button_menu_ticks();
-            } else {
-                console.log(response.result);
-            }
-       },
-       error: function (req, status, error) {
-           console.log("Error updating tick: " + error);
-       }
-    });
+    if ($("#edit_tick_id").val(0) > 0) {
+        //Update existing tick
+        var data = {
+            'user_id':       user_id,
+            'key':           api_key,
+            'tick_id':       tick_id,
+            'tick_type':     tick_type,
+            'tick_date':     tick_date,
+            'tick_comment':  tick_comment,
+            'is_public':     tick_public
+        };
+        
+        $.ajax({
+           type:     'POST',
+           url:      'https://topohawk.com/api/v1/edit_route_tick.php',
+           dataType: 'json',
+           data:     data,
+           success:  function(response) {
+                if (response.result_code > 0) {
+                    console.log(response.result);
+                    button_menu_ticks();
+                } else {
+                    console.log(response.result);
+                }
+           },
+           error: function (req, status, error) {
+               console.log("Error updating tick: " + error);
+           }
+        });
+    } else {
+        //Create a new tick
+        var data = {
+            'user_id':       user_id,
+            'key':           api_key,
+            'route_id':      route_id,
+            'tick_type':     tick_type,
+            'tick_date':     tick_date,
+            'tick_comment':  tick_comment,
+            'is_public':     tick_public
+        };
+    }
     
     //TODO: Handle Errors
 }
