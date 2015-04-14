@@ -1311,6 +1311,23 @@ function update_current_route_tick() {
             'tick_comment':  tick_comment,
             'is_public':     tick_public
         };
+        
+        $.ajax({
+           type:     'POST',
+           url:      'https://topohawk.com/api/v1/add_route_tick.php',
+           dataType: 'json',
+           data:     data,
+           success:  function(response) {
+                if (response.result_code > 0) {
+                    console.log(response.result);
+                } else {
+                    console.log(response.result);
+                }
+           },
+           error: function (req, status, error) {
+               console.log("Error updating tick: " + error);
+           }
+        });
     }
     
     //TODO: Handle Errors
