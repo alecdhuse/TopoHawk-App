@@ -2711,7 +2711,7 @@
             } else if (grade_system == 'French') {
                 return TH.util.grades.french_to_common(difficulty);
             } else if (grade_system == 'UIAA') {
-                return TH.util.grades.yds_to_common(difficulty);
+                return TH.util.grades.uiaa_to_common(difficulty.toUpperCase());
             } else if (grade_system == 'USA-VScale') {
                 return TH.util.grades.v_to_common(difficulty);
             } else if (grade_system == 'USA-YDS') {
@@ -2723,6 +2723,7 @@
                 return TH.util.grades.yds_to_common(difficulty);
             }
         },
+
 
         'get_grade_count': function (grade_system) {
             if (grade_system == 'Ewbanks') {
@@ -2786,6 +2787,27 @@
  
             /* Convert to common grading value */
             difficulty = TH.util.grades.french_common[rating];
+ 
+            var common_grade = {
+                difficulty: difficulty,
+                protection: protection,
+                type:       'common_grading'
+            };
+     
+            return common_grade;
+        },
+
+        'uiaa_to_common': function (rating) {
+            var difficulty = 0;
+            var protection = 5;
+ 
+            /* Clean up input */
+            rating = rating.trim();
+            rating = rating.toUpperCase();
+            rating = rating.replace(' ', '');
+ 
+            /* Convert to common grading value */
+            difficulty = TH.util.grades.uiaa_common[rating];
  
             var common_grade = {
                 difficulty: difficulty,
