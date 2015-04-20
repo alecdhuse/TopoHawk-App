@@ -129,6 +129,7 @@ function button3_click() {
     } else {
         show_photo_stream();
         $("#screen_stream").css('visibility','visible');
+        $("#breadcrumbs_div_2").html("• Photo Stream");
     }
 }
 
