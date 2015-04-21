@@ -565,8 +565,6 @@
                                     opacity:     1,
                                     fillOpacity: 0.5
                                 });
-                    
-                                newCircle.bindLabel(feature.properties.name, { noHide: false, labelClassName: "leaflet-label", mobile: map_obj._options.mobile});
                               
                                 if (map_obj._options.mobile === false) {
                                     newCircle.on("click", function () {
@@ -574,6 +572,10 @@
                                         map_obj.show_destination_popup(feature);
                                         map_obj.set_view(latlng, (feature.properties.click_zoom_to));
                                         map_obj.selected_destination = feature;
+                                    });
+                                } else {
+                                    newCircle.on("click", function () {
+                                        this._get_destination_data(last_dest.properties.destination_id);
                                     });
                                 }
                                 
