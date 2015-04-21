@@ -1,5 +1,4 @@
 # TopoHawk-App
-================
 
 This project is the official mobile application for TopoHawk.com.  It is coded in HTML5 so that it can be used with Adobe PhoneGap or Apache Cordova.
 
