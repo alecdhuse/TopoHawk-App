@@ -567,6 +567,8 @@
                                 });
                               
                                 if (map_obj._options.mobile === false) {
+                                    newCircle.bindLabel(feature.properties.name, { noHide: false, labelClassName: "leaflet-label", mobile: map_obj._options.mobile});
+                                
                                     newCircle.on("click", function () {
                                         map_obj._get_destination_data(feature.properties.destination_id);
                                         map_obj.show_destination_popup(feature);
