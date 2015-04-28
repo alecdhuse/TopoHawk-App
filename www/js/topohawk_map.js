@@ -192,10 +192,15 @@
             this._get_destination_data(destination_id);
         },
         
-        set_localization: function () {
+        set_localization: function (change_view) {
             var iso_country_code = navigator.language.slice(-2);
             var map_obj = this;
-            
+            var change_map_view = true;
+                        
+            if (typeof change_view !== 'undefined') {
+                change_map_view = change_view;
+            }
+                        
             $.ajax({
                 type:     'POST',
                 url:      'https://topohawk.com/api/v1.1/get_localization.php',
@@ -207,7 +212,9 @@
                     map_obj._update_route_grades(response, map_obj);
                    
                     if (map_obj._options.mobile == false) {
-                        map_obj.set_view(L.latLng(response.info.lat, response.info.lng), response.info.zoom);
+                        if (change_view == false) {
+                            map_obj.set_view(L.latLng(response.info.lat, response.info.lng), response.info.zoom);
+                        }
                     }
                 },
                 error: function (req, status, error) {
@@ -1086,6 +1093,17 @@
             /* Zoom into destination location */
             var latlng = L.latLng(data.destination_lat, data.destination_lng);
             var zoom   = data.destination_zoom;
+            
+            /* Don't zoom if this is the first destination */
+            if (this._first_load === true) {
+                if ((this._options.route_id > 0) || (this._options.area_id > 0)) {
+                    zoom = this._options.zoom;
+                    latlng = L.latLng(this._options.lat, this._options.lng);
+                }
+                
+                this._first_load = false;
+            }
+            
             this.set_view(latlng, zoom);
             
             this.destination_info_loaded(data);
