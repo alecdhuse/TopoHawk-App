@@ -212,7 +212,7 @@
                     map_obj._update_route_grades(response, map_obj);
                    
                     if (map_obj._options.mobile == false) {
-                        if (change_view == false) {
+                        if (change_view == true) {
                             map_obj.set_view(L.latLng(response.info.lat, response.info.lng), response.info.zoom);
                         }
                     }
