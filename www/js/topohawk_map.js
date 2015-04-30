@@ -827,7 +827,7 @@
                                     });
                                 }
                                   
-                                var lable_text = "<b>" + feature.properties.name + "</b><br/>" + difficulty + " " + route_type + "<br/>" + TH.util.get_star_html(rating, true);
+                                var lable_text = "<b>" + feature.properties.name + "</b><br/>" + difficulty + " " + route_type + "<br/>" + TH.util.get_star_html(rating, true, map_obj._options.offline);
                                 new_marker.bindLabel(lable_text, { noHide: false, labelClassName: "leaflet-label", mobile: map_obj._options.mobile});
                                 
                                 if (map_obj._options.mobile === false) {
@@ -2015,17 +2015,29 @@
         });
     };
  
-    TH.util.get_star_html = function (rating, small) {
+    TH.util.get_star_html = function (rating, small, offline) {
         var star_html = '<div>';
-        
-        if (small == true) {
-            var star_empty = 'images/star-empty-small.svg';
-            var star_half  = 'images/star-half-small.svg';
-            var star_full  = 'images/star-full-small.svg'
+ 
+        if (typeof offline === 'undefined') {
+            if (small == true) {
+                var star_empty = '/images/star-empty-small.svg';
+                var star_half  = '/images/star-half-small.svg';
+                var star_full  = '/images/star-full-small.svg'
+            } else {
+                var star_empty = '/images/star-empty.svg';
+                var star_half  = '/images/star-half.svg';
+                var star_full  = '/images/star-full.svg'
+            }
         } else {
-            var star_empty = 'images/star-empty.svg';
-            var star_half  = 'images/star-half.svg';
-            var star_full  = 'images/star-full.svg'
+             if (small == true) {
+                var star_empty = 'images/star-empty-small.svg';
+                var star_half  = 'images/star-half-small.svg';
+                var star_full  = 'images/star-full-small.svg'
+            } else {
+                var star_empty = 'images/star-empty.svg';
+                var star_half  = 'images/star-half.svg';
+                var star_full  = 'images/star-full.svg'
+            }
         }
         
         if (rating < 0.5) {

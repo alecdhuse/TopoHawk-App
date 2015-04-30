@@ -7,6 +7,7 @@ function PT(canvas_id) {
     this._mouse_dragging      = false;
     this._mouse_drag_start_x  = 0;
     this._mouse_drag_start_y  = 0;
+    this._offline_operation   = false;
     this._paths_drawn         = false;
     this._photo_loaded        = false;
     
@@ -63,7 +64,7 @@ function PT(canvas_id) {
     };
 };
 
-PT.prototype.init = function(canvas_id, photo_id, destination) {
+PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
     $('body').append("<div class='leaflet-label' id='route_popup' style='position:absolute;visibility:hidden;'></div>");
     
     paper.install(window);
@@ -73,6 +74,11 @@ PT.prototype.init = function(canvas_id, photo_id, destination) {
     this.canvas      = document.getElementById(canvas_id);
     this.paper_scope = new paper.PaperScope();
     this.paper_scope.setup(this.canvas);
+    
+    if (typeof offline !== "undefined") {
+        this._offline_operation = offline;
+        this.use_offline_images = offline;
+    }
     
     if (typeof destination !== "undefined") {
         /* Destination supplied */
@@ -596,7 +602,7 @@ PT.prototype.show_route_popup = function(event, point_text, route) {
     var left = event.event.clientX + 25;
     var difficulty = TH.util.grades.convert_common_to(this.grade_system[route.properties.route_type], route.properties.route_grade);
     
-    var lable_text = "<b>" + route.properties.name + "</b><br/>" + difficulty + " " + route.properties.route_type + "<br/>" + TH.util.get_star_html(route.properties.rating, true);
+    var lable_text = "<b>" + route.properties.name + "</b><br/>" + difficulty + " " + route.properties.route_type + "<br/>" + TH.util.get_star_html(route.properties.rating, true, this._offline_operation);
     
     $("#route_popup").html(lable_text);
     $("#route_popup").css('visibility', 'visible');

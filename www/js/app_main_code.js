@@ -341,7 +341,7 @@ function change_route(route_id, screen_switch) {
     }
     
     title_html += "</span><br/>"
-    title_html += "<span>" + TH.util.get_star_html(map.selected_route.properties.rating, true).substr(5) + "</span>";
+    title_html += "<span>" + TH.util.get_star_html(map.selected_route.properties.rating, true, true).substr(5) + "</span>";
     title_html += "<span style='float:right;margin-top:-30px;'><img src='images/tick_route.svg' onclick='add_tick()' /></span>";
     
     $("#screen_info_title").html(title_html);
@@ -644,7 +644,7 @@ function create_route_list(area_id) {
                 
                 route_list_html += "<div class='destination_list_element' onclick='change_route(" + current_route.properties.route_id + ", true)'>";
                 route_list_html += "<div class='destination_list_name'>" + current_route.properties.name + " ";
-                route_list_html += "<span>" + TH.util.get_star_html(current_route.properties.rating, true).substr(5) + "</span>";
+                route_list_html += "<span>" + TH.util.get_star_html(current_route.properties.rating, true, true).substr(5) + "</span>";
                 route_list_html += "</div>";
                 route_list_html += "<div class='destination_list_location'>";
                 route_list_html += "<span class='route_list_rating'>" + route_grade + "</span> ";
