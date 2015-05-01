@@ -517,7 +517,7 @@
                             });
 
                             marker_latlng = latlng;
-                            newCircle.bindLabel(feature.properties.name, { noHide: true, labelClassName: "leaflet-static-label", mobile: true});  
+                            newCircle.bindLabel(feature.properties.name, { noHide: true, labelClassName: "leaflet-static-label", mobile: true, direction: feature.properties.label_position});
                             
                             if (map_obj._options.mobile === false) {
                                 newCircle.on("click", function () {
