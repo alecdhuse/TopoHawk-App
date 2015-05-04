@@ -1375,7 +1375,11 @@ function show_map_edit_buttons(is_new) {
     $("#target_overlay").css({'top':  target_top});
     $("#target_overlay").css({'left':  target_left});
     
-    show_help_comment("Position the target over the new route's location.");
+    if ($(window).width() < 420) {
+        show_help_comment("Position the target over the <br /> new route's location.");
+    } else {
+        show_help_comment("Position the target over the new route's location.");
+    }
     
     if (current_mode == MODE_AREA) {
         current_edit_mode = EDIT_MODE_ROUTE;
