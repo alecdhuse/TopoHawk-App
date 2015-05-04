@@ -76,6 +76,8 @@ function bind_swipes() {
 function bread_crumb_area_click() {
     map.selected_route = {};
     current_mode       = MODE_AREA;
+    
+    change_area(map.selected_area.properties.area_id);
 }
 
 function bread_crumb_destination_click() {
@@ -227,7 +229,8 @@ function button_menu_ticks() {
 
 function buttons_reset() {
      map.enable_device_location(false);
-     
+     hide_help_comment();
+    
      $("#button1_img").attr("src", "images/button-info.svg");
      $("#button2_img").attr("src", "images/button-destinations.svg");
      $("#button3_img").attr("src", "images/button-photos.svg");
@@ -250,6 +253,10 @@ function buttons_reset() {
      $("#screen_spray").css('visibility','hidden');
      $("#screen_tick_edit").css('visibility','hidden');
      $("#screen_ticks").css('visibility','hidden');
+}
+
+function cancel_map_edit() {
+    show_main_buttons();
 }
 
 function cancel_tick() {
@@ -281,15 +288,21 @@ function change(destination_id, area_id, route_id, change_screen) {
 }
 
 function change_area(area_id) {
+    var area_inner_html = "";
+    
     $("#destination_search_filter").val("");
     
     map.set_area(area_id);
     current_mode = MODE_AREA;
     create_route_list(area_id);
     
+    /* Setup Inner HTML */
+    area_inner_html += "<div>" + map.selected_area.properties.description + "</div>";
+    area_inner_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons()'>Add Route</a></div>";
+    
     $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
     $("#screen_info_title").html(map.selected_area.properties.name);
-    $("#screen_info_inner").html(map.selected_area.properties.description);
+    $("#screen_info_inner").html(area_inner_html);
     
     /* Remove selected route on Photo_Topo */
     photo_topo.selected_route_id = 0;
@@ -1076,6 +1089,10 @@ function get_user_info() {
     }
 }
 
+function hide_help_comment() {
+    $("#help_comment").css('visibility','hidden');
+}
+
 function map_area_clicked(area_obj) {
     change_area(area_obj.properties.area_id);
 }
@@ -1182,6 +1199,10 @@ function resize_window() {
     $(".loading_screen_center").css({"margin-left": load_center_left});
 }
 
+function save_map_edit() {
+
+}
+
 function settings_load() {
     var use_high_res_photos = false;
     
@@ -1216,10 +1237,50 @@ function settings_update_photo_res() {
     setting_save();
 }
 
+function show_help_comment(comment_text) {
+    var comment_top = (($(window).height() - 105)) + "px";
+    
+    $("#help_comment").css({'top': comment_top});
+    $("#help_comment_inner").html(comment_text);
+    $("#help_comment").css('visibility','visible');
+}
+
 function show_login() {
     buttons_reset();
     $("#breadcrumbs_div_2").html("• Login");
     $("#screen_login").css('visibility','visible');
+}
+
+function show_map_edit_buttons() {
+    $("#button_group_right_main").css('visibility','hidden');
+    $("#button_group_left_main").css('visibility','hidden');
+    $("#button_group_right_main").width(0);
+    $("#button_group_left_main").width(0)
+    
+    $("#button_group_right_secondary").css('visibility','visible');
+    $("#button_group_left_secondary").css('visibility','visible');
+    button4_click();
+    
+    $("#target_overlay").css('visibility','visible');
+    var target_top = (($(window).height() - 80) / 2) - 20 + "px";
+    var target_left = (($(window).width() / 2) - 20) + "px";
+    $("#target_overlay").css({'top':  target_top});
+    $("#target_overlay").css({'left':  target_left});
+    
+    show_help_comment("Position the target over the new route's location.");
+}
+
+function show_main_buttons() {
+    $("#button_group_right_secondary").css('visibility','hidden');
+    $("#button_group_left_secondary").css('visibility','hidden');
+    
+    $("#button_group_right_main").width('100%;');
+    $("#button_group_left_main").width('100%;');
+    $("#button_group_right_main").css('visibility','visible');
+    $("#button_group_left_main").css('visibility','visible');
+    
+    $("#target_overlay").css('visibility','hidden');
+    hide_help_comment() ;
 }
 
 function show_photo_stream() {
