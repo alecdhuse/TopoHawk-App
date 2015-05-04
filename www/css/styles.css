@@ -247,6 +247,10 @@ body {
   animation-play-state: running;
 }
 
+.edit_field {
+    margin-bottom: 8px;
+}
+
 #filter_hidden_items {
     color: rgb(68,68,68);
     font-size: 10px;

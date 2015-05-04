@@ -91,6 +91,74 @@
                 </div>
             </div>
             
+            <div id="screen_edit_route" class="screen">
+                <div class="screen_inner">
+                    <div class="edit_field">
+                        <label for="route_name">Route/Problem Name:</label><br>
+                        <input name="route_name" id="route_name" size="40" style="width:96%;" type="text">
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="area_name">Area:</label><br>
+                        <select class="area_names" name="area_name" id="area_name_select">
+                        </select>
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="route_difficulty">Difficulty:</label><br>
+                        <input name="route_difficulty" id="route_difficulty" size="25" type="text">
+                        <select name="difficulty_grade" id="difficulty_grade">
+                            <option value="Aid-A">Aid-A</option>
+                            <option value="French">French</option>
+                            <option value="Fontainebleau">Fontainebleau</option>
+                            <option value="UIAA">UIAA</option>
+                            <option value="USA-YDS">YDS</option>
+                            <option value="USA-VScale">V Scale</option>
+                        </select>
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="textfield">Number of Pitches:</label><br>
+                        <input name="textfield" id="route_pitches" size="40" type="text">
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="textfield">Latitude:</label><br>
+                        <input name="textfield" class="latitude" id="route_latitude" size="40" type="text">
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="textfield">Longitude:</label><br>
+                        <input name="textfield" class="longitude" id="route_longitude" size="40" type="text">
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="textarea">Description:</label><br>
+                        <textarea name="textarea" cols="35" rows="6" id="route_description" style="width:96%;"></textarea>
+                    </div>
+                    
+                    <input name="route_type" id="aid" value="Aid" onchange="update_route_edit_grade()" type="radio">
+                    <label for="aid">Aid</label><br>
+
+                    <input name="route_type" id="top_rope" value="Top Rope" onchange="update_route_edit_grade()" type="radio">
+                    <label for="top_rope">Top Rope</label><br>
+
+                    <input name="route_type" id="sport" value="Sport" onchange="update_route_edit_grade()" type="radio">
+                    <label for="sport">Sport</label><br>
+
+                    <input name="route_type" id="trad" value="Trad" onchange="update_route_edit_grade()" type="radio">
+                    <label for="trad">Trad</label><br>
+
+                    <input name="route_type" id="mixed" value="Mixed" onchange="update_route_edit_grade()" type="radio">
+                    <label for="mixed">Mixed</label><br>
+
+                    <input name="route_type" id="boulder" value="Boulder" onchange="update_route_edit_grade()" type="radio">
+                    <label for="boulder">Boulder</label>
+                    
+                    <div style="height:100px;text-align:center;width:100%;"> </div>
+                </div>
+            </div>
+            
             <div id="screen_info" class="screen">
                 <div id="screen_info_title"></div>
                 <div class="screen_inner" id="screen_info_inner">

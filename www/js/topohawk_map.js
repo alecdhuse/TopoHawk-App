@@ -117,6 +117,10 @@
             }
         },
         
+        get_center: function () {
+            return this._leaflet_map.getCenter();
+        },
+        
         get_feature_by_name: function (features, name) {
             for (var i = 0; i < features.length; i++) {
                 if (features[i].properties.name.toLowerCase() == name.toLowerCase()) {
