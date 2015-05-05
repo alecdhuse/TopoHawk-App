@@ -249,6 +249,8 @@ function buttons_reset() {
      $("#screen_about").css('visibility','hidden');
      $("#screen_destinations").css('visibility','hidden');
      $("#screen_edit").css('visibility','hidden');
+     $("#screen_edit_area").css('visibility','hidden');
+     $("#screen_edit_destination").css('visibility','hidden');
      $("#screen_edit_route").css('visibility','hidden');
      $("#screen_info").css('visibility','hidden');
      $("#screen_login").css('visibility','hidden');
@@ -750,7 +752,12 @@ function destination_info_loaded() {
             info_html += "<div class='amenity_description'>" + camping[i].properties.description + "</div></div><br />";
         }
         
-        info_html += "<div>";
+        info_html += "</div>";
+    }
+    
+    /* Add Area Option */
+    if (api_key.length > 0) {
+        info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
     }
     
     $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
@@ -990,6 +997,60 @@ function finish_map_setup(max_slider_val) {
     }
 }
 
+function get_edit_route_data() {
+    var route_data;
+    var route_type = $('input[name="route_type"]:checked').val();
+    var route_name = document.getElementById("route_name").value;
+    var route_diff = document.getElementById("route_difficulty").value;
+    var route_pitches = document.getElementById("route_pitches").value;
+    var route_desc = document.getElementById("route_description").value;
+    var route_lat = $("#route_latitude").val();
+    var route_lng = $("#route_longitude").val();
+    var new_area_id = $("#area_name_select").val();
+
+    /* Convert Grade */
+    var grade_type        = $('#difficulty_grade option:selected').val();
+    var difficulty_obj    = TH.util.grades.convert_to_common(grade_type, route_diff);
+    var difficulty_common = difficulty_obj.difficulty;
+    var protection_rating = difficulty_obj.protection;
+
+    /* Backwards compatibility */
+    route_diff = TH.util.grades.convert_common_to('USA-YDS', difficulty_obj);
+
+    if (edit_new_route === true) {
+        route_data = {
+           'area_id':           new_area_id,
+           'route_name':        route_name,
+           'route_diff':        route_diff,
+           'route_difficulty':  difficulty_common,
+           'route_protection':  protection_rating,
+           'route_pitches':     route_pitches,
+           'route_desc':        route_desc,
+           'route_type':        route_type,
+           'route_lat':         route_lat,
+           'route_lng':         route_lng,
+           'key':               api_key
+         };
+    } else {
+        route_data = {
+           'area_id':           new_area_id,
+           'route_name':        route_name,
+           'route_diff':        route_diff,
+           'route_difficulty':  difficulty_common,
+           'route_protection':  protection_rating,
+           'route_pitches':     route_pitches,
+           'route_desc':        route_desc,
+           'route_type':        route_type,
+           'route_lat':         route_lat,
+           'route_lng':         route_lng,
+           'route_id':          map.selected_route.properties.route_id,
+           'key':               api_key
+         };
+    }
+    
+    return route_data;
+}
+
 function get_photo_ids() {
     var data;
     var make_request = true;
@@ -1218,92 +1279,57 @@ function save_map_edit() {
     
     if (edit_step == 1) {
         /* Just transitioned from the target/map screen */
-        $("#target_overlay").css('visibility','hidden')
-        
-        var areas = map.selected_destination.areas.features;
-        var grade_systems = map.get_grade_systems();
         var map_center = map.get_center();
         
-        /* Route edit, TODO: fix for area, destinaiton */
-        $("#screen_edit_route").css('visibility','visible');
+        $("#target_overlay").css('visibility','hidden')
         $(".latitude").val(map_center.lat);
         $(".longitude").val(map_center.lng);
-        $("#area_name_select").empty();
         
-        for (var i=0; i < areas.length; i++) {
-            $("#area_name_select").append($('<option>', {
-                value: areas[i].properties.area_id,
-                text: areas[i].properties.name
-            }));
-            
-            if (areas[i] == map.selected_area) {
-                $("#area_name_select").val(areas[i].properties.area_id);
-            }
+        if (current_edit_mode == EDIT_MODE_ROUTE) {
+            show_edit_route_screen();
+        } else if (current_edit_mode == EDIT_MODE_AREA) {
+            show_edit_areas_screen();
         }
         
         edit_step = 2;
     } else if (edit_step == 2) {
         /* Just transitioned from the information screen */
-        var route_type = $('input[name="route_type"]:checked').val();
-        var route_name = document.getElementById("route_name").value;
-        var route_diff = document.getElementById("route_difficulty").value;
-        var route_pitches = document.getElementById("route_pitches").value;
-        var route_desc = document.getElementById("route_description").value;
-        var route_lat = $("#route_latitude").val();
-        var route_lng = $("#route_longitude").val();
-        var new_area_id = $("#area_name_select").val();
-        
-        /* Convert Grade */
-        var grade_type        = $('#difficulty_grade option:selected').val();
-        var difficulty_obj    = TH.util.grades.convert_to_common(grade_type, route_diff);
-        var difficulty_common = difficulty_obj.difficulty;
-        var protection_rating = difficulty_obj.protection;
-        
-        /* Backwards compatibility */
-        route_diff = TH.util.grades.convert_common_to('USA-YDS', difficulty_obj);
-        
-        if (edit_new_route === true) {
-            /* Add new Route */
-            $.ajax({
-                 dataType: 'json',
-                 type: 'POST',
-                 url: 'https://topohawk.com/api/v1.1/add_route.php',
-                 data: {
-                   'area_id':           new_area_id,
-                   'route_name':        route_name,
-                   'route_diff':        route_diff,
-                   'route_difficulty':  difficulty_common,
-                   'route_protection':  protection_rating,
-                   'route_pitches':     route_pitches,
-                   'route_desc':        route_desc,
-                   'route_type':        route_type,
-                   'route_lat':         route_lat,
-                   'route_lng':         route_lng,
-                   'key':               api_key
-                 },
-                 success: function(response) {
-                    if (response.result_code > 0) {
-                        map.set_destination(map.selected_destination.destination_id);
-                        button1_click();
-                        show_main_buttons();
-                        show_help_comment("Route Added");
+        if (current_edit_mode == EDIT_MODE_ROUTE) {
+            if (edit_new_route === true) {
+                var route_data = get_edit_route_data();
+                
+                /* Add new Route */
+                $.ajax({
+                     dataType: 'json',
+                     type: 'POST',
+                     url: 'https://topohawk.com/api/v1.1/add_route.php',
+                     data: route_data,
+                     success: function(response) {
+                        if (response.result_code > 0) {
+                            map.set_destination(map.selected_destination.destination_id);
+                            button1_click();
+                            show_main_buttons();
+                            show_help_comment("Route Added");
+                            setTimeout(function() { hide_help_comment(); }, 2000);
+                        } else {
+                            show_help_comment(response.result);
+                            setTimeout(function() { hide_help_comment(); }, 2000);
+                            console.log(response.result);
+                        }
+                    },
+                    error: function (req, status, error) {
+                        show_help_comment("Could Not Add Route");
                         setTimeout(function() { hide_help_comment(); }, 2000);
-                    } else {
-                        show_help_comment(response.result);
-                        setTimeout(function() { hide_help_comment(); }, 2000);
-                        console.log(response.result);
+                       console.log("Error adding route: " + error);
+                       /* TODO: Handle errors */
                     }
-                },
-                error: function (req, status, error) {
-                    show_help_comment("Could Not Add Route");
-                    setTimeout(function() { hide_help_comment(); }, 2000);
-                   console.log("Error adding route: " + error);
-                   /* TODO: Handel errors */
-                }
-            });
-        } else {
-            /* Update existing route */
-            
+                });
+            } else {
+                /* Update existing route */
+                
+            }
+        } else if (current_edit_mode == EDIT_MODE_AREA) {
+        
         }
     }
 }
@@ -1356,6 +1382,41 @@ function show_login() {
     $("#screen_login").css('visibility','visible');
 }
 
+function show_edit_areas_screen() {
+    $("#screen_edit_area").css('visibility','visible');
+    $("#area_destination").empty();
+
+    for (var i=0; i < map.destinations.features.length; i++) {
+        $("#area_destination").append($('<option>', {
+            value: map.destinations.features[i].properties.destination_id,
+            text:  map.destinations.features[i].properties.name
+        }));
+        
+        if (map.selected_destination.destination_id == map.destinations.features[i].properties.destination_id) {
+            $("#area_destination").val(map.destinations.features[i].properties.destination_id);
+        }
+    }
+}
+
+function show_edit_route_screen() {
+    var areas = map.selected_destination.areas.features;
+    var grade_systems = map.get_grade_systems();
+
+    $("#screen_edit_route").css('visibility','visible');
+    $("#area_name_select").empty();
+
+    for (var i=0; i < areas.length; i++) {
+        $("#area_name_select").append($('<option>', {
+            value: areas[i].properties.area_id,
+            text: areas[i].properties.name
+        }));
+        
+        if (areas[i] == map.selected_area) {
+            $("#area_name_select").val(areas[i].properties.area_id);
+        }
+    }
+}
+
 function show_map_edit_buttons(is_new) {
     edit_step = 1;
     edit_new_route = is_new;
@@ -1375,10 +1436,12 @@ function show_map_edit_buttons(is_new) {
     $("#target_overlay").css({'top':  target_top});
     $("#target_overlay").css({'left':  target_left});
     
-    show_help_comment("Drag the map to position the target over the new route's location.");
-    
     if (current_mode == MODE_AREA) {
         current_edit_mode = EDIT_MODE_ROUTE;
+        show_help_comment("Drag the map to position the target over the new route's location.");
+    } else if (current_mode == MODE_DESTINATION) {
+        current_edit_mode = EDIT_MODE_AREA;
+        show_help_comment("Drag the map to position the target over the new area's location.");
     }
 }
 

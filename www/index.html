@@ -91,6 +91,50 @@
                 </div>
             </div>
             
+            <div id="screen_edit_area" class="screen">
+                <div class="screen_inner">
+                    <div class="edit_field">
+                        <label for="area_name_txt">Name:</label><br>
+                        <input name="area_name_txt" type="text" id="area_name_txt" size="40">
+                    </div>
+
+                    <div class="edit_field">
+                        <label for="textfield">Latitude:</label><br>
+                        <input name="textfield" type="text" class="latitude" id="area_latitude" size="40">
+                    </div>
+
+                    <div class="edit_field">
+                        <label for="textfield">Longitude:</label><br>
+                        <input name="textfield" type="text" class="longitude" id="area_longitude" size="40">
+                    </div>
+
+                    <div class="edit_field">
+                        <label for="area_destination">Destination:</label><br>
+                        <select id="area_destination" name="area_destination">
+                            <option value="-1">Select a Destination</option>
+                        </select>
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="area_visibility_slider">Area marker visibility:</label><br/><br/>
+                        <div id='area_visibility_slider' name='area_visibility' style='font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif; font-size: 14px; margin-bottom: 15px; margin-left: 15px; width: 200px;'>
+                            <div class='noUiSlider'></div>
+                        </div>
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="area_desc">Description:</label><br>
+                        <textarea name="area_desc" cols="35" rows="6" id="area_desc"></textarea>
+                    </div>
+        
+                </div>
+            </div>
+            
+            <div id="screen_edit_destination" class="screen">
+                <div class="screen_inner">
+                </div>
+            </div>
+            
             <div id="screen_edit_route" class="screen">
                 <div class="screen_inner">
                     <div class="edit_field">
