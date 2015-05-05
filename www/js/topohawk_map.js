@@ -588,7 +588,7 @@
                                     });
                                 } else {
                                     newCircle.on("click", function () {
-                                        this._get_destination_data(last_dest.properties.destination_id);
+                                        map_obj._get_destination_data(last_dest.properties.destination_id);
                                     });
                                 }
                                 
