@@ -12,7 +12,7 @@ var api_key              = "";
 var current_edit_mode    = EDIT_MODE_NONE;
 var current_mode         = MODE_NONE;
 var destination_callback = false;
-var edit_new_route       = true;
+var edit_new_object      = true;
 var edit_step            = 0;
 var map_finished         = false;
 var photo_ids            = [];
@@ -997,6 +997,47 @@ function finish_map_setup(max_slider_val) {
     }
 }
 
+function get_edit_area_data() {
+    var area_data = {};
+    var area_name = $("#area_name_txt").val();
+    var area_desc = $("#area_desc").val();
+    var area_lat  = $("#area_latitude").val();
+    var area_lng  = $("#area_longitude").val();
+    var sliderVal = $("#noUiSlider_area").val();
+    var min_zoom  = parseInt(sliderVal[0]);
+    var max_zoom  = parseInt(sliderVal[1]);
+    var dest_id   = $("#area_destination").val();
+    
+    if (edit_new_object === true) {
+        area_data = {
+             'destination_id':  dest_id,
+             'name':            area_name,
+             'description':     area_desc,
+             'lat':             area_lat,
+             'lng':             area_lng,
+             'min_zoom':        min_zoom,
+             'max_zoom':        max_zoom,
+             'user_id':         user_id,
+             'key':             api_key
+        };
+    } else {
+        area_data = {
+             'area_id':         map.selected_area.properties.area_id,
+             'destination_id':  dest_id,
+             'name':            area_name,
+             'description':     area_desc,
+             'lat':             area_lat,
+             'lng':             area_lng,
+             'min_zoom':        min_zoom,
+             'max_zoom':        max_zoom,
+             'user_id':         user_id,
+             'key':             api_key
+        };
+    }
+    
+    return area_data;
+}
+
 function get_edit_route_data() {
     var route_data;
     var route_type = $('input[name="route_type"]:checked').val();
@@ -1017,7 +1058,7 @@ function get_edit_route_data() {
     /* Backwards compatibility */
     route_diff = TH.util.grades.convert_common_to('USA-YDS', difficulty_obj);
 
-    if (edit_new_route === true) {
+    if (edit_new_object === true) {
         route_data = {
            'area_id':           new_area_id,
            'route_name':        route_name,
@@ -1295,7 +1336,7 @@ function save_map_edit() {
     } else if (edit_step == 2) {
         /* Just transitioned from the information screen */
         if (current_edit_mode == EDIT_MODE_ROUTE) {
-            if (edit_new_route === true) {
+            if (edit_new_object === true) {
                 var route_data = get_edit_route_data();
                 
                 /* Add new Route */
@@ -1329,7 +1370,35 @@ function save_map_edit() {
                 
             }
         } else if (current_edit_mode == EDIT_MODE_AREA) {
-        
+            var area_data = get_edit_area_data();
+            
+            if (edit_new_object === true) {
+                $.ajax({
+                        type:       'POST',
+                        dataType:   'json',
+                        url:        'https://topohawk.com/api/v1.1/add_area.php',
+                        data:       area_data,
+                        success: function(response) {
+                            if (response.result_code > 0) {
+                                map.set_destination(map.selected_destination.destination_id);
+                                button1_click();
+                                show_main_buttons();
+                                show_help_comment("Area Added");
+                                setTimeout(function() { hide_help_comment(); }, 2000);
+                            } else {
+                                show_help_comment(response.result);
+                                setTimeout(function() { hide_help_comment(); }, 2000);
+                                console.log(response.result);
+                            }
+                        },
+                        error: function (req, status, error) {
+                            console.log("Error adding area: " + error);
+                            /* TODO: Handle errors */
+                        }
+                });
+            } else {
+            
+            }
         }
     }
 }
@@ -1426,7 +1495,7 @@ function show_edit_route_screen() {
 
 function show_map_edit_buttons(is_new) {
     edit_step = 1;
-    edit_new_route = is_new;
+    edit_new_object = is_new;
     
     $("#button_group_right_main").css('visibility','hidden');
     $("#button_group_left_main").css('visibility','hidden');
