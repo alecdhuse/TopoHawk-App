@@ -52,6 +52,11 @@ map.on_user_info_loaded         = function ()                { user_info_loaded(
 map.destination_info_loaded     = function (destination_obj) { create_destination_list() };
 map.on_destination_info_loaded  = function ()                { destination_info_loaded() };
 
+function add_new_destination() {
+    current_mode = MODE_NONE;
+    show_map_edit_buttons(true);
+}
+
 function add_tick() {
     var route_id = map.selected_route.properties.route_id;
     var sel = "#tick_send_type option[value='Project']";
@@ -1038,6 +1043,40 @@ function get_edit_area_data() {
     return area_data;
 }
 
+function get_edit_destination_data() {
+    var destination_data = {};
+    var dest_name = document.getElementById("dest_name").value;
+    var dest_loc = document.getElementById("dest_loc").value;
+    var dest_desc = document.getElementById("dest_desc").value;
+    var dest_lat = $("#dest_lat").val();
+    var dest_lng = $("#dest_lng").val();
+    
+    if (edit_new_object === true) {
+        destination_data = {
+            'dest_name':    dest_name,
+            'dest_loc':     dest_loc,
+            'dest_desc':    dest_desc,
+            'dest_lat':     dest_lat,
+            'dest_lng':     dest_lng,
+            'user_id' :     user_id,
+            'key':          api_key
+        };
+    } else {
+        destination_data = {
+            'destination_id':   map.selected_destination.properties.route_id,
+            'dest_name':        dest_name,
+            'dest_loc':         dest_loc,
+            'dest_desc':        dest_desc,
+            'dest_lat':         dest_lat,
+            'dest_lng':         dest_lng,
+            'user_id' :         user_id,
+            'key':              api_key
+        };
+    }
+    
+    return destination_data;
+}
+
 function get_edit_route_data() {
     var route_data;
     var route_type = $('input[name="route_type"]:checked').val();
@@ -1330,6 +1369,8 @@ function save_map_edit() {
             show_edit_route_screen();
         } else if (current_edit_mode == EDIT_MODE_AREA) {
             show_edit_areas_screen();
+        } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
+            show_edit_destination_screen();
         }
         
         edit_step = 2;
@@ -1374,27 +1415,57 @@ function save_map_edit() {
             
             if (edit_new_object === true) {
                 $.ajax({
-                        type:       'POST',
-                        dataType:   'json',
-                        url:        'https://topohawk.com/api/v1.1/add_area.php',
-                        data:       area_data,
-                        success: function(response) {
-                            if (response.result_code > 0) {
-                                map.set_destination(map.selected_destination.destination_id);
-                                button1_click();
-                                show_main_buttons();
-                                show_help_comment("Area Added");
-                                setTimeout(function() { hide_help_comment(); }, 2000);
-                            } else {
-                                show_help_comment(response.result);
-                                setTimeout(function() { hide_help_comment(); }, 2000);
-                                console.log(response.result);
-                            }
-                        },
-                        error: function (req, status, error) {
-                            console.log("Error adding area: " + error);
-                            /* TODO: Handle errors */
+                    type:       'POST',
+                    dataType:   'json',
+                    url:        'https://topohawk.com/api/v1.1/add_area.php',
+                    data:       area_data,
+                    success: function(response) {
+                        if (response.result_code > 0) {
+                            map.set_destination(map.selected_destination.destination_id);
+                            button1_click();
+                            show_main_buttons();
+                            show_help_comment("Area Added");
+                            setTimeout(function() { hide_help_comment(); }, 2000);
+                        } else {
+                            show_help_comment(response.result);
+                            setTimeout(function() { hide_help_comment(); }, 2000);
+                            console.log(response.result);
                         }
+                    },
+                    error: function (req, status, error) {
+                        console.log("Error adding area: " + error);
+                        /* TODO: Handle errors */
+                    }
+                });
+            } else {
+            
+            }
+        } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
+            var destination_data = get_edit_destination_data();
+            
+            if (edit_new_object === true) {
+                $.ajax({
+                    type:       'POST',
+                    dataType:   'json',
+                    url:        'https://topohawk.com/api/v1.1/add_destination.php',
+                    data:       destination_data,
+                    success: function(response) {
+                        if (response.result_code > 0) {
+                            /* TODO update destination lists */
+                            button1_click();
+                            show_main_buttons();
+                            show_help_comment("Destination Added");
+                            setTimeout(function() { hide_help_comment(); }, 2000);
+                        } else {
+                            show_help_comment(response.result);
+                            setTimeout(function() { hide_help_comment(); }, 2000);
+                            console.log(response.result);
+                        }
+                    },
+                    error: function (req, status, error) {
+                        console.log("Error adding destination: " + error);
+                        /* TODO: Handle errors */
+                    }
                 });
             } else {
             
@@ -1474,6 +1545,10 @@ function show_edit_areas_screen() {
     }
 }
 
+function show_edit_destination_screen() {
+    $("#screen_edit_destination").css('visibility','visible');
+}
+
 function show_edit_route_screen() {
     var areas = map.selected_destination.areas.features;
     var grade_systems = map.get_grade_systems();
@@ -1518,6 +1593,9 @@ function show_map_edit_buttons(is_new) {
     } else if (current_mode == MODE_DESTINATION) {
         current_edit_mode = EDIT_MODE_AREA;
         show_help_comment("Drag the map to position the target over the new area's location.");
+    } else if (current_mode == MODE_NONE) {
+        current_edit_mode = EDIT_MODE_DESTINATION;
+        show_help_comment("Drag the map to position the target over the new destination's location.");
     }
 }
 

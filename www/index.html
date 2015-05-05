@@ -87,7 +87,9 @@
             <div id="screen_edit" class="screen">
                 <div class="screen_inner">
                     <p>The editing feature is still under development.</p>
-                    <p>We hope to have it finished soon.</p>
+                    <div>
+                        <a nohref onclick="add_new_destination()">Add New Destination</a>
+                    </div>
                 </div>
             </div>
             
@@ -132,6 +134,31 @@
             
             <div id="screen_edit_destination" class="screen">
                 <div class="screen_inner">
+                    <div class="edit_field">
+                        <label for="dest_name">Destination Name:</label><br>
+                        <input name="dest_name" id="dest_name" size="40" type="text">
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="dest_loc">Location: <span style="font-size: 8px; color: rgb(200,200,200);">(City, State/Province, Counry)</span></label><br>
+                        <input name="dest_loc" id="dest_loc" size="40" type="text">
+                    </div>
+
+                    <div class="edit_field">
+                        <label for="textfield">Latitude:</label><br>
+                        <input name="textfield" class="latitude" id="dest_lat" size="40" type="text">
+                    </div>
+                    
+                    <div class="edit_field">
+                        <label for="textfield">Longitude:</label><br>
+                        <input name="textfield" class="longitude" id="dest_lng" size="40" type="text">
+                    </div>
+
+                    <div class="edit_field">
+                        <label for="dest_desc">Description:</label><br>
+                        <textarea name="dest_desc" cols="36" rows="23" id="dest_desc"></textarea>
+                    </div>
+                
                 </div>
             </div>
             
