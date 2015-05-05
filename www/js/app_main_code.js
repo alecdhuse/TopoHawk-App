@@ -1334,6 +1334,12 @@ function save_map_edit() {
     }
 }
 
+function set_area_slider_val(min, max) {
+    $("#noUiSlider_area").val([min, max]);
+    $("#noUiSlider_area").find(".noUi-handle-lower").html('<div style="background: white; margin-left: 7px; margin-top: 4px;">' + min + '</div>');
+    $("#noUiSlider_area").find(".noUi-handle-upper").html('<div style="background: white; margin-left: 7px; margin-top: 4px;">' + max + '</div>');
+}
+
 function settings_load() {
     var use_high_res_photos = false;
     
@@ -1385,7 +1391,8 @@ function show_login() {
 function show_edit_areas_screen() {
     $("#screen_edit_area").css('visibility','visible');
     $("#area_destination").empty();
-
+    set_area_slider_val(14, 18);
+    
     for (var i=0; i < map.destinations.features.length; i++) {
         $("#area_destination").append($('<option>', {
             value: map.destinations.features[i].properties.destination_id,
@@ -1596,9 +1603,23 @@ document.onreadystatechange = function(e) {
     TH.util.storage.check_offline_statuses();
     
     $('#tick_date').datepicker({dateFormat: 'yy-mm-dd'});
+    
+    /* Setup Area UI Slider */
+    $('#noUiSlider_area').noUiSlider({
+        range: [12, 20],
+        start: [12, 17],
+        step:  1,
+        slide: function() {
+            sliderVal = $("#noUiSlider_area").val();
+            set_area_slider_val(parseInt(sliderVal[0]), parseInt(sliderVal[1]))
+        },
+    });
+    $("#noUiSlider_area").find(".noUi-handle").addClass("noUi-handle_text");
+    $("#noUiSlider_area").find(".noUi-handle").removeClass("noUi-handle");
+    
     //TH.util.storage.delete_indexedDB();
     
-    //load key and user_id
+    /* load key and user_id */
     if (localStorage.getItem("key") !== null ) {
         api_key = localStorage.getItem("key");
         
