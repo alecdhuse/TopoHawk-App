@@ -1605,15 +1605,17 @@ document.onreadystatechange = function(e) {
     $('#tick_date').datepicker({dateFormat: 'yy-mm-dd'});
     
     /* Setup Area UI Slider */
-    $('#noUiSlider_area').noUiSlider({
-        range: [12, 20],
-        start: [12, 17],
-        step:  1,
-        slide: function() {
-            sliderVal = $("#noUiSlider_area").val();
-            set_area_slider_val(parseInt(sliderVal[0]), parseInt(sliderVal[1]))
-        },
-    });
+    $('#noUiSlider_area').noUiSlider(
+        {
+            range: [12, 20],
+            start: [12, 17],
+            step:  1,
+            slide: function() {
+                sliderVal = $("#noUiSlider_area").val();
+                set_area_slider_val(parseInt(sliderVal[0]), parseInt(sliderVal[1]))
+            }
+        }, true
+    );
     $("#noUiSlider_area").find(".noUi-handle").addClass("noUi-handle_text");
     $("#noUiSlider_area").find(".noUi-handle").removeClass("noUi-handle");
     
