@@ -83,8 +83,9 @@
                     for (var i = 0; i < this.areas.features.length; i++) {
                         if (this.areas.features[i].properties.area_id == this._options.area_id) {
                             var latlng = L.latLng(this.areas.features[i].geometry.coordinates[1], this.areas.features[i].geometry.coordinates[0]);
-                            var zoom   = this.areas.features[i].properties.click_zoom_to;
+                            var zoom   = this.areas.features[i].properties.click_zoom_to + 1;
                             
+                            this.selected_area = this.areas.features[i];
                             this.set_view(latlng, zoom);
                             break;
                         }
@@ -803,9 +804,11 @@
                     layer_group.addLayer(
                         L.geoJson(mapFeature.features[i], {
                             pointToLayer: function (feature, latlng) {
+                                var selected_area = (map_obj.selected_area.hasOwnProperty('properties') === true) ? map_obj.selected_area.properties.area_id : 0;
+                                
                                 if (route_is_selected === true) {
                                     var new_marker = L.marker(latlng, {icon: marker_icon});
-                                } else if (map_obj._options.show_numberings === true && feature.properties.display_order > 0) {
+                                } else if (map_obj._options.show_numberings === true && feature.properties.display_order > 0 && feature.properties.area_id == selected_area) {
                                     var c_feature     = mapFeature.features[i];
                                     var marker_latLng = L.latLng(c_feature.geometry.coordinates[1], c_feature.geometry.coordinates[0]);
                                   
