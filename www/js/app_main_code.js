@@ -8,7 +8,7 @@ var MODE_DESTINATION = 1;
 var MODE_AREA        = 2;
 var MODE_ROUTE       = 3;
 
-var api_key              = "";
+var api_key_th           = "";
 var current_edit_mode    = EDIT_MODE_NONE;
 var current_mode         = MODE_NONE;
 var destination_callback = false;
@@ -182,12 +182,12 @@ function button_menu_edit() {
 }
 
 function button_login_logout() {
-    if (api_key.length > 0) {
+    if (api_key_th.length > 0) {
         //logout
-        api_key = "";
-        user_id = -1;
+        api_key_th = "";
+        user_id    = -1;
         
-        localStorage.setItem("key", api_key);
+        localStorage.setItem("key", api_key_th);
         localStorage.setItem("user_id", user_id);
         $("#menu_login_logout").html("Login");
     }
@@ -316,7 +316,7 @@ function change_area(area_id) {
     /* Setup Inner HTML */
     area_inner_html += "<div>" + map.selected_area.properties.description + "</div>";
     
-    if (api_key.length > 0) {
+    if (api_key_th.length > 0) {
         /* Show the add new route option */
         area_inner_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
     }
@@ -761,7 +761,7 @@ function destination_info_loaded() {
     }
     
     /* Add Area Option */
-    if (api_key.length > 0) {
+    if (api_key_th.length > 0) {
         info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
     }
     
@@ -842,10 +842,10 @@ function do_login() {
        data:     login_data,
        success:  function(response) {
             if (response.result_code > 1) {
-                api_key = response.result.key;
+                api_key_th = response.result.key;
                 user_id = response.result.user_id;
            
-                localStorage.setItem("key", api_key);
+                localStorage.setItem("key", api_key_th);
                 localStorage.setItem("user_id", user_id);
            
                 $('#login_message').html('Login Successful');
@@ -1023,7 +1023,7 @@ function get_edit_area_data() {
              'min_zoom':        min_zoom,
              'max_zoom':        max_zoom,
              'user_id':         user_id,
-             'key':             api_key
+             'key':             api_key_th
         };
     } else {
         area_data = {
@@ -1036,7 +1036,7 @@ function get_edit_area_data() {
              'min_zoom':        min_zoom,
              'max_zoom':        max_zoom,
              'user_id':         user_id,
-             'key':             api_key
+             'key':             api_key_th
         };
     }
     
@@ -1059,7 +1059,7 @@ function get_edit_destination_data() {
             'dest_lat':     dest_lat,
             'dest_lng':     dest_lng,
             'user_id' :     user_id,
-            'key':          api_key
+            'key':          api_key_th
         };
     } else {
         destination_data = {
@@ -1070,7 +1070,7 @@ function get_edit_destination_data() {
             'dest_lat':         dest_lat,
             'dest_lng':         dest_lng,
             'user_id' :         user_id,
-            'key':              api_key
+            'key':              api_key_th
         };
     }
     
@@ -1109,7 +1109,7 @@ function get_edit_route_data() {
            'route_type':        route_type,
            'route_lat':         route_lat,
            'route_lng':         route_lng,
-           'key':               api_key
+           'key':               api_key_th
          };
     } else {
         route_data = {
@@ -1124,7 +1124,7 @@ function get_edit_route_data() {
            'route_lat':         route_lat,
            'route_lng':         route_lng,
            'route_id':          map.selected_route.properties.route_id,
-           'key':               api_key
+           'key':               api_key_th
          };
     }
     
@@ -1179,7 +1179,7 @@ function get_photo_ids() {
 
 function get_route_ticks(user_id, route_id, callback) {
     data = {
-        key:        api_key,
+        key:        api_key_th,
         route_id:   route_id,
         user_id:    user_id
     }
@@ -1666,7 +1666,7 @@ function update_current_route_tick() {
         //Update existing tick
         var data = {
             'user_id':       user_id,
-            'key':           api_key,
+            'key':           api_key_th,
             'tick_id':       tick_id,
             'tick_type':     tick_type,
             'tick_date':     tick_date,
@@ -1695,7 +1695,7 @@ function update_current_route_tick() {
         //Create a new tick
         var data = {
             'user_id':       user_id,
-            'key':           api_key,
+            'key':           api_key_th,
             'route_id':      route_id,
             'tick_type':     tick_type,
             'tick_date':     tick_date,
@@ -1770,14 +1770,14 @@ document.onreadystatechange = function(e) {
     
     /* load key and user_id */
     if (localStorage.getItem("key") !== null ) {
-        api_key = localStorage.getItem("key");
+        api_key_th = localStorage.getItem("key");
         
-        if (api_key.length > 0) {
+        if (api_key_th.length > 0) {
             $("#welcome_account_links").css('visibility','hidden');
             $("#menu_login_logout").html("Logout");
         }
     } else {
-        api_key = "";
+        api_key_th = "";
     }
     
     if (localStorage.getItem("user_id") !== null ) {
