@@ -83,7 +83,7 @@
                     for (var i = 0; i < this.areas.features.length; i++) {
                         if (this.areas.features[i].properties.area_id == this._options.area_id) {
                             var latlng = L.latLng(this.areas.features[i].geometry.coordinates[1], this.areas.features[i].geometry.coordinates[0]);
-                            var zoom   = this.areas.features[i].properties.click_zoom_to + 1;
+                            var zoom   = this.areas.features[i].properties.click_zoom_to;
                             
                             this.selected_area = this.areas.features[i];
                             this.set_view(latlng, zoom);
