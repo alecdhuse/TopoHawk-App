@@ -26,6 +26,7 @@ function PT(canvas_id) {
     this.photo_destination    = 0;
     this.photo_id             = 0;
     this.photo_left_margin    = 0;
+    this.photo_json           = {};
     this.photo_top_margin     = 0;
     this.photo_topo_loaded    = function() {};
     this.photo_url            = '';
@@ -231,6 +232,7 @@ PT.prototype._get_route_from_id = function(route_id) {
 PT.prototype._load_photo = function(result) {
     var pt_obj = this;
     paper = pt_obj.paper_scope;
+    this.photo_json = result;
     
     if (result.photo_file.slice(0, 4) != "data") {
         if (result.photo_file != "no-photo.png") {
