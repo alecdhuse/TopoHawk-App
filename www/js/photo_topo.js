@@ -170,7 +170,7 @@ PT.prototype._create_loading_path = function() {
         }
 
         paper.view.onFrame = function(event) {
-            if (this._photo_loaded === false) {
+            if (pt_obj._photo_loaded === false) {
                 if (typeof pt_obj.loading_path !== "undefined") {
                     pt_obj.loading_path.rotate(3);
                 }
