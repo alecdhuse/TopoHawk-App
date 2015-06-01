@@ -252,6 +252,7 @@ function buttons_reset() {
      $(".captcha_question_div").css('visibility','hidden');
     
      $("#screen_about").css('visibility','hidden');
+     $("#screen_add_photo").css('visibility','hidden');
      $("#screen_destinations").css('visibility','hidden');
      $("#screen_edit").css('visibility','hidden');
      $("#screen_edit_area").css('visibility','hidden');
