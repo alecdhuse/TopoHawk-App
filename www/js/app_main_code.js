@@ -417,6 +417,11 @@ function change_route(route_id, screen_switch) {
         inner_html += "No Comments</div>";
     }
     
+    /* Add photo link */
+    if (api_key_th.length > 0) {
+        inner_html += "<br /><a nohref onclick='show_upload_photo()'>Upload Photo</a>";
+    }
+    
     /* Set inner screen html */
     $("#screen_info_inner").html(inner_html);
     
@@ -1668,7 +1673,7 @@ function show_upload_photo() {
     /* Initiate Photo Uploader, if nessasary. */
     if (photo_uploader.init === false) {
         var max_uploader_width  = $('#screen_add_photo').width() - 16;
-        var max_uploader_height = $('#screen_add_photo').height() - 85;
+        var max_uploader_height = $('#screen_add_photo').height() - 90;
         
         photo_uploader.obj = new UPLOAD_PREVIEW();
         photo_uploader.obj.init('upload_photo_preview', max_uploader_height, max_uploader_width);
