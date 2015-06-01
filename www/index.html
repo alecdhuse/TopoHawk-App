@@ -76,8 +76,29 @@
             </div>
             
             <div id="screen_add_photo" class="screen">
-                <div id="upload_photo_preview" style="margin-left:5px;margin-top:5px;"></div>
-                <div id="photo_info_div"></div>
+                <div id="upload_photo_preview"></div>
+                <div id="upload_photo_info">
+                    <div class="edit_field">
+                        <label for="photo_name">Photo Name:</label><br>
+                        <input type="text" name="photo_name" id="photo_name" size="40" value="" />
+                    </div>
+                    <div class="edit_field">
+                        <label for="photo_type">Photo Type:</label><br>
+                        <select name="photo_type" id="photo_type">
+                            <option value="Unspecified">Unspecified</option>
+                            <option value="Topo">Topo</option>
+                            <option value="Climber Photo">Climber Photo</option>
+                            <option value="Photo Sphere">Photo Sphere</option>
+                        </select>
+                    </div>
+                    <div class="edit_field">
+                        <label for="photo_capton">Photo Caption:</label><br />
+                        <textarea rows="8" cols="40" name="photo_caption" id="photo_upload_caption" value="caption"></textarea><br />
+                    </div>
+
+                    <input type="button" class="big_buttons" name="cancel" id="cancel" value="Cancel" onclick="show_upload_photo()">
+                    <input type="submit" class="big_buttons" name="submit_photo" id="submit_photo" value="Submit" onclick="upload_photo()">
+                </div>
             </div>
             
             <div id="screen_destinations" class="screen">
@@ -96,7 +117,7 @@
                     <div>
                         <a nohref onclick="add_new_destination()">Add New Destination</a>
                         <br /><br />
-                        <a nohref onclick="upload_photo()">Upload Photo</a>
+                        <a nohref onclick="show_upload_photo()">Upload Photo</a>
                     </div>
                 </div>
             </div>

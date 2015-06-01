@@ -1255,6 +1255,11 @@ function hide_help_comment() {
     $("#help_comment").css('visibility','hidden');
 }
 
+function hide_image_upload_info() {
+    show_upload_photo();
+    return false;
+}
+
 function map_area_clicked(area_obj) {
     change_area(area_obj.properties.area_id);
 }
@@ -1656,6 +1661,33 @@ function show_signup() {
     }
 }
 
+function show_upload_photo() {
+    var window_obj = this;
+    buttons_reset();
+    
+    /* Initiate Photo Uploader, if nessasary. */
+    if (photo_uploader.init === false) {
+        var max_uploader_width  = $('#screen_add_photo').width() - 16;
+        var max_uploader_height = $('#screen_add_photo').height() - 85;
+        
+        photo_uploader.obj = new UPLOAD_PREVIEW();
+        photo_uploader.obj.init('upload_photo_preview', max_uploader_height, max_uploader_width);
+        photo_uploader.obj.resize_canvas();
+        photo_uploader.obj.upload_photo = function(img_dataurl) { window_obj.show_upload_photo_info(img_dataurl); };
+        photo_uploader.init = true;
+    }
+    
+    $('#upload_photo_preview').show();
+    $('#upload_photo_info').hide();
+    $("#screen_add_photo").css('visibility','visible');
+}
+
+function show_upload_photo_info(img_dataurl) {
+    photo_uploader.dataurl = img_dataurl;
+    $('#upload_photo_preview').hide();
+    $('#upload_photo_info').show();
+}
+
 function update_current_route_tick() {
     var tick_comment = $("#tick_send_comment").val();
     var tick_id      = parseInt($("#edit_tick_id").val());
@@ -1737,21 +1769,42 @@ function update_route_edit_grade() {
 }
 
 function upload_photo() {
-    buttons_reset();
+    $('#upload_photo_message').html('Uploading Photo...');
+    $('#upload_photo_info').hide();
+    $('#upload_photo_message').show();
+
+    var post_data = {
+        'area_id':       map.selected_area.properties.area_id,
+        'dest_id':       map.selected_destination.destination_id,
+        'route_id':      map.selected_route.properties.route_id,
+        'photo_name':    $("#photo_name").val(),
+        'photo_caption': $("#photo_upload_caption").val(),
+        'photo_type':    $("#photo_type").val(),
+        'photo_data':    photo_uploader.dataurl,
+        'session_id':    session_code,
+        'token':         csrf,
+        'user_id':       user_id
+    };
     
-    /* Initiate Photo Uploader, if nessasary. */
-    if (photo_uploader.init === false) {
-        var max_uploader_width  = $('#screen_add_photo').width() - 10;
-        var max_uploader_height = $('#screen_add_photo').height() - 85;
-        
-        photo_uploader.obj = new UPLOAD_PREVIEW();
-        photo_uploader.obj.init('upload_photo_preview', max_uploader_height, max_uploader_width);
-        photo_uploader.obj.resize_canvas();
-        photo_uploader.obj.upload_photo = function(img_dataurl) {  };
-        photo_uploader.init = true;
-    }
-    
-    $("#screen_add_photo").css('visibility','visible');
+    $.ajax({
+        type:       'POST',
+        dataType:   'json',
+        url:        'https://topohawk.com/api/v1/add_photo.php',
+        data:       post_data,
+        success: function(response) {
+            if (response.result_code > 0) {
+                $('#upload_photo_message').html('Photo Uploaded.');
+                location.reload();
+            } else {
+                $('#upload_photo_message').html('Photo Upload Failed: ' + response.result);
+            }
+        },
+        error: function (req, status, error) {
+            $('#upload_photo_message').html('Photo Upload Failed.');
+        }
+    });
+
+    return false;
 }
 
 function user_info_loaded() {

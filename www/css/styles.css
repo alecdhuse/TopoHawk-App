@@ -459,6 +459,10 @@ body {
     width: 100%;
 }
 
+#screen_add_photo {
+    margin: 8px;
+}
+
 #screen_info_title {
     font-weight: bold;
     margin: 8px;
