@@ -1730,6 +1730,11 @@ function update_route_edit_grade() {
     $("#difficulty_grade").val(map.get_grade_systems()[route_type]);
 }
 
+function upload_photo() {
+    buttons_reset();
+    $("#screen_add_photo").css('visibility','visible');
+}
+
 function user_info_loaded() {
     /* Update Filter Max Value */
     finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport));
