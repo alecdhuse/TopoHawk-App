@@ -714,7 +714,7 @@ function create_search_result_html(search_results) {
         } else if (search_results[i].type == "area") {
             seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + "," + search_results[i].id + ",0,true)'>";
         } else if (search_results[i].type == "route") {
-            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + ",0," + search_results[i].id + ",true)'>";
+            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + "," + search_results[i].area_id + "," + search_results[i].id + ",true)'>";
         } else {
             seach_results_html += "<div class='seach_result_div'>";
         }
