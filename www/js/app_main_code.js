@@ -34,6 +34,12 @@ var destination_callback_change   = {
     route_id:       0
 };
 
+var photo_uploader      = {
+    dataurl: "",
+    init:    false,
+    obj:     {}
+};
+
 /* Map Setup */
 var map = TH.map('screen_map', {
     cluster:        true,
@@ -1732,6 +1738,19 @@ function update_route_edit_grade() {
 
 function upload_photo() {
     buttons_reset();
+    
+    /* Initiate Photo Uploader, if nessasary. */
+    if (photo_uploader.init === false) {
+        var max_uploader_width  = $('#screen_add_photo').width() - 10;
+        var max_uploader_height = $('#screen_add_photo').height() - 85;
+        
+        photo_uploader.obj = new UPLOAD_PREVIEW();
+        photo_uploader.obj.init('upload_photo_preview', max_uploader_height, max_uploader_width);
+        photo_uploader.obj.resize_canvas();
+        photo_uploader.obj.upload_photo = function(img_dataurl) {  };
+        photo_uploader.init = true;
+    }
+    
     $("#screen_add_photo").css('visibility','visible');
 }
 
