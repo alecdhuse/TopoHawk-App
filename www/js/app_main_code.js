@@ -1682,6 +1682,7 @@ function show_upload_photo() {
         photo_uploader.init = true;
     }
     
+    $('#upload_photo_message').hide();
     $('#upload_photo_preview').show();
     $('#upload_photo_info').hide();
     $("#screen_add_photo").css('visibility','visible');
@@ -1786,8 +1787,7 @@ function upload_photo() {
         'photo_caption': $("#photo_upload_caption").val(),
         'photo_type':    $("#photo_type").val(),
         'photo_data':    photo_uploader.dataurl,
-        'session_id':    session_code,
-        'token':         csrf,
+        'key':           api_key_th,
         'user_id':       user_id
     };
     
@@ -1799,7 +1799,10 @@ function upload_photo() {
         success: function(response) {
             if (response.result_code > 0) {
                 $('#upload_photo_message').html('Photo Uploaded.');
-                location.reload();
+           
+                setTimeout(function(){
+                    button1_click();
+                }, 1200);
             } else {
                 $('#upload_photo_message').html('Photo Upload Failed: ' + response.result);
             }
