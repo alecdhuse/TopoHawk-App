@@ -410,13 +410,27 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     
     /* Make sure route markers do not overlap */
     for (var i=0; i<this.route_marker_points.length; i++) {
-        if ((marker_x - 11) < this.route_marker_points[i][0] && (marker_x + 11) > this.route_marker_points[i][0]) {
+        if ((marker_x - 12) < this.route_marker_points[i][0] && (marker_x + 12) > this.route_marker_points[i][0]) {
             /* X Overlap */
-            if (marker_x < this.route_marker_points[i][0]) {
-                marker_x -= (this.route_marker_points[i][0] - marker_x) + 6;
-            } else {
-                marker_x += (marker_x - this.route_marker_points[i][0]) + 6;
+            var marker_x_test = marker_x - 10;
+            var best_marker_x = marker_x + 13;
+            
+            while (marker_x_test < marker_x + 12) {
+                if ((marker_x_test - 13) < this.route_marker_points[i][0] && (marker_x_test + 13) > this.route_marker_points[i][0]) {
+                    /* Still Overlapping */
+                    marker_x_test += 4;
+                } else {
+                    if (Math.abs(marker_x_test - marker_x) < Math.abs(best_marker_x - marker_x)) {
+                        best_marker_x = marker_x_test;
+                    }
+                    
+                    marker_x_test += 4;
+                }
             }
+            
+            marker_x = best_marker_x;
+        } else if ((marker_y - 11) < this.route_marker_points[i][1] && (marker_y + 11) > this.route_marker_points[i][1]) {
+            /* Y Overlap */
         }
     }
     
