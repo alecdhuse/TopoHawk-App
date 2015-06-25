@@ -9,7 +9,7 @@
     <name>TopoHawk</name>
 
     <description>
-        Community generated climbing guides, now on your mobile device.
+        Community made climbing guides, now on your mobile device.
     </description>
 
     <author href="http://topohawk.com" email="helpdesk@topohawk.com">
@@ -29,7 +29,10 @@
     <preference name="auto-hide-splash-screen"    value="true" />
     <preference name="disable-cursor"             value="false" />
     <preference name="android-installLocation"    value="auto" /> 
-    <preference name="permissions"                value="none"/>
+    <preference name="permissions"                value="none" />
+    
+    <feature name="http://api.phonegap.com/1.0/geolocation"/>
+    <feature name="http://api.phonegap.com/1.0/network"/>
     
     <gap:plugin name="org.apache.cordova.device-orientation" />
     <gap:plugin name="org.apache.cordova.geolocation" />
