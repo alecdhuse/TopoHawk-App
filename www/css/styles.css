@@ -498,7 +498,8 @@ body {
     margin-right: 8px;
     margin-top: 8px;
     margin-bottom: 200px;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #screen_map {

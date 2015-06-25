@@ -118,7 +118,7 @@ function bread_crumb_logo_click() {
     $("#breadcrumbs_div_1").html("TopoHawk");
     $("#breadcrumbs_div_2").html("");
     $("#screen_info_title").html("");
-    $("#screen_info_inner").html(welcome_html);
+    //$("#screen_info_inner").html(welcome_html);
     
     button1_click();
     create_destination_list();
