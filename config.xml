@@ -32,6 +32,8 @@
     <preference name="permissions"                value="none" />
     <preference name="SplashScreen"               value="screen" />
     <preference name="SplashScreenDelay"          value="1000" />
+    <preference name="show-splash-screen-spinner" value="true" />
+    <preference name="auto-hide-splash-screen"    value="false" />
 
     <feature name="http://api.phonegap.com/1.0/geolocation"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
@@ -42,6 +44,7 @@
     <gap:plugin name="org.apache.cordova.splashscreen" />
     
     <icon src="icon.png"/>
+    <gap:splash src="splash.png" />
     
     <platform name="android">
         <splash src="platform/android/res/splash-720-960.png" density="land-hdpi"/>
@@ -58,11 +61,6 @@
         <splash src="www/images/splash-320-480.png" width="320" height="480" />
         <splash src="www/images/splash-640-960.png" width="640" height="960" />
     </platform>
-
-    <gap:splash gap:density="ldpi"  gap:platform="android" src="platform/android/res/splash-640-960.png" />
-    <gap:splash gap:density="mdpi"  gap:platform="android" src="platform/android/res/splash-320-426.png" />
-    <gap:splash gap:density="hdpi"  gap:platform="android" src="platform/android/res/splash-320-470.png" />
-    <gap:splash gap:density="xhdpi" gap:platform="android" src="platform/android/res/splash-720-960.png" />
 
     <icon src="platform/android/res/icon-36-ldpi.png"   gap:platform="android"   gap:qualifier="ldpi" />
     <icon src="platform/android/res/icon-48-mdpi.png"   gap:platform="android"   gap:qualifier="mdpi" />
