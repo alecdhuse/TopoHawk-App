@@ -958,6 +958,7 @@
                 
                 img.onload = function() {
                     ctx.drawImage(img,0,0);
+                    layer.tileDrawn(canvas);
                 };
                 
                 //mod to make sure requests are in range
@@ -998,8 +999,6 @@
                         }
                     });
                 }
-
-                layer.tileDrawn(canvas);
             }
         },
                     
