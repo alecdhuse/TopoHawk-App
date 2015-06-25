@@ -522,6 +522,9 @@ body {
 }
 
 .search_text {
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 1px;
     height: 2em;
     width: 100%;
 }
