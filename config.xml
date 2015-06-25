@@ -30,7 +30,7 @@
     <preference name="disable-cursor"             value="false" />
     <preference name="android-installLocation"    value="auto" /> 
     <preference name="permissions"                value="none" />
-    <preference name="SplashScreen"               value="screen" />
+    <preference name="SplashScreen"               value="splash" />
     <preference name="SplashScreenDelay"          value="1000" />
 
     <feature name="http://api.phonegap.com/1.0/geolocation"/>
@@ -44,10 +44,19 @@
     <icon src="icon.png"/>
     
     <platform name="android">
+        <splash src="platform/android/res/splash-720-960.png" density="land-hdpi"/>
+        <splash src="platform/android/res/splash-720-960.png" density="land-ldpi"/>
+        <splash src="platform/android/res/splash-720-960.png" density="land-mdpi"/>
+        <splash src="platform/android/res/splash-720-960.png" density="land-xhdpi"/>
         <splash src="platform/android/res/splash-640-960.png" density="port-hdpi"/>
         <splash src="platform/android/res/splash-320-426.png" density="port-ldpi"/>
         <splash src="platform/android/res/splash-320-470.png" density="port-mdpi"/>
         <splash src="platform/android/res/splash-720-960.png" density="port-xhdpi"/>
+    </platform>
+
+    <platform name="ios">
+        <splash src="www/images/splash-320-480.png" width="320" height="480" />
+        <splash src="www/images/splash-640-960.png" width="640" height="960" />
     </platform>
 
     <icon src="platform/android/res/icon-36-ldpi.png"   gap:platform="android"   gap:qualifier="ldpi" />
@@ -56,9 +65,6 @@
     <icon src="platform/android/res/icon-96-xhdpi.png"  gap:platform="android"   gap:qualifier="xhdpi" />
     <icon src="www/images/icon-72-hdpi.png"             gap:platform="ios"       width="72"  height="72" />
     <icon src="www/images/touch-icon-192x192.png"       gap:platform="ios"       width="192" height="192" />
-    
-    <gap:splash src="www/images/splash-320-480.png"       gap:platform="ios"     width="320" height="480" />
-    <gap:splash src="www/images/splash-640-960.png"       gap:platform="ios"     width="640" height="960" />
     
     <access origin="*"/>
 
