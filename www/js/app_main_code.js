@@ -1835,7 +1835,7 @@ document.onreadystatechange = function(e) {
     settings_load();
     TH.util.storage.check_offline_statuses();
     
-    $('#tick_date').datepicker({dateFormat: 'yy-mm-dd'});
+    $("#tick_date").datepicker({dateFormat: "yy-mm-dd"});
     
     /* Setup Area UI Slider */
     $('#noUiSlider_area').noUiSlider(
