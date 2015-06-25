@@ -643,7 +643,7 @@ PT.prototype.update_photo_object = function(photo_id, photo_obj, pt_obj) {
         pt_obj.paths_json = photo_obj.photo_topos;
         pt_obj.photo_area = photo_obj.area_id;
         pt_obj.photo_destination = photo_obj.dest_id;
-        pt_obj.photo_user_id = response.result.user_id;
+        pt_obj.photo_user_id = photo_obj.user_id;
         pt_obj._load_photo(photo_obj);
     } else {
         pt_obj._make_photo_request(photo_id);

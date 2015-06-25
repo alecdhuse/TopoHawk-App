@@ -22,6 +22,7 @@ body {
     padding: 0px;
     overflow-x: hidden;
     overflow-y: hidden;
+    width: 100%;
 }
 
 .amenity_description {
@@ -295,6 +296,13 @@ body {
 #logo_image {
     float: left;
     margin-right: 8px;
+}
+
+#main_div {
+    position: fixed;
+    height: 100%;
+    top: 0px;
+    width: 100%;
 }
 
 .medium_button {

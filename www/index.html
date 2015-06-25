@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
         
         <link rel="stylesheet" type="text/css" href="css/dd.css">
         <link rel="stylesheet" type="text/css" href="css/jquery.nouislider.min.css" />
@@ -31,458 +31,460 @@
             <div id="help_comment_inner"></div>
         </div>
         
-        <div id="top_bar_div">
-            <div id="breadcrumbs_div">
-                <img id="logo_image" src="images/logo.svg" style="height:30px;" onclick='bread_crumb_logo_click()' />
-                <div class="breadcrumb_element_div" id='breadcrumbs_div_1' onclick='bread_crumb_destination_click()'>TopoHawk</div>
-                <div class="breadcrumb_element_div" id='breadcrumbs_div_2' onclick='bread_crumb_area_click()'></div>
-            </div>
-            <div id="menu_div">
-                <img src="images/button-menu.svg" style="height:30px;" onclick="button_menu_click()"/>
-            </div>
-        </div>
-        
-        <div id="center_div">
-            <div id="screen_about" class="screen">
-                <div class="screen_inner">
-                    <div class="page_header">Map Legend</div>
-                    <ul>
-                        <li style="list-style-image: url('images/marker-route-boulder.svg');">Green - Boulder Problem</li>
-                        <li style="list-style-image: url('images/marker-route-trad.svg');">Red - Trad Route</li>
-                        <li style="list-style-image: url('images/marker-route-sport.svg');">Blue - Sport Route</li>
-                        <li style="list-style-image: url('images/marker-route-mixed.svg');">Purple - Mixed Route</li>
-                        <li style="list-style-image: url('images/marker-route-toprope.svg');">Gold - Top Rope Route</li>
-                        <li style="list-style-image: url('images/marker-route-aid.svg');">Light Gray - Aid Routes</li>
-                        <li style="list-style-image: url('images/marker-route-alpine.svg');">White - Alpine Routes</li>
-                        <li style="list-style-image: url('images/marker-route-ice.svg');">Light Blue - Ice Routes</li>
-                        <li style="list-style-image: url('images/marker-climbing-area.svg');">Orange - Climbing Area or Wall</li>
-                        <li style="list-style-image: url('images/marker-destination.svg');">Gray - Climbing Destination</li>
-                        <br />
-                        <li style="list-style-image: url('images/cafe-12.svg');">Cafe</li>
-                        <li style="list-style-image: url('images/campsite-12.svg');">Camping</li>
-                        <li style="list-style-image: url('images/fuel-12.svg');">Fuel</li>
-                        <li style="list-style-image: url('images/grocery-12.svg');">Grocery</li>
-                        <li style="list-style-image: url('images/hospital-12.svg');">Hospital</li>
-                        <li style="list-style-image: url('images/laundry-12.svg');">Laundry</li>
-                        <li style="list-style-image: url('images/lodging-12.svg');">Lodging</li>
-                        <li style="list-style-image: url('images/other-12.svg');">Other</li>
-                        <li style="list-style-image: url('images/parking-12.svg');">Parking</li>
-                        <li style="list-style-image: url('images/restaurant-12.svg');">Restaurant</li>
-                        <li style="list-style-image: url('images/shop-12.svg');">Shop</li>
-                        <li style="list-style-image: url('images/toilets-12.svg');">Toilets</li>
-                        <li style="list-style-image: url('images/water-12.svg');">Water</li>
-                    </ul>
+        <div id="main_div">
+            <div id="top_bar_div">
+                <div id="breadcrumbs_div">
+                    <img id="logo_image" src="images/logo.svg" style="height:30px;" onclick='bread_crumb_logo_click()' />
+                    <div class="breadcrumb_element_div" id='breadcrumbs_div_1' onclick='bread_crumb_destination_click()'>TopoHawk</div>
+                    <div class="breadcrumb_element_div" id='breadcrumbs_div_2' onclick='bread_crumb_area_click()'></div>
+                </div>
+                <div id="menu_div">
+                    <img src="images/button-menu.svg" style="height:30px;" onclick="button_menu_click()"/>
                 </div>
             </div>
             
-            <div id="screen_add_photo" class="screen">
-                <div id="upload_photo_preview"></div>
-                <div id="upload_photo_info">
-                    <div class="edit_field">
-                        <label for="photo_name">Photo Name:</label><br>
-                        <input type="text" name="photo_name" id="photo_name" size="40" value="" />
-                    </div>
-                    <div class="edit_field">
-                        <label for="photo_type">Photo Type:</label><br>
-                        <select name="photo_type" id="photo_type">
-                            <option value="Unspecified">Unspecified</option>
-                            <option value="Topo">Topo</option>
-                            <option value="Climber Photo">Climber Photo</option>
-                            <option value="Photo Sphere">Photo Sphere</option>
-                        </select>
-                    </div>
-                    <div class="edit_field">
-                        <label for="photo_capton">Photo Caption:</label><br />
-                        <textarea rows="8" cols="40" name="photo_caption" id="photo_upload_caption" value="caption"></textarea><br />
-                    </div>
-
-                    <input type="button" class="big_buttons" name="cancel" id="cancel" value="Cancel" onclick="show_upload_photo()">
-                    <input type="submit" class="big_buttons" name="submit_photo" id="submit_photo" value="Submit" onclick="upload_photo()">
-                </div>
-                <div id="upload_photo_message"></div>
-            </div>
-            
-            <div id="screen_destinations" class="screen">
-                <div class="search_filter">
-                    <input class="search_text" type="text" name="destination_search" id="destination_search_filter"/>
-                    <div id="filter_hidden_items"></div>
-                </div>
-                <div class="screen_inner">
-                    <div id="destination_search_results"></div>
-                </div>
-            </div>
-            
-            <div id="screen_edit" class="screen">
-                <div class="screen_inner">
-                    <p>The editing feature is still under development.</p>
-                    <div>
-                        <a nohref onclick="add_new_destination()">Add New Destination</a>
+            <div id="center_div">
+                <div id="screen_about" class="screen">
+                    <div class="screen_inner">
+                        <div class="page_header">Map Legend</div>
+                        <ul>
+                            <li style="list-style-image: url('images/marker-route-boulder.svg');">Green - Boulder Problem</li>
+                            <li style="list-style-image: url('images/marker-route-trad.svg');">Red - Trad Route</li>
+                            <li style="list-style-image: url('images/marker-route-sport.svg');">Blue - Sport Route</li>
+                            <li style="list-style-image: url('images/marker-route-mixed.svg');">Purple - Mixed Route</li>
+                            <li style="list-style-image: url('images/marker-route-toprope.svg');">Gold - Top Rope Route</li>
+                            <li style="list-style-image: url('images/marker-route-aid.svg');">Light Gray - Aid Routes</li>
+                            <li style="list-style-image: url('images/marker-route-alpine.svg');">White - Alpine Routes</li>
+                            <li style="list-style-image: url('images/marker-route-ice.svg');">Light Blue - Ice Routes</li>
+                            <li style="list-style-image: url('images/marker-climbing-area.svg');">Orange - Climbing Area or Wall</li>
+                            <li style="list-style-image: url('images/marker-destination.svg');">Gray - Climbing Destination</li>
+                            <br />
+                            <li style="list-style-image: url('images/cafe-12.svg');">Cafe</li>
+                            <li style="list-style-image: url('images/campsite-12.svg');">Camping</li>
+                            <li style="list-style-image: url('images/fuel-12.svg');">Fuel</li>
+                            <li style="list-style-image: url('images/grocery-12.svg');">Grocery</li>
+                            <li style="list-style-image: url('images/hospital-12.svg');">Hospital</li>
+                            <li style="list-style-image: url('images/laundry-12.svg');">Laundry</li>
+                            <li style="list-style-image: url('images/lodging-12.svg');">Lodging</li>
+                            <li style="list-style-image: url('images/other-12.svg');">Other</li>
+                            <li style="list-style-image: url('images/parking-12.svg');">Parking</li>
+                            <li style="list-style-image: url('images/restaurant-12.svg');">Restaurant</li>
+                            <li style="list-style-image: url('images/shop-12.svg');">Shop</li>
+                            <li style="list-style-image: url('images/toilets-12.svg');">Toilets</li>
+                            <li style="list-style-image: url('images/water-12.svg');">Water</li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-            
-            <div id="screen_edit_area" class="screen">
-                <div class="screen_inner" style="padding-left:4px;">
-                    <div class="edit_field">
-                        <label for="area_name_txt">Name:</label><br>
-                        <input name="area_name_txt" type="text" id="area_name_txt" size="40" style="width:96%;">
-                    </div>
-
-                    <div class="edit_field">
-                        <label for="textfield">Latitude:</label><br>
-                        <input name="textfield" type="text" class="latitude" id="area_latitude" size="40">
-                    </div>
-
-                    <div class="edit_field">
-                        <label for="textfield">Longitude:</label><br>
-                        <input name="textfield" type="text" class="longitude" id="area_longitude" size="40">
-                    </div>
-
-                    <div class="edit_field">
-                        <label for="area_destination">Destination:</label><br>
-                        <select id="area_destination" name="area_destination">
-                            <option value="-1">Select a Destination</option>
-                        </select>
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="area_visibility_slider">Area marker visibility:</label><br/><br/>
-                        <div id='area_visibility_slider' name='area_visibility' style='font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif; font-size: 14px; margin-bottom: 15px; margin-left: 15px; width: 200px;'>
-                            <div id='noUiSlider_area'></div>
-                        </div>
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="area_desc">Description:</label><br>
-                        <textarea name="area_desc" cols="35" rows="6" id="area_desc" style="width:96%;"></textarea>
-                    </div>
-        
-                </div>
-            </div>
-            
-            <div id="screen_edit_destination" class="screen">
-                <div class="screen_inner">
-                    <div class="edit_field">
-                        <label for="dest_name">Destination Name:</label><br>
-                        <input name="dest_name" id="dest_name" size="40" type="text">
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="dest_loc">Location: <span style="font-size: 8px; color: rgb(200,200,200);">(City, State/Province, Counry)</span></label><br>
-                        <input name="dest_loc" id="dest_loc" size="40" type="text">
-                    </div>
-
-                    <div class="edit_field">
-                        <label for="textfield">Latitude:</label><br>
-                        <input name="textfield" class="latitude" id="dest_lat" size="40" type="text">
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="textfield">Longitude:</label><br>
-                        <input name="textfield" class="longitude" id="dest_lng" size="40" type="text">
-                    </div>
-
-                    <div class="edit_field">
-                        <label for="dest_desc">Description:</label><br>
-                        <textarea name="dest_desc" cols="36" rows="23" id="dest_desc"></textarea>
-                    </div>
                 
-                </div>
-            </div>
-            
-            <div id="screen_edit_route" class="screen">
-                <div class="screen_inner">
-                    <div class="edit_field">
-                        <label for="route_name">Route/Problem Name:</label><br>
-                        <input name="route_name" id="route_name" size="40" style="width:96%;" type="text">
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="area_name">Area:</label><br>
-                        <select class="area_names" name="area_name" id="area_name_select">
-                        </select>
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="route_difficulty">Difficulty:</label><br>
-                        <input name="route_difficulty" id="route_difficulty" size="25" type="text">
-                        <select name="difficulty_grade" id="difficulty_grade">
-                            <option value="Aid-A">Aid-A</option>
-                            <option value="French">French</option>
-                            <option value="Fontainebleau">Fontainebleau</option>
-                            <option value="UIAA">UIAA</option>
-                            <option value="USA-YDS">YDS</option>
-                            <option value="USA-VScale">V Scale</option>
-                        </select>
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="textfield">Number of Pitches:</label><br>
-                        <input name="textfield" id="route_pitches" size="40" type="text">
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="textfield">Latitude:</label><br>
-                        <input name="textfield" class="latitude" id="route_latitude" size="40" type="text">
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="textfield">Longitude:</label><br>
-                        <input name="textfield" class="longitude" id="route_longitude" size="40" type="text">
-                    </div>
-                    
-                    <div class="edit_field">
-                        <label for="textarea">Description:</label><br>
-                        <textarea name="textarea" cols="35" rows="6" id="route_description" style="width:96%;"></textarea>
-                    </div>
-                    
-                    <input name="route_type" id="aid" value="Aid" onchange="update_route_edit_grade()" type="radio">
-                    <label for="aid">Aid</label><br>
-
-                    <input name="route_type" id="top_rope" value="Top Rope" onchange="update_route_edit_grade()" type="radio">
-                    <label for="top_rope">Top Rope</label><br>
-
-                    <input name="route_type" id="sport" value="Sport" onchange="update_route_edit_grade()" type="radio">
-                    <label for="sport">Sport</label><br>
-
-                    <input name="route_type" id="trad" value="Trad" onchange="update_route_edit_grade()" type="radio">
-                    <label for="trad">Trad</label><br>
-
-                    <input name="route_type" id="mixed" value="Mixed" onchange="update_route_edit_grade()" type="radio">
-                    <label for="mixed">Mixed</label><br>
-
-                    <input name="route_type" id="boulder" value="Boulder" onchange="update_route_edit_grade()" type="radio">
-                    <label for="boulder">Boulder</label>
-                    
-                    <div style="height:100px;text-align:center;width:100%;"> </div>
-                </div>
-            </div>
-            
-            <div id="screen_info" class="screen">
-                <div id="screen_info_title"></div>
-                <div class="screen_inner" id="screen_info_inner">
-                    <div id="welcome_logo">
-                        <br />
-                        <img src="images/logo-black.svg" style="width:100%;"/>
-                        <p style="font-size:x-large;text-align:center;width:100%;">Welcome!</p>
-                    </div>
-                    <div style="margin:auto;width:100%;">
-                        <div style="margin:8px;font-size:medium;text-align:center;width:100%;">
-                            <p>Topo Hawk provides climbers with maps, topos, information and photos about climbing destinations around the world.</p>
-                            <p>By creating an account climbers can add their knowledge of destinations, sharing it with our community.</p>
+                <div id="screen_add_photo" class="screen">
+                    <div id="upload_photo_preview"></div>
+                    <div id="upload_photo_info">
+                        <div class="edit_field">
+                            <label for="photo_name">Photo Name:</label><br>
+                            <input type="text" name="photo_name" id="photo_name" size="40" value="" />
                         </div>
-                        <div id="welcome_account_links">
-                            <div style="float:left;text-align:center;width:49%;">
-                                <p style="text-align:center;font-size:x-large;"><a nohref onclick="show_signup()">Sign Up</a></p>
-                            </div>
-                            
-                            <div style="float:right;width:49%;">
-                                <p style="text-align:center;font-size:x-large;"><a nohref onclick="show_login()">Login</a></p>
+                        <div class="edit_field">
+                            <label for="photo_type">Photo Type:</label><br>
+                            <select name="photo_type" id="photo_type">
+                                <option value="Unspecified">Unspecified</option>
+                                <option value="Topo">Topo</option>
+                                <option value="Climber Photo">Climber Photo</option>
+                                <option value="Photo Sphere">Photo Sphere</option>
+                            </select>
+                        </div>
+                        <div class="edit_field">
+                            <label for="photo_capton">Photo Caption:</label><br />
+                            <textarea rows="8" cols="40" name="photo_caption" id="photo_upload_caption" value="caption"></textarea><br />
+                        </div>
+
+                        <input type="button" class="big_buttons" name="cancel" id="cancel" value="Cancel" onclick="show_upload_photo()">
+                        <input type="submit" class="big_buttons" name="submit_photo" id="submit_photo" value="Submit" onclick="upload_photo()">
+                    </div>
+                    <div id="upload_photo_message"></div>
+                </div>
+                
+                <div id="screen_destinations" class="screen">
+                    <div class="search_filter">
+                        <input class="search_text" type="text" name="destination_search" id="destination_search_filter"/>
+                        <div id="filter_hidden_items"></div>
+                    </div>
+                    <div class="screen_inner">
+                        <div id="destination_search_results"></div>
+                    </div>
+                </div>
+                
+                <div id="screen_edit" class="screen">
+                    <div class="screen_inner">
+                        <p>The editing feature is still under development.</p>
+                        <div>
+                            <a nohref onclick="add_new_destination()">Add New Destination</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="screen_edit_area" class="screen">
+                    <div class="screen_inner" style="padding-left:4px;">
+                        <div class="edit_field">
+                            <label for="area_name_txt">Name:</label><br>
+                            <input name="area_name_txt" type="text" id="area_name_txt" size="40" style="width:96%;">
+                        </div>
+
+                        <div class="edit_field">
+                            <label for="textfield">Latitude:</label><br>
+                            <input name="textfield" type="text" class="latitude" id="area_latitude" size="40">
+                        </div>
+
+                        <div class="edit_field">
+                            <label for="textfield">Longitude:</label><br>
+                            <input name="textfield" type="text" class="longitude" id="area_longitude" size="40">
+                        </div>
+
+                        <div class="edit_field">
+                            <label for="area_destination">Destination:</label><br>
+                            <select id="area_destination" name="area_destination">
+                                <option value="-1">Select a Destination</option>
+                            </select>
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="area_visibility_slider">Area marker visibility:</label><br/><br/>
+                            <div id='area_visibility_slider' name='area_visibility' style='font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif; font-size: 14px; margin-bottom: 15px; margin-left: 15px; width: 200px;'>
+                                <div id='noUiSlider_area'></div>
                             </div>
                         </div>
                         
-                        <div style='height:70px;width:100%'> </div>
-                    </div>
-                    <div style="height:100px;text-align:center;width:100%;"> </div>
-                </div>
-            </div>
+                        <div class="edit_field">
+                            <label for="area_desc">Description:</label><br>
+                            <textarea name="area_desc" cols="35" rows="6" id="area_desc" style="width:96%;"></textarea>
+                        </div>
             
-            <div id="screen_login" class="screen">
-                <div class="screen_inner">
-                    <table width="100%" border="0">
-                        <tr>
-                            <td><label for='email'>Email:</label></td>
-                            <td><input type='email' name='email' id='login_email' value='' class="big_textbox"></td>
-                        </tr>
-                        <tr>			
-                            <td><label for="password">Password:</label></td>
-                            <td><input type="password" name="password" id="login_password" class="big_textbox"></td>
-                        </tr>
-                    </table>
-                    <br />
-                    <input type="submit" name="submit" class="big_button" value="Login" onclick="do_login()">
+                    </div>
+                </div>
+                
+                <div id="screen_edit_destination" class="screen">
+                    <div class="screen_inner">
+                        <div class="edit_field">
+                            <label for="dest_name">Destination Name:</label><br>
+                            <input name="dest_name" id="dest_name" size="40" type="text">
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="dest_loc">Location: <span style="font-size: 8px; color: rgb(200,200,200);">(City, State/Province, Counry)</span></label><br>
+                            <input name="dest_loc" id="dest_loc" size="40" type="text">
+                        </div>
+
+                        <div class="edit_field">
+                            <label for="textfield">Latitude:</label><br>
+                            <input name="textfield" class="latitude" id="dest_lat" size="40" type="text">
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="textfield">Longitude:</label><br>
+                            <input name="textfield" class="longitude" id="dest_lng" size="40" type="text">
+                        </div>
+
+                        <div class="edit_field">
+                            <label for="dest_desc">Description:</label><br>
+                            <textarea name="dest_desc" cols="36" rows="23" id="dest_desc"></textarea>
+                        </div>
                     
-                    <div class='screen_message' id="login_message"></div>
-                    <br />
-                    <div style="text-align:center;">
-                        <p>Don't have an account?</p>
-                        <a nohref onclick="show_signup()">Sign Up</a>
                     </div>
                 </div>
-            </div>
-            
-            <div id="screen_map" class="screen"></div>
-            
-            <div id="screen_offline_content" class="screen">
-                <div class="screen_inner" id="screen_offline_inner">
-                    <p>The offline content feature is still under development.</p>
-                    <p>We hope to have it finished soon.</p>
-                </div>
-            </div>
-            
-            <div id="screen_photo" class="screen">
-                <canvas id='photo_topo_canvas'></canvas>
-                <div id='photo_nav_bar'>
-                    <div id='arrow_left'  onclick='photo_show_previous()'><img src='images/arrow_left.svg' /></div>
-                    <div id='arrow_right' onclick='photo_show_next()'><img src='images/arrow_right.svg' /></div>
-                    <div id='photo_bullets'></div>
-                </div>
-            </div>
-            
-            <div id="screen_search" class="screen">
-                <div class="loading_full_screen" id="search_loading_screen" style="visibility:hidden">
-                    <div class="loading_screen_center">
-                        <img src="images/ui-anim_basic_96x96.gif" class="loading_screen_spinner" />
+                
+                <div id="screen_edit_route" class="screen">
+                    <div class="screen_inner">
+                        <div class="edit_field">
+                            <label for="route_name">Route/Problem Name:</label><br>
+                            <input name="route_name" id="route_name" size="40" style="width:96%;" type="text">
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="area_name">Area:</label><br>
+                            <select class="area_names" name="area_name" id="area_name_select">
+                            </select>
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="route_difficulty">Difficulty:</label><br>
+                            <input name="route_difficulty" id="route_difficulty" size="25" type="text">
+                            <select name="difficulty_grade" id="difficulty_grade">
+                                <option value="Aid-A">Aid-A</option>
+                                <option value="French">French</option>
+                                <option value="Fontainebleau">Fontainebleau</option>
+                                <option value="UIAA">UIAA</option>
+                                <option value="USA-YDS">YDS</option>
+                                <option value="USA-VScale">V Scale</option>
+                            </select>
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="textfield">Number of Pitches:</label><br>
+                            <input name="textfield" id="route_pitches" size="40" type="text">
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="textfield">Latitude:</label><br>
+                            <input name="textfield" class="latitude" id="route_latitude" size="40" type="text">
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="textfield">Longitude:</label><br>
+                            <input name="textfield" class="longitude" id="route_longitude" size="40" type="text">
+                        </div>
+                        
+                        <div class="edit_field">
+                            <label for="textarea">Description:</label><br>
+                            <textarea name="textarea" cols="35" rows="6" id="route_description" style="width:96%;"></textarea>
+                        </div>
+                        
+                        <input name="route_type" id="aid" value="Aid" onchange="update_route_edit_grade()" type="radio">
+                        <label for="aid">Aid</label><br>
+
+                        <input name="route_type" id="top_rope" value="Top Rope" onchange="update_route_edit_grade()" type="radio">
+                        <label for="top_rope">Top Rope</label><br>
+
+                        <input name="route_type" id="sport" value="Sport" onchange="update_route_edit_grade()" type="radio">
+                        <label for="sport">Sport</label><br>
+
+                        <input name="route_type" id="trad" value="Trad" onchange="update_route_edit_grade()" type="radio">
+                        <label for="trad">Trad</label><br>
+
+                        <input name="route_type" id="mixed" value="Mixed" onchange="update_route_edit_grade()" type="radio">
+                        <label for="mixed">Mixed</label><br>
+
+                        <input name="route_type" id="boulder" value="Boulder" onchange="update_route_edit_grade()" type="radio">
+                        <label for="boulder">Boulder</label>
+                        
+                        <div style="height:100px;text-align:center;width:100%;"> </div>
                     </div>
                 </div>
-                <div class="search_box_div">
-                    <input class="search_text" type="text" name="search_box" id="search_box"/>
-                    <img id="search_image" src="images/search.svg" onclick="do_search()" style='float:right;margin-top: 5px;'/>
-                </div>
-                <div class="screen_inner" id="search_screen_inner">
-                    <div id="search_results"></div>
-                </div>
-            </div>
-            
-            <div id="screen_settings" class="screen">
-                <div class="screen_inner">
-                    <div class="page_header">App and Account Settings</div>
-                    <input type="checkbox" name="settings_high_res_photos" id="settings_high_res_photos" onclick="settings_update_photo_res()"> Use High Resolution Photos<br>
-                </div>
-            </div>
-            
-            <div id="screen_signup" class="screen">
-                <div class="screen_inner">
-                    <table width="100%" border="0">
-                        <tr>
-                            <td width="100"><label for="username">Username:</label></td>
-                            <td width='197'><input type='text' name='username' id='signup_username' class="big_textbox" value=''></td>
-                        </tr>
-                        <tr>
-                            <td><label for='email'>Email:</label></td>
-                            <td><input type='email' name='email' id='signup_email' class="big_textbox" value=''></td>
-                        </tr>
-                        <tr>			
-                            <td><label for="password">Password:</label></td>
-                            <td><input type="password" name="password" id="signup_password" class="big_textbox"></td>
-                        </tr>
-                    </table>
-                    
-                    <div class="captcha">
-                        <div class="captcha_check_div"><input type="checkbox" class="captcha_check" name="captcha_check" value="am_human" onchange="check_for_human()" autocomplete="off"> <span id="verification_text" style="font-size:2em;">I am human</span></div>
-                        <div class="captcha_question_div" style="visibility:hidden;">
-                            <div id="captcha_question_text"></div>
-                            <div style="float:left;margin-left:2px;">
-                                <img id="captcha_question_img" />
+                
+                <div id="screen_info" class="screen">
+                    <div id="screen_info_title"></div>
+                    <div class="screen_inner" id="screen_info_inner">
+                        <div id="welcome_logo">
+                            <br />
+                            <img src="images/logo-black.svg" style="width:100%;"/>
+                            <p style="font-size:x-large;text-align:center;width:100%;">Welcome!</p>
+                        </div>
+                        <div style="margin:auto;width:100%;">
+                            <div style="margin:8px;font-size:medium;text-align:center;width:100%;">
+                                <p>Topo Hawk provides climbers with maps, topos, information and photos about climbing destinations around the world.</p>
+                                <p>By creating an account climbers can add their knowledge of destinations, sharing it with our community.</p>
                             </div>
-                            <div style="float:right;margin-top:14px;width:140px;">
-                                <div style="font-size:medium;height:20px;">Answer:</div>
-                                <div style="font-size:1em;height:25px;">
-                                    <input type="text" name="captcha_answer" id="captcha_answer">
+                            <div id="welcome_account_links">
+                                <div style="float:left;text-align:center;width:49%;">
+                                    <p style="text-align:center;font-size:x-large;"><a nohref onclick="show_signup()">Sign Up</a></p>
+                                </div>
+                                
+                                <div style="float:right;width:49%;">
+                                    <p style="text-align:center;font-size:x-large;"><a nohref onclick="show_login()">Login</a></p>
+                                </div>
+                            </div>
+                            
+                            <div style='height:70px;width:100%'> </div>
+                        </div>
+                        <div style="height:100px;text-align:center;width:100%;"> </div>
+                    </div>
+                </div>
+                
+                <div id="screen_login" class="screen">
+                    <div class="screen_inner">
+                        <table width="100%" border="0">
+                            <tr>
+                                <td><label for='email'>Email:</label></td>
+                                <td><input type='email' name='email' id='login_email' value='' class="big_textbox"></td>
+                            </tr>
+                            <tr>			
+                                <td><label for="password">Password:</label></td>
+                                <td><input type="password" name="password" id="login_password" class="big_textbox"></td>
+                            </tr>
+                        </table>
+                        <br />
+                        <input type="submit" name="submit" class="big_button" value="Login" onclick="do_login()">
+                        
+                        <div class='screen_message' id="login_message"></div>
+                        <br />
+                        <div style="text-align:center;">
+                            <p>Don't have an account?</p>
+                            <a nohref onclick="show_signup()">Sign Up</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="screen_map" class="screen"></div>
+                
+                <div id="screen_offline_content" class="screen">
+                    <div class="screen_inner" id="screen_offline_inner">
+                        <p>The offline content feature is still under development.</p>
+                        <p>We hope to have it finished soon.</p>
+                    </div>
+                </div>
+                
+                <div id="screen_photo" class="screen">
+                    <canvas id='photo_topo_canvas'></canvas>
+                    <div id='photo_nav_bar'>
+                        <div id='arrow_left'  onclick='photo_show_previous()'><img src='images/arrow_left.svg' /></div>
+                        <div id='arrow_right' onclick='photo_show_next()'><img src='images/arrow_right.svg' /></div>
+                        <div id='photo_bullets'></div>
+                    </div>
+                </div>
+                
+                <div id="screen_search" class="screen">
+                    <div class="loading_full_screen" id="search_loading_screen" style="visibility:hidden">
+                        <div class="loading_screen_center">
+                            <img src="images/ui-anim_basic_96x96.gif" class="loading_screen_spinner" />
+                        </div>
+                    </div>
+                    <div class="search_box_div">
+                        <input class="search_text" type="text" name="search_box" id="search_box"/>
+                        <img id="search_image" src="images/search.svg" onclick="do_search()" style='float:right;margin-top: 5px;'/>
+                    </div>
+                    <div class="screen_inner" id="search_screen_inner">
+                        <div id="search_results"></div>
+                    </div>
+                </div>
+                
+                <div id="screen_settings" class="screen">
+                    <div class="screen_inner">
+                        <div class="page_header">App and Account Settings</div>
+                        <input type="checkbox" name="settings_high_res_photos" id="settings_high_res_photos" onclick="settings_update_photo_res()"> Use High Resolution Photos<br>
+                    </div>
+                </div>
+                
+                <div id="screen_signup" class="screen">
+                    <div class="screen_inner">
+                        <table width="100%" border="0">
+                            <tr>
+                                <td width="100"><label for="username">Username:</label></td>
+                                <td width='197'><input type='text' name='username' id='signup_username' class="big_textbox" value=''></td>
+                            </tr>
+                            <tr>
+                                <td><label for='email'>Email:</label></td>
+                                <td><input type='email' name='email' id='signup_email' class="big_textbox" value=''></td>
+                            </tr>
+                            <tr>			
+                                <td><label for="password">Password:</label></td>
+                                <td><input type="password" name="password" id="signup_password" class="big_textbox"></td>
+                            </tr>
+                        </table>
+                        
+                        <div class="captcha">
+                            <div class="captcha_check_div"><input type="checkbox" class="captcha_check" name="captcha_check" value="am_human" onchange="check_for_human()" autocomplete="off"> <span id="verification_text" style="font-size:2em;">I am human</span></div>
+                            <div class="captcha_question_div" style="visibility:hidden;">
+                                <div id="captcha_question_text"></div>
+                                <div style="float:left;margin-left:2px;">
+                                    <img id="captcha_question_img" />
+                                </div>
+                                <div style="float:right;margin-top:14px;width:140px;">
+                                    <div style="font-size:medium;height:20px;">Answer:</div>
+                                    <div style="font-size:1em;height:25px;">
+                                        <input type="text" name="captcha_answer" id="captcha_answer">
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        
+                        <input type="submit" name="submit" class="big_button" value="Sign Up" onclick="do_sign_up()">
+                        
+                        <div class='screen_message' id="signup_message"></div>
                     </div>
-                    
-                    <input type="submit" name="submit" class="big_button" value="Sign Up" onclick="do_sign_up()">
-                    
-                    <div class='screen_message' id="signup_message"></div>
                 </div>
-            </div>
-            
-            <div id="screen_stream" class="screen">
-                <div class="screen_inner" id='stream_inner'>
-                    <div id="photo_stream_div"></div>
-                </div>
-            </div>
-            
-            <div id="screen_spray" class="screen">
-                <div class="screen_inner" id='stream_inner'>
-                    <div class="page_header">This feature is still under development.</div>
-                    <p>Spray is a way to comunicate with other TopoHawk users at a crag.</p>
-                    <p>Messages posted here are only visable for a few hours.</p>
-                </div>
-            </div>
-            
-            <div id="screen_tick_edit" class="screen">
-                <div class="screen_inner">
-                    <input type="hidden" name="edit_tick_id" id="edit_tick_id" value="0">
-                    <input type="hidden" name="new_tick_route_id" id="new_tick_route_id" value="0">
-                    
-                    <div class='control_header'>Send Type: &nbsp;
-                        <select name='send_id' id='tick_send_type'>
-                            <option value='Project'>Project</option>
-                            <option value='Onsight'>Onsight</option>
-                            <option value='Flash'>Flash</option>
-                            <option value='Redpoint'>Redpoint</option>
-                            <option value='Pinkpoint'>Pinkpoint</option>
-                            <option value='Hangdog'>Hangdog</option>
-                            <option value='Top Rope'>Top Rope</option>
-                            <option value='Free Solo'>Free Solo</option>
-                        </select>
+                
+                <div id="screen_stream" class="screen">
+                    <div class="screen_inner" id='stream_inner'>
+                        <div id="photo_stream_div"></div>
                     </div>
-                    
-                    <br />
-                    
-                    <div class='control_header'>Comment:</div>
-                    <textarea id='tick_send_comment' rows='5' cols='40'></textarea><br />
-                    
-                    <div class='control_header'>Date:</div>
-                    <div id='tick_date' style='float: left !important;'></div><br />
-                    
-                    <div id='tick_below'>
-                        <div><input type='checkbox' name='public_visible' id='tick_public_visible' value='public_visible' checked>Publicly Visible</div>
+                </div>
+                
+                <div id="screen_spray" class="screen">
+                    <div class="screen_inner" id='stream_inner'>
+                        <div class="page_header">This feature is still under development.</div>
+                        <p>Spray is a way to comunicate with other TopoHawk users at a crag.</p>
+                        <p>Messages posted here are only visable for a few hours.</p>
+                    </div>
+                </div>
+                
+                <div id="screen_tick_edit" class="screen">
+                    <div class="screen_inner">
+                        <input type="hidden" name="edit_tick_id" id="edit_tick_id" value="0">
+                        <input type="hidden" name="new_tick_route_id" id="new_tick_route_id" value="0">
+                        
+                        <div class='control_header'>Send Type: &nbsp;
+                            <select name='send_id' id='tick_send_type'>
+                                <option value='Project'>Project</option>
+                                <option value='Onsight'>Onsight</option>
+                                <option value='Flash'>Flash</option>
+                                <option value='Redpoint'>Redpoint</option>
+                                <option value='Pinkpoint'>Pinkpoint</option>
+                                <option value='Hangdog'>Hangdog</option>
+                                <option value='Top Rope'>Top Rope</option>
+                                <option value='Free Solo'>Free Solo</option>
+                            </select>
+                        </div>
+                        
                         <br />
-                        <div id='submit_buttons'>
-                            <button class='medium_button' type='button' onClick='update_current_route_tick()'>Submit</button>
-                            <button class='medium_button' type='button' onclick='cancel_tick()'>Cancel</button>
+                        
+                        <div class='control_header'>Comment:</div>
+                        <textarea id='tick_send_comment' rows='5' cols='40'></textarea><br />
+                        
+                        <div class='control_header'>Date:</div>
+                        <div id='tick_date' style='float: left !important;'></div><br />
+                        
+                        <div id='tick_below'>
+                            <div><input type='checkbox' name='public_visible' id='tick_public_visible' value='public_visible' checked>Publicly Visible</div>
+                            <br />
+                            <div id='submit_buttons'>
+                                <button class='medium_button' type='button' onClick='update_current_route_tick()'>Submit</button>
+                                <button class='medium_button' type='button' onclick='cancel_tick()'>Cancel</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <div id="screen_ticks" class="screen">
-                <div class="screen_inner" id="screen_info_inner">
-                    <p>Ticks are used to record climbs, sent or projected by users.</p>
-                    <p>Click the route tick to edit.</p>
-                    <div id='user_route_ticks'></div>
-                    <div style='height:70px;width:100%'> </div>
-                </div>
-            </div>
-            
-        </div>
-        
-        <div id="buttons_div">
-            <div class="button_group_left_div">
-                <div id="button_group_left_secondary" style="height:0px;visibility:hidden;">
-                    <div id="cancel_edit_button_div" style="width:100%">
-                        <img src="images/button-cancel.svg" class="button_image" id="cancel_edit_button_img" onclick="cancel_map_edit()"/>
+                
+                <div id="screen_ticks" class="screen">
+                    <div class="screen_inner" id="screen_info_inner">
+                        <p>Ticks are used to record climbs, sent or projected by users.</p>
+                        <p>Click the route tick to edit.</p>
+                        <div id='user_route_ticks'></div>
+                        <div style='height:70px;width:100%'> </div>
                     </div>
                 </div>
                 
-                <div id="button_group_left_main">
-                    <div class="button_group_left_div">
-                        <div id="button_1_div"><img src="images/button-info.svg" class="button_image" id="button1_img" onclick="button1_click()"/></div>
-                    </div>
-                    <div class="button_group_right_div">
-                        <div id="button_2_div"><img src="images/button-destinations.svg" class="button_image" id="button2_img" onclick="button2_click()"/></div>
-                    </div>
-                </div>
             </div>
             
-            <div class="button_group_right_div">
-                <div id="button_group_right_secondary" style="height:0px;visibility:hidden;">
-                    <div id="save_edit_button_div" style="width:100%">
-                        <img src="images/button-ok.svg" class="button_image" id="save_edit_button_img" onclick="save_map_edit()"/>
+            <div id="buttons_div">
+                <div class="button_group_left_div">
+                    <div id="button_group_left_secondary" style="height:0px;visibility:hidden;">
+                        <div id="cancel_edit_button_div" style="width:100%">
+                            <img src="images/button-cancel.svg" class="button_image" id="cancel_edit_button_img" onclick="cancel_map_edit()"/>
+                        </div>
+                    </div>
+                    
+                    <div id="button_group_left_main">
+                        <div class="button_group_left_div">
+                            <div id="button_1_div"><img src="images/button-info.svg" class="button_image" id="button1_img" onclick="button1_click()"/></div>
+                        </div>
+                        <div class="button_group_right_div">
+                            <div id="button_2_div"><img src="images/button-destinations.svg" class="button_image" id="button2_img" onclick="button2_click()"/></div>
+                        </div>
                     </div>
                 </div>
                 
-                <div id="button_group_right_main">
-                    <div class="button_group_left_div">
-                        <div id="button_3_div"><img src="images/button-photos.svg" class="button_image" id="button3_img" onclick="button3_click()"/></div>
+                <div class="button_group_right_div">
+                    <div id="button_group_right_secondary" style="height:0px;visibility:hidden;">
+                        <div id="save_edit_button_div" style="width:100%">
+                            <img src="images/button-ok.svg" class="button_image" id="save_edit_button_img" onclick="save_map_edit()"/>
+                        </div>
                     </div>
-                    <div class="button_group_right_div">
-                        <div id="button_4_div"><img src="images/button-map.svg" class="button_image" id="button4_img" onclick="button4_click()"/></div>
+                    
+                    <div id="button_group_right_main">
+                        <div class="button_group_left_div">
+                            <div id="button_3_div"><img src="images/button-photos.svg" class="button_image" id="button3_img" onclick="button3_click()"/></div>
+                        </div>
+                        <div class="button_group_right_div">
+                            <div id="button_4_div"><img src="images/button-map.svg" class="button_image" id="button4_img" onclick="button4_click()"/></div>
+                        </div>
                     </div>
                 </div>
             </div>
