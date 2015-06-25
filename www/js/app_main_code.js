@@ -128,6 +128,16 @@ function button1_click() {
     buttons_reset();
     $("#button1_img").attr("src", "images/button-info-selected.svg");
     $("#screen_info").css('visibility','visible');
+    
+    if (current_mode == MODE_NONE) {
+        $("#breadcrumbs_div_2").html("");
+    } else if (current_mode == MODE_DESTINATION) {
+         $("#breadcrumbs_div_2").html("• Destination Info");
+    } else if (current_mode == MODE_AREA) {
+         $("#breadcrumbs_div_2").html("• Area Info");
+    } else if (current_mode == MODE_ROUTE) {
+         $("#breadcrumbs_div_2").html("• Route Info");
+    }
 }
 
 function button2_click() {

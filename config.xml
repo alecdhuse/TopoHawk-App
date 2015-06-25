@@ -44,10 +44,10 @@
     <icon src="icon.png"/>
     
     <platform name="android">
-        <splash src="platform/android/res/splash-640-960" density="port-hdpi"/>
-        <splash src="platform/android/res/splash-320-426" density="port-ldpi"/>
-        <splash src="platform/android/res/splash-320-470" density="port-mdpi"/>
-        <splash src="platform/android/res/splash-720-960" density="port-xhdpi"/>
+        <splash src="platform/android/res/splash-640-960.png" density="port-hdpi"/>
+        <splash src="platform/android/res/splash-320-426.png" density="port-ldpi"/>
+        <splash src="platform/android/res/splash-320-470.png" density="port-mdpi"/>
+        <splash src="platform/android/res/splash-720-960.png" density="port-xhdpi"/>
     </platform>
 
     <icon src="platform/android/res/icon-36-ldpi.png"   gap:platform="android"   gap:qualifier="ldpi" />
