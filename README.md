@@ -4,6 +4,7 @@ This project is the official mobile application for TopoHawk.com.  It is coded i
 
 ##Live Demo
 See a live demo at http://m.topohawk.com
+
 Android beta test access https://plus.google.com/communities/112221642257730759498
 
 ##Credits
