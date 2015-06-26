@@ -683,7 +683,7 @@
                     /* add outline first */
                     var path_outline = L.geoJson(mapFeature.features[i], {
                         style: function (feature) {
-                            return {color: "#444444", weight: 5};
+                            return {color: "#444444", weight: 2};
                         }
                     });
                         
