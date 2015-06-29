@@ -194,7 +194,7 @@
         },
         
         set_destination: function (destination_id) {
-            this._get_destination_data(destination_id);
+            this._get_destination_data(destination_id, null, true);
         },
         
         set_localization: function (change_view) {
@@ -299,7 +299,7 @@
         },
         
         show_destination: function (destination) {
-            this._get_destination_data(destination.properties.destination_id);
+            this._get_destination_data(destination.properties.destination_id, null, true);
         },
         
         show_area_popup: function (feature) {
@@ -582,14 +582,14 @@
                                     newCircle.bindLabel(feature.properties.name, { noHide: false, labelClassName: "leaflet-label", mobile: map_obj._options.mobile});
                                 
                                     newCircle.on("click", function () {
-                                        map_obj._get_destination_data(feature.properties.destination_id);
+                                        map_obj._get_destination_data(feature.properties.destination_id, null, true);
                                         map_obj.show_destination_popup(feature);
                                         map_obj.set_view(latlng, (feature.properties.click_zoom_to));
                                         map_obj.selected_destination = feature;
                                     });
                                 } else {
                                     newCircle.on("click", function () {
-                                        map_obj._get_destination_data(feature.properties.destination_id);
+                                        map_obj._get_destination_data(feature.properties.destination_id, null, true);
                                     });
                                 }
                                 
@@ -608,7 +608,7 @@
             
             if (vis_markers == 1) {
                 if (last_dest.properties.destination_id != this.selected_destination.destination_id) {
-                    this._get_destination_data(last_dest.properties.destination_id);
+                    this._get_destination_data(last_dest.properties.destination_id, null, false);
                     this.selected_destination = last_dest;
                 }
             }
@@ -857,7 +857,7 @@
             }
         },
         
-        _get_destination_data: function (destination_id, fail_callback) {
+        _get_destination_data: function (destination_id, fail_callback, auto_zoom) {
             var map_obj = this;
             var offline_destination_found = false;
             
@@ -870,7 +870,7 @@
                    'user_id':        this._user_id
                },
                success: function(response) {
-                   map_obj._update_destination_data(response.result);
+                   map_obj._update_destination_data(response.result, auto_zoom);
                },
                error: function (req, status, error) {
                     if (status  == "timeout" || status == "error") {
@@ -879,13 +879,13 @@
                             TH.util.storage.get_destination(
                                 destination_id,
                                 function (destination_obj) {
-                                    map_obj._update_destination_data(destination_obj);
+                                    map_obj._update_destination_data(destination_obj, auto_zoom);
                                 },
                                 db);
                         } else {
                             TH.util.logging.log('No connection and destination was not found in offline cache: ' + error);
                    
-                            if (typeof fail_callback !== 'undefined') {
+                            if (typeof fail_callback !== 'undefined' && fail_callback !== null) {
                                 fail_callback(status);
                             }
                         }
@@ -1072,12 +1072,14 @@
             this._map_layers_control  = L.control.layers(this._base_maps, null, {collapsed: false});
         },
 
-        _update_destination_data: function (data) {
+        _update_destination_data: function (data, auto_zoom) {
             this.amenities   = data.amenities;
             this.areas       = data.areas;
             this.paths       = data.paths;
             this.polygons    = data.polygons;
             this.routes      = data.routes;
+            
+            auto_zoom = (typeof auto_zoom === undefined) ? true : auto_zoom;
             
             if (this._first_location_fix == true) {
                 if (this._options.area_id > 0) {
@@ -1110,7 +1112,9 @@
                 this._first_load = false;
             }
             
-            this.set_view(latlng, zoom);
+            if (auto_zoom) {
+                this.set_view(latlng, zoom);
+            }
             
             this.destination_info_loaded(data);
             this.on_destination_info_loaded();
@@ -1186,7 +1190,7 @@
         var new_map = new TH.Map(id, options);
  
         if (options.hasOwnProperty('destination_id')) {
-            new_map._get_destination_data(options.destination_id);
+            new_map._get_destination_data(options.destination_id, null, true);
         }
  
         return new_map;
