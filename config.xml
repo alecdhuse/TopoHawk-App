@@ -43,7 +43,7 @@
     <gap:plugin name="org.apache.cordova.network-information" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
     
-    <icon src="icon.png"/>
+    <icon src="icon.png" />
     <gap:splash src="splash.png" />
     
     <platform name="android">
@@ -67,17 +67,17 @@
     <icon src="platform/android/res/icon-72-hdpi.png"   gap:platform="android"   gap:qualifier="hdpi" />
     <icon src="platform/android/res/icon-96-xhdpi.png"  gap:platform="android"   gap:qualifier="xhdpi" />
     
-    <icon src="platform/ios/res/icon-29.png"    gap:platform="ios" width="29"  height="29" />
-    <icon src="platform/ios/res/icon-58.png"    gap:platform="ios" width="58"  height="58" />
-    <icon src="platform/ios/res/icon-40.png"    gap:platform="ios" width="40"  height="40" />
-    <icon src="platform/ios/res/icon-60.png"    gap:platform="ios" width="60"  height="60" />
-    <icon src="platform/ios/res/icon-72.png"    gap:platform="ios" width="72"  height="72" />
-    <icon src="platform/ios/res/icon-76.png"    gap:platform="ios" width="76"  height="76" />
-    <icon src="platform/ios/res/icon-80.png"    gap:platform="ios" width="80"  height="80" />
-    <icon src="platform/ios/res/icon-120.png"   gap:platform="ios" width="120" height="120" />
-    <icon src="platform/ios/res/icon-152.png"   gap:platform="ios" width="152" height="152" />
-    <icon src="platform/ios/res/icon-180.png"   gap:platform="ios" width="180" height="180" />
-    <icon src="platform/ios/res/icon-192.png"   gap:platform="ios" width="192" height="192" />
+    <icon src="images/icon-29.png"        gap:platform="ios" width="29"  height="29" />
+    <icon src="images/icon-small@2x.png"  gap:platform="ios" width="58"  height="58" />
+    <icon src="images/icon-40.png"        gap:platform="ios" width="40"  height="40" />
+    <icon src="images/icon-60.png"        gap:platform="ios" width="60"  height="60" />
+    <icon src="images/icon-72.png"        gap:platform="ios" width="72"  height="72" />
+    <icon src="images/icon-76.png"        gap:platform="ios" width="76"  height="76" />
+    <icon src="images/icon-40@2x.png"     gap:platform="ios" width="80"  height="80" />
+    <icon src="images/icon-60@2x.png"     gap:platform="ios" width="120" height="120" />
+    <icon src="images/icon-52@2x.png"     gap:platform="ios" width="152" height="152" />
+    <icon src="images/icon-180.png"       gap:platform="ios" width="180" height="180" />
+    <icon src="images/icon-192.png"       gap:platform="ios" width="192" height="192" />
     
     <access origin="*"/>
 
