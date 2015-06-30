@@ -147,7 +147,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     font-size: medium;
-    width: 260px;    
+    width: 260px;
 }
 
 .captcha_table {
@@ -217,7 +217,7 @@ body {
 }
 
 .destination_list_name {
-    
+
 }
 
 .destination_list_name_offline {
@@ -495,7 +495,7 @@ body {
 .screen_inner {
     height: 100%;
     margin-left: 8px;
-    margin-right: 8px;
+    margin-right: 10px;
     margin-top: 8px;
     margin-bottom: 200px;
     overflow-x: hidden;
