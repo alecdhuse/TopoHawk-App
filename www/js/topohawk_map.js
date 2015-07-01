@@ -198,12 +198,18 @@
         },
 
         set_localization: function (change_view) {
-            var iso_country_code = navigator.language.slice(-2);
+            var iso_country_code = "US";
             var map_obj = this;
             var change_map_view = true;
 
             if (typeof change_view !== 'undefined') {
                 change_map_view = change_view;
+            }
+
+            if (navigator && navigator.language) {}
+                iso_country_code = navigator.language.slice(-2);
+            } else {
+                change_map_view = false;
             }
 
             $.ajax({
