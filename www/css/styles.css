@@ -537,6 +537,17 @@ body {
     width: 100%;
 }
 
+.settings_control {
+    margin-top: 8px;
+}
+
+.settings_dropdown {
+    font-size: 1em;
+    height: 2em;
+    margin-top: 4px;
+    width: 280px;
+}
+
 #target_overlay {
     position: absolute;
     visibility: hidden;

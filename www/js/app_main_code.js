@@ -1537,6 +1537,41 @@ function settings_update_photo_res() {
     setting_save();
 }
 
+function settings_update_grades(callback) {
+    if (this.user_id >= 0) {
+        data = {
+            key:                        api_key_th,
+            user_id:                    this.user_id,
+            aid_grade_preference:       $("#settings_aid_grade").val(),
+            boulder_grade_preference:   $("#settings_boulder_grade").val(),
+            sport_grade_preference:     $("#settings_sport_grade").val(),
+            trad_grade_preference:      $("#settings_trad_grade").val()
+        }
+
+        $.ajax({
+           type:     'POST',
+           url:      'https://topohawk.com/api/v1.1/update_user_prefs.php',
+           dataType: 'json',
+           data:     data,
+           success:  function(response) {
+                if (response.result_code > 0) {
+                    if (callback) {
+                        callback(response.result);
+                    }
+                } else {
+                    console.log("Error " + response.result);
+                }
+           },
+           error: function (req, status, error) {
+               console.log("Error updating grade preferences.");
+           }
+        });
+    } else {
+        /* User not logged in */
+        /* TODO: Write local data */
+    }
+}
+
 function show_help_comment(comment_text) {
     var comment_top = (($(window).height() - 105)) + "px";
 
@@ -1825,6 +1860,12 @@ function user_info_loaded() {
     /* Update Filter Max Value */
     finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport));
     photo_topo.grade_system = map.get_grade_systems();
+
+    /* Update User Settings Screen */
+    $("#settings_aid_grade").val(map._options.grade_aid);
+    $("#settings_boulder_grade").val(map._options.grade_boulder);
+    $("#settings_sport_grade").val(map._options.grade_sport);
+    $("#settings_trad_grade").val(map._options.grade_trad);
 }
 
 window.onresize = function () {

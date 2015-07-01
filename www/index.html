@@ -348,7 +348,58 @@
                 <div id="screen_settings" class="screen">
                     <div class="screen_inner">
                         <div class="page_header">App and Account Settings</div>
-                        <input type="checkbox" name="settings_high_res_photos" id="settings_high_res_photos" onclick="settings_update_photo_res()"> Use High Resolution Photos<br>
+                        <input type="checkbox" name="settings_high_res_photos" id="settings_high_res_photos" onclick="settings_update_photo_res()"> Use High Resolution Photos<br />
+
+                        <br />
+                        <div class="page_header">Climbing Grade Preferences</div>
+                        <div class="settings_control">
+                            <div>Aid Grade:</div>
+                            <select class="settings_dropdown" id="settings_aid_grade" onchange="settings_update_grades()">
+                                <option value="Aid-A">A Scale</option>
+                            </select>
+                        </div>
+
+                        <div class="settings_control">
+                            <div>Boulder Grade</div>
+                            <select class="settings_dropdown" id="settings_boulder_grade" onchange="settings_update_grades()">
+                                <option value="Ewbanks">Ewbanks</option>
+                                <option value="Finnish">Finnish</option>
+                                <option value="Fontainebleau">Fontainebleau</option>
+                                <option value="French">French</option>
+                                <option value="UIAA">UIAA</option>
+                                <option value="USA-VScale">V Scale</option>
+                                <option value="USA-YDS">USA-YDS</option>
+                                <option value="ZA-New">ZA-New</option>
+                            </select>
+                        </div>
+
+                        <div class="settings_control">
+                            <div>Sport Grade</div>
+                            <select class="settings_dropdown" id="settings_sport_grade" onchange="settings_update_grades()">
+                                <option value="Ewbanks">Ewbanks</option>
+                                <option value="Finnish">Finnish</option>
+                                <option value="Fontainebleau">Fontainebleau</option>
+                                <option value="French">French</option>
+                                <option value="UIAA">UIAA</option>
+                                <option value="USA-VScale">V Scale</option>
+                                <option value="USA-YDS">USA-YDS</option>
+                                <option value="ZA-New">ZA-New</option>
+                            </select>
+                        </div>
+
+                        <div class="settings_control">
+                            <div>Traditional Grade</div>
+                            <select class="settings_dropdown" id="settings_trad_grade" onchange="settings_update_grades()">
+                                <option value="Ewbanks">Ewbanks</option>
+                                <option value="Finnish">Finnish</option>
+                                <option value="Fontainebleau">Fontainebleau</option>
+                                <option value="French">French</option>
+                                <option value="UIAA">UIAA</option>
+                                <option value="USA-VScale">V Scale</option>
+                                <option value="USA-YDS">USA-YDS</option>
+                                <option value="ZA-New">ZA-New</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 

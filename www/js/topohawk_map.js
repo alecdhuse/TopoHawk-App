@@ -206,7 +206,7 @@
                 change_map_view = change_view;
             }
 
-            if (navigator && navigator.language) {}
+            if (navigator && navigator.language) {
                 iso_country_code = navigator.language.slice(-2);
             } else {
                 change_map_view = false;
@@ -2762,7 +2762,9 @@
         },
 
         'convert_to_common': function (grade_system, difficulty) {
-            if (grade_system == 'Ewbanks') {
+            if (grade_system == 'Aid-A') {
+                return TH.util.grades.common_aid_a[difficulty];
+            } else if (grade_system == 'Ewbanks') {
                 return TH.util.grades.yds_to_common(difficulty);
             } else if (grade_system == 'Finnish') {
                 return TH.util.grades.yds_to_common(difficulty);
@@ -2786,7 +2788,9 @@
 
 
         'get_grade_count': function (grade_system) {
-            if (grade_system == 'Ewbanks') {
+            if (grade_system == 'Aid-A') {
+                return TH.util.grades.common_aid_a.count;
+            } else if (grade_system == 'Ewbanks') {
                 return 39;
             } else if (grade_system == 'Finnish') {
                 return TH.util.grades.finnish_common.count;
@@ -2811,7 +2815,9 @@
 
         'get_grade_by_index': function (grade_system, i) {
             /* For use on the by the grade filter slider */
-            if (grade_system == 'Ewbanks') {
+            if (grade_system == 'Aid-A') {
+                return TH.util.grades.common_aid_a[TH.util.grades.aid_a_common.key(i)];          
+            } else if (grade_system == 'Ewbanks') {
                 /* Ewbanks is very similar to the common, so for this we just return the index value. */
                 return i;
             } else if (grade_system == 'Finnish') {
