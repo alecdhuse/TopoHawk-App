@@ -15,6 +15,7 @@ var destination_callback = false;
 var edit_new_object      = true;
 var edit_step            = 0;
 var map_finished         = false;
+var perform_grade_update = true;
 var photo_ids            = [];
 var photo_index          = 0;
 var photo_topo           = new PT();
@@ -1258,7 +1259,25 @@ function get_user_info() {
     if (user_id >= 0) {
         map.set_user_id(user_id);
     } else {
-        map.set_localization();
+        if (typeof(localStorage.settings_sport_grade) !== "undefined") {
+            this.perform_grade_update = false;
+
+            map._options.grade_aid = localStorage.settings_aid_grade;
+            map._options.grade_boulder = localStorage.settings_boulder_grade;
+            map._options.grade_sport = localStorage.settings_sport_grade;
+            map._options.grade_mixed = localStorage.settings_sport_grade;
+            map._options.grade_top = localStorage.settings_sport_grade;
+            map._options.grade_trad = localStorage.settings_trad_grade;
+
+            $("#settings_aid_grade").val(localStorage.settings_aid_grade);
+            $("#settings_boulder_grade").val(localStorage.settings_boulder_grade);
+            $("#settings_sport_grade").val(localStorage.settings_sport_grade);
+            $("#settings_trad_grade").val(localStorage.settings_trad_grade);
+
+            this.perform_grade_update = true;
+        } else {
+            map.set_localization();
+        }
     }
 }
 
@@ -1506,7 +1525,6 @@ function set_area_slider_val(min, max) {
 function settings_load() {
     var use_high_res_photos = false;
 
-    /* TODO: Actualy load the settings */
     if(typeof(Storage) !== "undefined") {
         if (typeof(localStorage.use_high_res_photos) !== "undefined") {
             use_high_res_photos = (localStorage.use_high_res_photos == "true") ? true : false;
@@ -1525,7 +1543,12 @@ function settings_load() {
 function setting_save() {
     if(typeof(Storage) !== "undefined") {
         var use_high_res_photos = Boolean($("#settings_high_res_photos").is(":checked"));
-        localStorage.setItem("use_high_res_photos", use_high_res_photos);
+
+        localStorage.setItem("use_high_res_photos",     use_high_res_photos);
+        localStorage.setItem("settings_aid_grade",      $("#settings_aid_grade").val());
+        localStorage.setItem("settings_boulder_grade",  $("#settings_boulder_grade").val());
+        localStorage.setItem("settings_sport_grade",    $("#settings_sport_grade").val());
+        localStorage.setItem("settings_trad_grade",     $("#settings_trad_grade").val());
     } else {
         console.log("Error: no local storage.");
     }
@@ -1538,37 +1561,40 @@ function settings_update_photo_res() {
 }
 
 function settings_update_grades(callback) {
-    if (this.user_id >= 0) {
-        data = {
-            key:                        api_key_th,
-            user_id:                    this.user_id,
-            aid_grade_preference:       $("#settings_aid_grade").val(),
-            boulder_grade_preference:   $("#settings_boulder_grade").val(),
-            sport_grade_preference:     $("#settings_sport_grade").val(),
-            trad_grade_preference:      $("#settings_trad_grade").val()
-        }
+    if (this.perform_grade_update === true) {
+        setting_save();
 
-        $.ajax({
-           type:     'POST',
-           url:      'https://topohawk.com/api/v1.1/update_user_prefs.php',
-           dataType: 'json',
-           data:     data,
-           success:  function(response) {
-                if (response.result_code > 0) {
-                    if (callback) {
-                        callback(response.result);
+        if (this.user_id >= 0) {
+            data = {
+                key:                        api_key_th,
+                user_id:                    this.user_id,
+                aid_grade_preference:       $("#settings_aid_grade").val(),
+                boulder_grade_preference:   $("#settings_boulder_grade").val(),
+                sport_grade_preference:     $("#settings_sport_grade").val(),
+                trad_grade_preference:      $("#settings_trad_grade").val()
+            }
+
+            $.ajax({
+               type:     'POST',
+               url:      'https://topohawk.com/api/v1.1/update_user_prefs.php',
+               dataType: 'json',
+               data:     data,
+               success:  function(response) {
+                    if (response.result_code > 0) {
+                        if (callback) {
+                            callback(response.result);
+                        }
+                    } else {
+                        console.log("Error " + response.result);
                     }
-                } else {
-                    console.log("Error " + response.result);
-                }
-           },
-           error: function (req, status, error) {
-               console.log("Error updating grade preferences.");
-           }
-        });
-    } else {
-        /* User not logged in */
-        /* TODO: Write local data */
+               },
+               error: function (req, status, error) {
+                   console.log("Error updating grade preferences.");
+               }
+            });
+        } else {
+            /* User not logged in */
+        }
     }
 }
 
