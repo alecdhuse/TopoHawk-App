@@ -1320,6 +1320,7 @@ function map_route_clicked(route_obj) {
 
 function onDeviceReady() {
     document.addEventListener("backbutton", button_back_click, false);
+    document.addEventListener("menubutton", button_menu_click, false);
 }
 
 function on_load() {
