@@ -33,7 +33,7 @@
     <preference name="SplashScreen"               value="screen" />
     <preference name="SplashScreenDelay"          value="4500" />
     <preference name="show-splash-screen-spinner" value="true" />
-    <preference name="auto-hide-splash-screen"    value="false" />
+    <preference name="auto-hide-splash-screen"    value="true" />
 
     <feature name="http://api.phonegap.com/1.0/geolocation"/>
     <feature name="http://api.phonegap.com/1.0/network"/>

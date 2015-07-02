@@ -1321,11 +1321,6 @@ function map_route_clicked(route_obj) {
     change_route(route_obj.properties.route_id, false, false);
 }
 
-function onDeviceReady() {
-    document.addEventListener("backbutton", button_back_click, false);
-    document.addEventListener("menubutton", button_menu_click, false);
-}
-
 function on_load() {
     document.addEventListener("deviceready", onDeviceReady, false);
 }
@@ -2016,4 +2011,6 @@ document.onreadystatechange = function(e) {
 
 function onDeviceReady() {
     navigator.splashscreen.show();
+    document.addEventListener("backbutton", button_back_click, false);
+    document.addEventListener("menubutton", button_menu_click, false);    
 }
