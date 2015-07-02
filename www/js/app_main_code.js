@@ -1318,6 +1318,14 @@ function map_route_clicked(route_obj) {
     change_route(route_obj.properties.route_id, false, false);
 }
 
+function onDeviceReady() {
+    document.addEventListener("backbutton", button_back_click, false);
+}
+
+function on_load() {
+    document.addEventListener("deviceready", onDeviceReady, false);
+}
+
 function photo_bullets_update() {
     var bullet_div_width = $(window).width() - 58;
     var max_bullets      = bullet_div_width / 24;
@@ -1921,7 +1929,6 @@ window.onresize = function () {
 document.onreadystatechange = function(e) {
     /* Various key bindings */
     $("#destination_search_filter").keyup(function() { filter_list() });
-    document.addEventListener("backbutton", button_back_click, false);
 
     bind_swipes();
     get_user_info();
