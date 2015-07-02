@@ -1975,6 +1975,12 @@ document.onreadystatechange = function(e) {
         user_id = -1;
     }
 
+    $(document).on('backbutton',
+        function(e){
+            e.preventDefault();
+            button_back_click();
+    });
+
     $("#stream_inner").scroll(function() {
          if ($("#stream_inner").is(":visible")) {
             /* Code to test if new photos need to be loaded. */
