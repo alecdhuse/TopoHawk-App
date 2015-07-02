@@ -97,7 +97,7 @@ function bread_crumb_area_click() {
     map.selected_route = {};
     current_mode       = MODE_AREA;
 
-    change_area(map.selected_area.properties.area_id);
+    change_area(map.selected_area.properties.area_id, true);
 }
 
 function bread_crumb_destination_click() {
@@ -141,7 +141,7 @@ function button2_click() {
     $("#screen_destinations").css('visibility','visible');
 
     if (current_mode == MODE_NONE) {
-        $("#breadcrumbs_div_2").html("• Destinations");
+        $("#breadcrumbs_div_1").html("Destinations");
     }
 }
 
@@ -168,19 +168,27 @@ function button4_click() {
 }
 
 function button_back_click() {
-    if($("#screen_destinations").css('visibility') == 'visible') {
+    if ($("#screen_destinations").css('visibility') == 'visible') {
         if (current_mode == MODE_DESTINATION) {
             current_mode = MODE_NONE;
             create_destination_list();
         } else if (current_mode == MODE_AREA) {
             current_mode = MODE_DESTINATION;
             create_area_list();
+            $("#breadcrumbs_div_2").html("");
         } else if (current_mode == MODE_ROUTE) {
             current_mode = MODE_AREA;
-            create_route_list(map.selected_area.properties.area_id);
+            change_area(map.selected_area.properties.area_id, true);
         }
 
         button2_click();
+    } else if ($("#screen_info").css('visibility') == 'visible') {
+        button2_click();
+    } else if ($("#screen_map").css('visibility') == 'visible') {
+        current_mode = MODE_AREA;
+        change_area(map.selected_area.properties.area_id, false);
+        map.selected_route = {};
+        map.redraw_map();
     }
 }
 
@@ -336,12 +344,12 @@ function change(destination_id, area_id, route_id, change_screen) {
     $("#search_loading_screen").css('visibility','visible');
 }
 
-function change_area(area_id) {
+function change_area(area_id, change_map_view) {
     var area_inner_html = "";
 
     $("#destination_search_filter").val("");
 
-    map.set_area(area_id);
+    map.set_area(area_id, change_map_view);
     current_mode = MODE_AREA;
     create_route_list(area_id);
 
@@ -547,7 +555,7 @@ function create_area_list() {
                     route_count = 0;
                 }
 
-                area_list_html += "<div class='destination_list_element' onclick='change_area(" + map.areas.features[i].properties.area_id + ")'>";
+                area_list_html += "<div class='destination_list_element' onclick='change_area(" + map.areas.features[i].properties.area_id + ", true)'>";
                 area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
                 area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
                 area_list_html += "</div>";
@@ -1175,17 +1183,15 @@ function get_photo_ids() {
     var make_request = true;
 
     if (current_mode == MODE_DESTINATION) {
-        data = {
-            destination_id: map.selected_destination.destination_id
-        };
+        data = { destination_id: map.selected_destination.destination_id };
     } else if (current_mode == MODE_AREA) {
-        data = {
-            area_id: map.selected_area.properties.area_id
-        };
+        data = { area_id: map.selected_area.properties.area_id };
     } else if (current_mode == MODE_ROUTE) {
-        data = {
-            route_id: map.selected_route.properties.route_id
-        };
+        if (map.selected_route.hasOwnProperty('properties')) {
+            data = { route_id: map.selected_route.properties.route_id };
+        } else {
+            data = { area_id: map.selected_area.properties.area_id };
+        }
     } else {
         make_request = false;
     }
@@ -1311,7 +1317,7 @@ function hide_image_upload_info() {
 }
 
 function map_area_clicked(area_obj) {
-    change_area(area_obj.properties.area_id);
+    change_area(area_obj.properties.area_id, true);
 }
 
 function map_route_clicked(route_obj) {
@@ -1386,7 +1392,7 @@ function photo_show_previous() {
 function proccess_destination_callback(destination_callback_change_obj) {
     /* Finishes the destination callback action after the new destination has been loaded */
     if (destination_callback_change_obj.route_id > 0) {
-        change_area(destination_callback_change_obj.area_id);
+        change_area(destination_callback_change_obj.area_id, true);
         change_route(destination_callback_change_obj.route_id, destination_callback_change_obj.change_screen, true);
     } else if (destination_callback_change_obj.area_id > 0) {
         change_area(destination_callback_change_obj.area_id);
