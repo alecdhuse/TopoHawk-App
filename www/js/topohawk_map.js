@@ -57,6 +57,7 @@
             this.on_area_change             = function () {};
             this.on_area_click              = function (area_obj) {};
             this.on_destination_click       = function (destination_obj) {};
+            this.destination_info_loaded    = function (destination_obj) {};
             this.on_first_gps_fix           = function (lat, lng) {};
             this.on_route_click             = function (route_obj) {};
             this.on_user_info_loaded        = function () {};
@@ -102,10 +103,6 @@
             var marker_latLng = L.latLng(lat,lng);
             var new_marker = L.marker(marker_latLng, {icon: marker_icon});
             this._leaflet_map.addLayer(new_marker);
-        },
-
-        destination_info_loaded: function (destination_obj) {
-
         },
 
         enable_device_location: function (enabled) {
@@ -171,10 +168,12 @@
             this._draw_map_objects();
         },
 
-        set_area: function (area_id) {
+        set_area: function (area_id, zoom_to) {
+            zoom_to = (typeof zoom_to !== 'undefined' && zoom_to !== null) ? zoom_to : true;
+
             for (var i=0; i<this.areas.features.length; i++) {
                 if (this.areas.features[i].properties.area_id == area_id) {
-                    this.set_area_object(this.areas.features[i], true);
+                    this.set_area_object(this.areas.features[i], zoom_to);
                     break;
                 }
             }
@@ -847,12 +846,12 @@
 
                                 if (map_obj._options.mobile === false) {
                                     new_marker.on("click", function () {
-                                        map_obj.set_area(feature.properties.area_id);
+                                        map_obj.set_area(feature.properties.area_id, false);
                                         map_obj.show_route_popup(feature);
                                     });
                                 } else {
                                     new_marker.on("click", function () {
-                                        map_obj.set_area(feature.properties.area_id);
+                                        map_obj.set_area(feature.properties.area_id, false);
                                         map_obj.on_route_click(feature);
                                     });
                                 }
@@ -2816,7 +2815,7 @@
         'get_grade_by_index': function (grade_system, i) {
             /* For use on the by the grade filter slider */
             if (grade_system == 'Aid-A') {
-                return TH.util.grades.common_aid_a[TH.util.grades.aid_a_common.key(i)];          
+                return TH.util.grades.common_aid_a[TH.util.grades.aid_a_common.key(i)];
             } else if (grade_system == 'Ewbanks') {
                 /* Ewbanks is very similar to the common, so for this we just return the index value. */
                 return i;

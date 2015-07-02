@@ -361,7 +361,7 @@ function change_photo_topo_photo(photo_id) {
     photo_bullets_update();
 }
 
-function change_route(route_id, screen_switch) {
+function change_route(route_id, screen_switch, change_map_view) {
     var title_html = "";
     var inner_html = "";
 
@@ -373,8 +373,10 @@ function change_route(route_id, screen_switch) {
     photo_topo.selected_route_id = route_id;
 
     /* Center map on route latlng */
-    var route_latlng = L.latLng(map.selected_route.geometry.coordinates[1], map.selected_route.geometry.coordinates[0]);
-    map.set_view(route_latlng, map.get_zoom())
+    if (change_map_view === true) {
+        var route_latlng = L.latLng(map.selected_route.geometry.coordinates[1], map.selected_route.geometry.coordinates[0]);
+        map.set_view(route_latlng, map.get_zoom())
+    }
 
     /* Get rating in prefered scale */
     var route_grade = TH.util.grades.convert_common_to(map.get_grade_systems()[map.selected_route.properties.route_type], map.selected_route.properties.route_grade);
@@ -695,7 +697,7 @@ function create_route_list(area_id) {
             if (current_route.properties.area_id == area_id) {
                 route_grade = TH.util.grades.convert_common_to(grade_system[current_route.properties.route_type], current_route.properties.route_grade);
 
-                route_list_html += "<div class='destination_list_element' onclick='change_route(" + current_route.properties.route_id + ", true)'>";
+                route_list_html += "<div class='destination_list_element' onclick='change_route(" + current_route.properties.route_id + ", true, true)'>";
                 route_list_html += "<div class='destination_list_name'>" + current_route.properties.name + " ";
                 route_list_html += "<span>" + TH.util.get_star_html(current_route.properties.rating, true, true).substr(5) + "</span>";
                 route_list_html += "</div>";
@@ -1295,7 +1297,7 @@ function map_area_clicked(area_obj) {
 }
 
 function map_route_clicked(route_obj) {
-    change_route(route_obj.properties.route_id, false);
+    change_route(route_obj.properties.route_id, false, false);
 }
 
 function photo_bullets_update() {
@@ -1358,7 +1360,7 @@ function proccess_destination_callback(destination_callback_change_obj) {
     /* Finishes the destination callback action after the new destination has been loaded */
     if (destination_callback_change_obj.route_id > 0) {
         change_area(destination_callback_change_obj.area_id);
-        change_route(destination_callback_change_obj.route_id, destination_callback_change_obj.change_screen);
+        change_route(destination_callback_change_obj.route_id, destination_callback_change_obj.change_screen, true);
     } else if (destination_callback_change_obj.area_id > 0) {
         change_area(destination_callback_change_obj.area_id);
 
