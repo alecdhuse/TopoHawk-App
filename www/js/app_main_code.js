@@ -167,6 +167,23 @@ function button4_click() {
     map.enable_device_location(true);
 }
 
+function button_back_click() {
+    if($("#screen_destinations").css('visibility') == 'visible') {
+        if (current_mode == MODE_DESTINATION) {
+            current_mode = MODE_NONE;
+            create_destination_list();
+        } else if (current_mode == MODE_AREA) {
+            current_mode = MODE_DESTINATION;
+            create_area_list();
+        } else if (current_mode == MODE_ROUTE) {
+            current_mode = MODE_AREA;
+            create_route_list(map.selected_area.properties.area_id);
+        }
+
+        button2_click();
+    }
+}
+
 function button_menu_click() {
     if ($("#menu_popup").css('visibility') == 'visible') {
         $("#menu_popup").css('visibility','hidden');
@@ -263,6 +280,7 @@ function buttons_reset() {
 
      $(".captcha_question_div").css('visibility','hidden');
      $(".leaflet-control-attribution").css('visibility','hidden');
+     $("#menu_popup").css('visibility','hidden');
 
      $("#screen_about").css('visibility','hidden');
      $("#screen_add_photo").css('visibility','hidden');
@@ -1901,7 +1919,9 @@ window.onresize = function () {
 }
 
 document.onreadystatechange = function(e) {
+    /* Various key bindings */
     $("#destination_search_filter").keyup(function() { filter_list() });
+    document.addEventListener("backbutton", button_back_click, false);
 
     bind_swipes();
     get_user_info();
