@@ -172,13 +172,10 @@ function button_back_click() {
         if (current_mode == MODE_DESTINATION) {
             current_mode = MODE_NONE;
             create_destination_list();
-        } else if (current_mode == MODE_AREA) {
+        } else if (current_mode >= MODE_AREA) {
             current_mode = MODE_DESTINATION;
             create_area_list();
             $("#breadcrumbs_div_2").html("");
-        } else if (current_mode == MODE_ROUTE) {
-            current_mode = MODE_AREA;
-            change_area(map.selected_area.properties.area_id, true);
         }
 
         button2_click();
