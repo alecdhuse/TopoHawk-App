@@ -1564,6 +1564,24 @@ function settings_load() {
         } else {
             $("#settings_high_res_photos").prop('checked', false);
         }
+
+        /* load key and user_id */
+        if (localStorage.getItem("key") !== null ) {
+            api_key_th = localStorage.getItem("key");
+
+            if (api_key_th.length > 0) {
+                $("#welcome_account_links").css('visibility','hidden');
+                $("#menu_login_logout").html("Logout");
+            }
+        } else {
+            api_key_th = "";
+        }
+
+        if (localStorage.getItem("user_id") !== null ) {
+            user_id = localStorage.getItem("user_id");
+        } else {
+            user_id = -1;
+        }
     }
 }
 
@@ -1929,14 +1947,20 @@ document.onreadystatechange = function(e) {
     /* Various key bindings */
     $("#destination_search_filter").keyup(function() { filter_list() });
 
-    bind_swipes();
-    get_user_info();
-    button1_click();
-    resize_window();
-    settings_load();
-    TH.util.storage.check_offline_statuses();
+    $(document).on('backbutton',
+        function(e){
+            e.preventDefault();
+            button_back_click();
+    });
 
-    $("#tick_date").datepicker({dateFormat: "yy-mm-dd"});
+    $("#search_box").keypress(function(e) {
+        if(e.which == 13) {
+            do_search();
+        }
+    });
+
+    bind_swipes();
+    resize_window();
 
     /* Setup Area UI Slider */
     $('#noUiSlider_area').noUiSlider(
@@ -1950,34 +1974,10 @@ document.onreadystatechange = function(e) {
             }
         }, true
     );
+    
     $("#noUiSlider_area").find(".noUi-handle").addClass("noUi-handle_text");
     $("#noUiSlider_area").find(".noUi-handle").removeClass("noUi-handle");
-
-    //TH.util.storage.delete_indexedDB();
-
-    /* load key and user_id */
-    if (localStorage.getItem("key") !== null ) {
-        api_key_th = localStorage.getItem("key");
-
-        if (api_key_th.length > 0) {
-            $("#welcome_account_links").css('visibility','hidden');
-            $("#menu_login_logout").html("Logout");
-        }
-    } else {
-        api_key_th = "";
-    }
-
-    if (localStorage.getItem("user_id") !== null ) {
-        user_id = localStorage.getItem("user_id");
-    } else {
-        user_id = -1;
-    }
-
-    $(document).on('backbutton',
-        function(e){
-            e.preventDefault();
-            button_back_click();
-    });
+    $("#tick_date").datepicker({dateFormat: "yy-mm-dd"});
 
     $("#stream_inner").scroll(function() {
          if ($("#stream_inner").is(":visible")) {
@@ -1998,20 +1998,22 @@ document.onreadystatechange = function(e) {
          }
     });
 
-    $("#search_box").keypress(function(e) {
-        if(e.which == 13) {
-            do_search();
-        }
-    });
-
     map.on_first_gps_fix = function (lat, lng) {
         do_checkin();
     };
+
+    //TH.util.storage.delete_indexedDB();
 };
 
 function onDeviceReady() {
     navigator.splashscreen.show();
+
     map.enable_device_location(true);
+    settings_load();
+    get_user_info();
+    TH.util.storage.check_offline_statuses();
+    button1_click();
+
     document.addEventListener("backbutton", button_back_click, false);
     document.addEventListener("menubutton", button_menu_click, false);
 }
