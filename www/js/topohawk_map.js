@@ -14,6 +14,7 @@
             this._id                    = id;
             this._gps_location          = L.latLng(0, 0);
             this._gps_orientation       = 0;
+            this._gps_orientation_init  = false;
             this._location_icon         = L.icon({ iconUrl: '//topohawk.com/images/loc-ort.svg', iconSize: [16, 16] });
             this._map_layers_control;
             this._map_name              = 'map';
@@ -49,7 +50,7 @@
             };
 
             /* Adjustments for running in offline or app mode */
-            if (this._options.offline == true) {
+            if (this._options.offline === true) {
                 this._location_icon = L.icon({ iconUrl: 'images/loc-ort.svg', iconSize: [16, 16] });
             }
 
@@ -109,6 +110,10 @@
             if (enabled === true) {
                 /* Start GPS location */
                 this._leaflet_map.locate({setView: false, maxZoom: 20, watch: true, maximumAge: 4000, enableHighAccuracy: true});
+
+                if (this._gps_orientation_init === false) {
+                    this._initialize_device_orientation(this);
+                }
             } else {
                 /* Stop GPS location */
                 this._leaflet_map.stopLocate();
@@ -416,13 +421,15 @@
                 this._leaflet_map.addLayer(this._destination_cluster_layer);
             }
 
-            if (this._options.show_location) {
-                this._leaflet_map.on('locationfound', function(e) {
-                    map_obj._update_location(e, map_obj);
-                });
+            /* Geo Location */
+            this._leaflet_map.on('locationfound', function(e) {
+                map_obj._update_location(e, map_obj);
+            });
 
+            if (this._options.show_location) {
                 this._leaflet_map.locate({setView: false, maxZoom: 20, watch: true, maximumAge: 10000, enableHighAccuracy: true});
                 this._initialize_device_orientation(map_obj);
+                this._gps_orientation_init = true;
             }
 
             if (this._options.locked == false) {

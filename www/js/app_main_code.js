@@ -25,7 +25,7 @@ var stream_offset        = 0;
 var stream_scroll        = false;
 var swipe_binded         = false;
 var user_id              = -1;
-var version              = "1.0.0"
+var version              = "1.0.0";
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -52,12 +52,12 @@ var map = TH.map('screen_map', {
     zoom:           3
 });
 
-map.on_area_click               = function (area_obj)        { map_area_clicked(area_obj) };
+map.on_area_click               = function (area_obj)        { map_area_clicked(area_obj); };
 map.on_destination_click        = function (destination_obj) { };
-map.on_route_click              = function (route_obj)       { map_route_clicked(route_obj) };
+map.on_route_click              = function (route_obj)       { map_route_clicked(route_obj); };
 map.on_user_info_loaded         = function ()                { user_info_loaded() };
-map.destination_info_loaded     = function (destination_obj) { create_destination_list() };
-map.on_destination_info_loaded  = function ()                { destination_info_loaded() };
+map.destination_info_loaded     = function (destination_obj) { create_destination_list(); };
+map.on_destination_info_loaded  = function ()                { destination_info_loaded(); };
 
 function add_new_destination() {
     current_mode = MODE_NONE;
@@ -68,7 +68,7 @@ function add_tick() {
     var route_id = map.selected_route.properties.route_id;
     var sel = "#tick_send_type option[value='Project']";
 
-    $(sel).prop("selected", true)
+    $(sel).prop("selected", true);
     $("#tick_send_comment").val("");
     $("#tick_date").datepicker("setDate", new Date());
     $("#tick_public_visible").prop('checked', true);
@@ -76,16 +76,16 @@ function add_tick() {
     $("#new_tick_route_id").val(route_id);
 
     buttons_reset();
-    $("#screen_tick_edit").css('visibility','visible');
+    $("#screen_tick_edit").css('visibility', 'visible');
 }
 
 function bind_swipes() {
     if (swipe_binded === false) {
-        $("#screen_photo").on( "swipeleft", function() {
+        $("#screen_photo").on("swipeleft", function() {
             photo_show_next();
         });
 
-        $("#screen_photo").on( "swiperight", function() {
+        $("#screen_photo").on("swiperight", function() {
             photo_show_previous();
         });
 
@@ -128,9 +128,9 @@ function bread_crumb_logo_click() {
 function button1_click() {
     buttons_reset();
     $("#button1_img").attr("src", "images/button-info-selected.svg");
-    $("#screen_info").css('visibility','visible');
+    $("#screen_info").css('visibility', 'visible');
 
-    if (current_mode == MODE_NONE) {
+    if (current_mode === MODE_NONE) {
         $("#breadcrumbs_div_2").html("");
     }
 }
@@ -1322,7 +1322,11 @@ function map_route_clicked(route_obj) {
 }
 
 function on_load() {
-    document.addEventListener("deviceready", onDeviceReady, false);
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+        document.addEventListener("deviceready", onDeviceReady, false);
+    } else {
+        onDeviceReady();
+    }
 }
 
 function photo_bullets_update() {
@@ -1974,7 +1978,7 @@ document.onreadystatechange = function(e) {
             }
         }, true
     );
-    
+
     $("#noUiSlider_area").find(".noUi-handle").addClass("noUi-handle_text");
     $("#noUiSlider_area").find(".noUi-handle").removeClass("noUi-handle");
     $("#tick_date").datepicker({dateFormat: "yy-mm-dd"});
@@ -2006,7 +2010,9 @@ document.onreadystatechange = function(e) {
 };
 
 function onDeviceReady() {
-    navigator.splashscreen.show();
+    if (navigator.splashscreen) {
+        navigator.splashscreen.show();
+    }
 
     map.enable_device_location(true);
     settings_load();
