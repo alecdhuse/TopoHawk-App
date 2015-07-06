@@ -1056,6 +1056,8 @@
                     return new L.RotatedMarker(pos, options);
                 };
             }
+
+            this._gps_orientation_init = true;
         },
 
         _initialize_map_layers: function () {
