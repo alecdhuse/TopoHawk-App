@@ -46,7 +46,7 @@ var map = TH.map('screen_map', {
     cluster:        true,
     mobile:         true,
     offline:        true,
-    show_location:  true,
+    show_location:  false,
     lat:            40.6,
     lng:            -98.0,
     zoom:           3
@@ -2011,6 +2011,7 @@ document.onreadystatechange = function(e) {
 
 function onDeviceReady() {
     navigator.splashscreen.show();
+    map.enable_device_location(true);
     document.addEventListener("backbutton", button_back_click, false);
-    document.addEventListener("menubutton", button_menu_click, false);    
+    document.addEventListener("menubutton", button_menu_click, false);
 }
