@@ -1948,6 +1948,14 @@ window.onresize = function () {
 }
 
 document.onreadystatechange = function(e) {
+    /* Device Specific Adjustments */
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
+        if (window.StatusBar) {
+            /* Change Header size for status bar */
+            $("#top_bar_div").css({"padding-top" : "20px"});
+        }
+    }
+
     /* Various key bindings */
     $("#destination_search_filter").keyup(function() { filter_list() });
 
