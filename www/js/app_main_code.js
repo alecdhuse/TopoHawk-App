@@ -1948,14 +1948,6 @@ window.onresize = function () {
 }
 
 document.onreadystatechange = function(e) {
-    /* Device Specific Adjustments */
-    if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
-        if (window.StatusBar) {
-            /* Change Header size for status bar */
-            $("#top_bar_div").css({"padding-top" : "20px"});
-        }
-    }
-
     /* Various key bindings */
     $("#destination_search_filter").keyup(function() { filter_list() });
 
@@ -2019,6 +2011,15 @@ document.onreadystatechange = function(e) {
 function onDeviceReady() {
     if (navigator.splashscreen) {
         navigator.splashscreen.show();
+    }
+
+    /* Device Specific Adjustments */
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
+        if (window.StatusBar) {
+            /* Change Header size for status bar */
+            $("#top_bar_div").css({"padding-top" : "20px"});
+            $("#menu_popup").css({"top" : "50px"});
+        }
     }
 
     map.enable_device_location(true);
