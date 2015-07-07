@@ -2018,9 +2018,8 @@ function onDeviceReady() {
         if (window.StatusBar) {
             /* Change Header size for status bar */
             $("#menu_popup").css({"top" : "50px"});
-            $(".screen_about").css({"top" : "50px"});
+            $(".screen_about").css({"top" : "60px"});
             $("#top_bar_div").css({"padding-top" : "20px"});
-
         }
     }
 
