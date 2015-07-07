@@ -23,7 +23,7 @@
     <preference name="prerendered-icon"           value="false" />
     <preference name="stay-in-webview"            value="false" />
     <preference name="ios-statusbarstyle"         value="black-opaque" />
-    <preference name="detect-data-types"          value="true" />
+    <preference name="detect-data-types"          value="false" />
     <preference name="exit-on-suspend"            value="false" />
     <preference name="show-splash-screen-spinner" value="true" />
     <preference name="auto-hide-splash-screen"    value="true" />
@@ -32,7 +32,7 @@
     <preference name="permissions"                value="none" />
     <preference name="SplashScreen"               value="screen" />
     <preference name="SplashScreenDelay"          value="4500" />
-    <preference name="show-splash-screen-spinner" value="true" />
+    <preference name="show-splash-screen-spinner" value="false" />
     <preference name="auto-hide-splash-screen"    value="true" />
     <preference name="StatusBarOverlaysWebview"   value="false" />
 

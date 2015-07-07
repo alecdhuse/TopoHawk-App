@@ -1964,7 +1964,6 @@ document.onreadystatechange = function(e) {
     });
 
     bind_swipes();
-    resize_window();
 
     /* Setup Area UI Slider */
     $('#noUiSlider_area').noUiSlider(
@@ -2018,8 +2017,18 @@ function onDeviceReady() {
     settings_load();
     get_user_info();
     TH.util.storage.check_offline_statuses();
-    button1_click();
 
     document.addEventListener("backbutton", button_back_click, false);
     document.addEventListener("menubutton", button_menu_click, false);
+
+    if (navigator.splashscreen) {
+        navigator.splashscreen.hide();
+    }
+
+    if (window.StatusBar) {
+      StatusBar.styleDefault();
+    }
+
+    resize_window();
+    button1_click();
 }
