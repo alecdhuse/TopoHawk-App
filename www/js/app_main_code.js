@@ -2034,10 +2034,6 @@ function onDeviceReady() {
         navigator.splashscreen.hide();
     }
 
-    if (window.StatusBar) {
-      StatusBar.styleDefault();
-    }
-
     resize_window();
     button1_click();
 }
