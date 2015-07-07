@@ -34,6 +34,7 @@
     <preference name="SplashScreenDelay"          value="4500" />
     <preference name="show-splash-screen-spinner" value="true" />
     <preference name="auto-hide-splash-screen"    value="true" />
+    <preference name="StatusBarOverlaysWebview"   value="false" />
 
     <feature name="http://api.phonegap.com/1.0/geolocation"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
@@ -42,6 +43,7 @@
     <gap:plugin name="org.apache.cordova.geolocation" />
     <gap:plugin name="org.apache.cordova.network-information" />
     <gap:plugin name="org.apache.cordova.splashscreen" />
+    <gap:plugin name="org.apache.cordova.statusbar" />
 
     <icon src="icon.png" />
     <gap:splash src="splash.png" />
