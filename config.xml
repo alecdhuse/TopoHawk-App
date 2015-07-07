@@ -60,8 +60,11 @@
     </platform>
 
     <platform name="ios">
-        <splash src="www/images/splash-320-480.png" width="320" height="480" />
-        <splash src="www/images/splash-640-960.png" width="640" height="960" />
+        <splash src="www/images/splash-320-480.png"   width="320"  height="480" />
+        <splash src="www/images/splash-640-960.png"   width="640"  height="960" />
+        <splash src="www/images/splash-640-1136.png"  width="640"  height="1136" />
+        <splash src="www/images/splash-750-1334.png"  width="750"  height="1334" />
+        <splash src="www/images/splash-1242-2208.png" width="1242" height="2208" />
     </platform>
 
     <icon src="platform/android/res/icon-36-ldpi.png"   gap:platform="android"   gap:qualifier="ldpi" />
