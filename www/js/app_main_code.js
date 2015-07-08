@@ -21,6 +21,7 @@ var photo_index          = 0;
 var photo_topo           = new PT();
 var photo_topo_init      = false;
 var photos_loaded        = false;
+var status_bar_height    = 0;
 var stream_offset        = 0;
 var stream_scroll        = false;
 var swipe_binded         = false;
@@ -646,7 +647,7 @@ function create_photo_canvas(photos) {
 
     if (photos.length > 0) {
         if (photo_topo_init === false) {
-            var max_height = $(window).height() - 120;
+            var max_height = $(window).height() - 120 + status_bar_height;
             var max_width  = $(window).width();
 
             $("#photo_topo_canvas").css({"height": max_height});
@@ -1419,13 +1420,13 @@ function resize_window() {
     var max_crumb_width = ($(window).width() - 45)
     $("#breadcrumbs_div").css({"max-width": max_crumb_width});
 
-    $("#screen_map").height($(window).height()-80).width($(window).width());
+    $("#screen_map").height($(window).height() - 80 + status_bar_height).width($(window).width());
     var search_box_width = ($(window).width() - 48);
 
     $("#search_box").css({"width": search_box_width});
     map.invalidate_size();
 
-    var load_center_top  = ($(window).height() / 2.0) - 75;
+    var load_center_top  = ($(window).height() / 2.0) - 75 + status_bar_height;
     var load_center_left = ($(window).width() / 2.0) - 75;
     $(".loading_screen_center").css({"margin-top": load_center_top});
     $(".loading_screen_center").css({"margin-left": load_center_left});
@@ -1652,7 +1653,7 @@ function settings_update_grades(callback) {
 }
 
 function show_help_comment(comment_text) {
-    var comment_top = (($(window).height() - 105)) + "px";
+    var comment_top = (($(window).height() - 105 + status_bar_height)) + "px";
 
     $("#help_comment").css({'top': comment_top});
     $("#help_comment_inner").html(comment_text);
@@ -1719,7 +1720,7 @@ function show_map_edit_buttons(is_new) {
     button4_click();
 
     $("#target_overlay").css('visibility','visible');
-    var target_top = (($(window).height() - 80) / 2) - 20 + "px";
+    var target_top = (($(window).height() - 80 + status_bar_height) / 2) - 20 + "px";
     var target_left = (($(window).width() / 2) - 20) + "px";
     $("#target_overlay").css({'top':  target_top});
     $("#target_overlay").css({'left':  target_left});
@@ -2021,6 +2022,7 @@ function onDeviceReady() {
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
         if (window.StatusBar) {
             /* Change Header size for status bar */
+            status_bar_height = 20;
             $("#menu_popup").css({"top" : "50px"});
             $(".screen").css({"padding-top" : "20px"});
             $("#top_bar_div").css({"padding-top" : "20px"});
