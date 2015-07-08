@@ -965,7 +965,7 @@ function do_sign_up() {
             }
        },
        error: function (req, status, error) {
-           TH.util.logging.log(.log("Error performing seach: " + error);
+           TH.util.logging.log("Error performing seach: " + error);
        }
     });
 }
