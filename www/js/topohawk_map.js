@@ -986,36 +986,11 @@
                 if ((this._options.offline === true) && (zoom < 6)) {
                     url = 'images/tiles/' + tile;
                     img.src = url;
-                } else if (err_count == 1 || (zoom < 13)) {
-                    TH.util.storage.get_tile(x, tilePoint.y, zoom, function(tile_data_url) {
-                        if (tile_data_url === null) {
-                            url = 'http://a.tiles.mapbox.com/v3/scarletshark.h69c7n2p/' + tile;
-
-                            img.onerror = function() {
-                                map_obj._get_topo_tile(layer, canvas, tilePoint, zoom, 2);
-                            };
-
-                            img.src = url;
-                        } else {
-                            img.src = tile_data_url;
-                        }
-                    });
-                } else if (err_count >= 2) {
-                    /* Tile cannot be loaded */
-                    layer.tileDrawn(canvas);
                 } else {
                     TH.util.storage.get_tile(x, tilePoint.y, zoom, function(tile_data_url) {
                         if (tile_data_url === null) {
                             //Look for custom topo tile first
-                            if (err_count == 0) {
-                                var url = 'http://foldingmap.co/map/' + tile;
-
-                                img.onerror = function() {
-                                    map_obj._get_topo_tile(layer, canvas, tilePoint, zoom, 1);
-                                };
-
-                                img.src = url;
-                            }
+                            img.src = 'http://foldingmap.co/map/' + tile;
                         } else {
                             img.src = tile_data_url;
                         }
