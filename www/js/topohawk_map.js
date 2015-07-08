@@ -432,7 +432,7 @@
                 this._gps_orientation_init = true;
             }
 
-            if (this._options.locked == false) {
+            if (this._options.locked === false) {
                 this._add_filter_control();
             }
         },
@@ -564,12 +564,11 @@
             var map_obj  = this;
             var max_zoom = 25;
             var min_zoom = 0;
+            var radius   = 5;
             var vis_markers  = 0;
 
             if (this._options.mobile) {
-                var radius = 7;
-            } else {
-                var radius = 5;
+                radius = 7;
             }
 
             for (var i = (mapFeature.features.length - 1); i >= 0; i--){
@@ -990,7 +989,11 @@
                     TH.util.storage.get_tile(x, tilePoint.y, zoom, function(tile_data_url) {
                         if (tile_data_url === null) {
                             //Look for custom topo tile first
-                            img.src = 'http://foldingmap.co/map/' + tile;
+                            if (zoom < 12) {
+                                img.src = 'http://a.tiles.mapbox.com/v3/scarletshark.h69c7n2p/' + tile;
+                            } else {
+                                img.src = 'http://foldingmap.co/map/' + tile;
+                            }
                         } else {
                             img.src = tile_data_url;
                         }
@@ -1080,7 +1083,7 @@
 
             auto_zoom = (typeof auto_zoom === undefined) ? true : auto_zoom;
 
-            if (this._first_location_fix == true) {
+            if (this._first_location_fix === true) {
                 if (this._options.area_id > 0) {
                     this.set_area(this._options.area_id);
                 }
@@ -1247,7 +1250,7 @@
             this._expanded = !this._expanded;
             L.DomEvent.stopPropagation(e);
 
-            if (this._th_map._options.mobile == true) {
+            if (this._th_map._options.mobile === true) {
                 $(".leaflet-control-attribution").css('visibility','hidden');
             }
 
@@ -1260,7 +1263,7 @@
             this._filter_div.hidden   = true;
             this._expanded            = false;
 
-            if (this._th_map._options.mobile == true) {
+            if (this._th_map._options.mobile === true) {
                 $(".leaflet-control-attribution").css('visibility','visible');
             }
 
@@ -1391,7 +1394,7 @@
             filter_select_opt3.value = 3;
             filter_select_opt4.value = 4;
 
-            if (this._th_map._options.offline == true) {
+            if (this._th_map._options.offline === true) {
                 filter_select_opt0.title = ('images/rating-zero.svg');
                 filter_select_opt1.title = ('images/rating-one.svg');
                 filter_select_opt2.title = ('images/rating-two.svg');
@@ -1421,16 +1424,15 @@
             this._filter_div_min_boulder = filter_div_min_boulder;
             this._filter_div_max_boulder = filter_div_max_boulder;
 
-            L.DomEvent
-                .addListener(newButton,    'click', L.DomEvent.stop)
-                .addListener(filter_close, 'click', this._close_filter, this)
-                .addListener(newButton,    'click', this._clicked,      this)
-                .addListener(filter_chk_boulder,   'click',  this._proccess_filter_checkboxes, this)
-                .addListener(filter_chk_sport,     'click',  this._proccess_filter_checkboxes, this)
-                .addListener(filter_chk_trad,      'click',  this._proccess_filter_checkboxes, this)
-                .addListener(filter_chk_mixed,     'click',  this._proccess_filter_checkboxes, this)
-                .addListener(filter_chk_toprope,   'click',  this._proccess_filter_checkboxes, this)
-                .addListener(filter_chk_aid,       'click',  this._proccess_filter_checkboxes, this)
+            L.DomEvent.addListener(newButton,            'click', L.DomEvent.stop);
+            L.DomEvent.addListener(filter_close,         'click', this._close_filter, this);
+            L.DomEvent.addListener(newButton,            'click', this._clicked,      this);
+            L.DomEvent.addListener(filter_chk_boulder,   'click',  this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_sport,     'click',  this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_trad,      'click',  this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_mixed,     'click',  this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_toprope,   'click',  this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_aid,       'click',  this._proccess_filter_checkboxes, this);
 
             L.DomEvent.disableClickPropagation(newButton);
 
@@ -1555,7 +1557,7 @@
                 data: {
                     'x': x,
                     'y': y,
-                    'z': z,
+                    'z': z
                 },
                 success: function (data) {
                     var tx = db.transaction("map_tiles", "readwrite");

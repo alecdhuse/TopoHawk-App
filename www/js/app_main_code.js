@@ -56,7 +56,7 @@ var map = TH.map('screen_map', {
 map.on_area_click               = function (area_obj)        { map_area_clicked(area_obj); };
 map.on_destination_click        = function (destination_obj) { };
 map.on_route_click              = function (route_obj)       { map_route_clicked(route_obj); };
-map.on_user_info_loaded         = function ()                { user_info_loaded() };
+map.on_user_info_loaded         = function ()                { user_info_loaded(); };
 map.destination_info_loaded     = function (destination_obj) { create_destination_list(); };
 map.on_destination_info_loaded  = function ()                { destination_info_loaded(); };
 
@@ -369,7 +369,7 @@ function change_area(area_id, change_map_view) {
 }
 
 function change_destination(destination_id) {
-    var loading_html = "<div style='margin-top:5px;text-align:center;'>Loading Area List <img src='images/ui-anim_basic_16x16.gif'></div>"
+    var loading_html = "<div style='margin-top:5px;text-align:center;'>Loading Area List <img src='images/ui-anim_basic_16x16.gif'></div>";
     $("#destination_search_results").html(loading_html);
 
     current_mode = MODE_DESTINATION;
@@ -399,7 +399,7 @@ function change_route(route_id, screen_switch, change_map_view) {
     /* Center map on route latlng */
     if (change_map_view === true) {
         var route_latlng = L.latLng(map.selected_route.geometry.coordinates[1], map.selected_route.geometry.coordinates[0]);
-        map.set_view(route_latlng, map.get_zoom())
+        map.set_view(route_latlng, map.get_zoom());
     }
 
     /* Get rating in prefered scale */
@@ -414,7 +414,7 @@ function change_route(route_id, screen_switch, change_map_view) {
         title_html += "<span>Multipitch</span>";
     }
 
-    title_html += "</span><br/>"
+    title_html += "</span><br/>";
     title_html += "<span>" + TH.util.get_star_html(map.selected_route.properties.rating, true, true).substr(5) + "</span>";
     title_html += "<span style='float:right;margin-top:-30px;'><img src='images/tick_route.svg' onclick='add_tick()' /></span>";
 
@@ -488,7 +488,7 @@ function check_for_human() {
        data:     data,
        success:  function(response) {
             if (response.result_code > 0) {
-                if (response.result.check == true) {
+                if (response.result.check === true) {
                     $(".captcha_check_div").css('visibility','hidden');
                     $(".captcha_question_div").css('visibility','visible');
 
@@ -536,7 +536,7 @@ function create_area_list() {
     if (map.areas.features.length > 0) {
         for (var i=0; i < map.areas.features.length; i++) {
 
-            if (search_string.length == 0) {
+            if (search_string.length === 0) {
                 show_area = true;
             } else {
                 if (map.areas.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
@@ -585,7 +585,7 @@ function create_destination_list() {
     for (var i=0; i < map.destinations.features.length; i++) {
         destination_id = map.destinations.features[i].properties.destination_id;
 
-        if (search_string.length == 0) {
+        if (search_string.length === 0) {
             show_destination = true;
         } else {
             if (map.destinations.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
@@ -624,10 +624,10 @@ function create_offline_destinations_list() {
 
         if (offline_destinations.length > 0) {
             for (var i=0; i<offline_destinations.length; i++) {
-                list_html += "<div class='destination_list_offline'>"
+                list_html += "<div class='destination_list_offline'>";
                 list_html += "<div class='destination_list_name_offline'>" + offline_destinations[i].destination_name + "</div>";
                 list_html += "<div class='destination_list_name_offline_delete' onclick='remove_offline_destination(" + offline_destinations[i].destination_id + ")'>✖</div>";
-                list_html += "</div>"
+                list_html += "</div>";
             }
         } else {
             list_html += "No offline destinations saved.";
@@ -647,7 +647,7 @@ function create_photo_canvas(photos) {
 
     if (photos.length > 0) {
         if (photo_topo_init === false) {
-            var max_height = $(window).height() - 120 + status_bar_height;
+            var max_height = $(window).height() - 120 - status_bar_height;
             var max_width  = $(window).width();
 
             $("#photo_topo_canvas").css({"height": max_height});
@@ -672,7 +672,7 @@ function create_photo_stream_html(stream_json) {
     var reload_at = 6;
 
     if (stream_json.result_code > 0) {
-        var reload_at = stream_json.photos.length - 4;
+        reload_at = stream_json.photos.length - 4;
 
         for (var i = 0; i < stream_json.photos.length; i++) {
             var photo_name = stream_json.photos[i].photo_name;
@@ -684,12 +684,12 @@ function create_photo_stream_html(stream_json) {
             html = html + "<img src='" + photo_url + "' alt='" + photo_name + "'" + on_click + " width='300'/>";
             html = html + "<br />";
 
-            if (i == reload_at) html = html + "<div class='load_more_photos'></div>";
+            if (i == reload_at) {
+                html = html + "<div class='load_more_photos'></div>";
+            }
 
             html = html + "</div>";
         }
-    } else {
-
     }
 
     return html;
@@ -707,7 +707,7 @@ function create_route_list(area_id) {
     for (var i=0; i < map.routes.features.length; i++) {
         current_route = map.routes.features[i];
 
-        if (search_string.length == 0) {
+        if (search_string.length === 0) {
             show_route = true;
         } else {
             if (current_route.properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
@@ -797,9 +797,9 @@ function destination_info_loaded() {
         info_html += "<br /><div>";
         info_html += "<div style='font-weight:bold;margin-bottom:5px;'><img src='images/campsite-12.svg' align='top' height='20; width='20'> Camping:</div>";
 
-        for (var i=0; i<camping.length; i++) {
-            info_html += "<div style='margin-left:12px;'><div class='amenity_name'>" + camping[i].properties.name + "</div>";
-            info_html += "<div class='amenity_description'>" + camping[i].properties.description + "</div></div><br />";
+        for (var j=0; i<camping.length; i++) {
+            info_html += "<div style='margin-left:12px;'><div class='amenity_name'>" + camping[j].properties.name + "</div>";
+            info_html += "<div class='amenity_description'>" + camping[j].properties.description + "</div></div><br />";
         }
 
         info_html += "</div>";
@@ -909,7 +909,7 @@ function do_login() {
 
 function do_search() {
     var search_query = $("#search_box").val();
-    var loading_html = "<div style='margin-top:5px;text-align:center;'>Searching <img src='images/ui-anim_basic_16x16.gif'></div>"
+    var loading_html = "<div style='margin-top:5px;text-align:center;'>Searching <img src='images/ui-anim_basic_16x16.gif'></div>";
     $("#search_results").html(loading_html);
 
     var search_data = {
@@ -986,12 +986,12 @@ function download_selected_destination() {
     });
 }
 
-function edit_route_tick(tick_id, send_type, comment, date, public) {
+function edit_route_tick(tick_id, send_type, comment, date, is_public) {
     var sel = "#tick_send_type option[value='" + send_type + "']";
     $(sel).prop("selected", true)
     $("#tick_send_comment").val(comment);
     $("#tick_date").datepicker("setDate", new Date(date));
-    $("#tick_public_visible").prop('checked', public);
+    $("#tick_public_visible").prop('checked', is_public);
     $("#edit_tick_id").val(tick_id);
     $("#new_tick_route_id").val(0);
 
@@ -1272,7 +1272,8 @@ function get_route_ticks_html(user_id, route_id, html_element) {
             html += "<div class='route_tick_date'>" + result[i].send_date + "</div>";
             html += "</div>";
 
-            if (user_id = window.user_id) {
+            if (user_id == window.user_id) {
+                html += "";
                 //html += "<div style='text-align:center;'>Edit" + "</div>";
             }
 
@@ -1350,7 +1351,7 @@ function photo_bullets_update() {
             }
         } else {
             if (photo_index >= max_bullets) {
-                if (i < hidden_bullets && left_ellipsis == false) {
+                if (i < hidden_bullets && left_ellipsis === false) {
                     photo_bullets += " ⋯";
                     left_ellipsis  = true;
                 } else if (i > hidden_bullets) {
@@ -1420,13 +1421,13 @@ function resize_window() {
     var max_crumb_width = ($(window).width() - 45)
     $("#breadcrumbs_div").css({"max-width": max_crumb_width});
 
-    $("#screen_map").height($(window).height() - 80 + status_bar_height).width($(window).width());
+    $("#screen_map").height($(window).height() - 80 - status_bar_height).width($(window).width());
     var search_box_width = ($(window).width() - 48);
 
     $("#search_box").css({"width": search_box_width});
     map.invalidate_size();
 
-    var load_center_top  = ($(window).height() / 2.0) - 75 + status_bar_height;
+    var load_center_top  = ($(window).height() / 2.0) - 75;
     var load_center_left = ($(window).width() / 2.0) - 75;
     $(".loading_screen_center").css({"margin-top": load_center_top});
     $(".loading_screen_center").css({"margin-left": load_center_left});
@@ -1971,18 +1972,17 @@ document.onreadystatechange = function(e) {
     bind_swipes();
 
     /* Setup Area UI Slider */
-    $('#noUiSlider_area').noUiSlider(
-        {
-            range: [12, 20],
-            start: [12, 17],
-            step:  1,
-            slide: function() {
-                sliderVal = $("#noUiSlider_area").val();
-                set_area_slider_val(parseInt(sliderVal[0]), parseInt(sliderVal[1]))
-            }
-        }, true
-    );
+    var slider_settings = {
+        range: [12, 20],
+        start: [12, 17],
+        step:  1,
+        slide: function() {
+            sliderVal = $("#noUiSlider_area").val();
+            set_area_slider_val(parseInt(sliderVal[0]), parseInt(sliderVal[1]))
+        }
+    };
 
+    $('#noUiSlider_area').noUiSlider(slider_settings, true);
     $("#noUiSlider_area").find(".noUi-handle").addClass("noUi-handle_text");
     $("#noUiSlider_area").find(".noUi-handle").removeClass("noUi-handle");
     $("#tick_date").datepicker({dateFormat: "yy-mm-dd"});
@@ -1996,7 +1996,7 @@ document.onreadystatechange = function(e) {
             var view_bottom = $("#stream_inner").scrollTop() + ($(window).height() - 50);
 
             if (view_bottom > offset) {
-                if (stream_scroll == false) {
+                if (stream_scroll === false) {
                     /* load more photos */
                     stream_scroll  = true;
                     stream_offset += 10;
