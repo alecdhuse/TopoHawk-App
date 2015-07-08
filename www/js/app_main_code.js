@@ -501,11 +501,11 @@ function check_for_human() {
 
                 window.verification_id = response.result.verification_id;
             } else {
-                console.log("Error " + response.result);
+                TH.util.logging.log("Error " + response.result);
             }
        },
        error: function (req, status, error) {
-           console.log("Error performing human check: " + error);
+           TH.util.logging.log("Error performing human check: " + error);
        }
     });
 }
@@ -861,13 +861,13 @@ function do_checkin() {
        data:     data,
        success:  function(response) {
             if (response.result_code > 0) {
-                console.log(response.result);
+                TH.util.logging.log(response.result);
             } else {
-                console.log(response.result);
+                TH.util.logging.log(response.result);
             }
        },
        error: function (req, status, error) {
-           console.log("Error checking in: " + error);
+           TH.util.logging.log("Error checking in: " + error);
        }
     });
 }
@@ -926,7 +926,7 @@ function do_search() {
             if (response.result_code > 0) {
                 create_search_result_html(response.search_results);
             } else {
-                console.log("Error " + response.result);
+                TH.util.logging.log("Error " + response.result);
             }
        },
        error: function (req, status, error) {
@@ -965,7 +965,7 @@ function do_sign_up() {
             }
        },
        error: function (req, status, error) {
-           console.log("Error performing seach: " + error);
+           TH.util.logging.log(.log("Error performing seach: " + error);
        }
     });
 }
@@ -1205,16 +1205,16 @@ function get_photo_ids() {
                     create_photo_canvas(response.photo_ids);
                 } else {
                     create_photo_canvas([0]);
-                    console.log("Error " + response.result);
+                    TH.util.logging.log("Error " + response.result);
                 }
            },
            error: function (req, status, error) {
-               console.log("Error retrieving photo_ids.");
+               TH.util.logging.log("Error retrieving photo_ids.");
            }
         });
     } else {
         if (photos_loaded === false) {
-            console.log("Function get_photo_ids has incorrect parameters.");
+            TH.util.logging.log("Function get_photo_ids has incorrect parameters.");
         }
     }
 }
@@ -1235,11 +1235,11 @@ function get_route_ticks(user_id, route_id, callback) {
             if (response.result_code > 0) {
                 callback(response.result);
             } else {
-                console.log("Error " + response.result);
+                TH.util.logging.log("Error " + response.result);
             }
        },
        error: function (req, status, error) {
-           console.log("Error retrieving route ticks.");
+           TH.util.logging.log("Error retrieving route ticks.");
        }
     });
 }
@@ -1469,13 +1469,13 @@ function save_map_edit() {
                         } else {
                             show_help_comment(response.result);
                             setTimeout(function() { hide_help_comment(); }, 2000);
-                            console.log(response.result);
+                            TH.util.logging.log(response.result);
                         }
                     },
                     error: function (req, status, error) {
                         show_help_comment("Could Not Add Route");
                         setTimeout(function() { hide_help_comment(); }, 2000);
-                       console.log("Error adding route: " + error);
+                       TH.util.logging.log("Error adding route: " + error);
                        /* TODO: Handle errors */
                     }
                 });
@@ -1502,11 +1502,11 @@ function save_map_edit() {
                         } else {
                             show_help_comment(response.result);
                             setTimeout(function() { hide_help_comment(); }, 2000);
-                            console.log(response.result);
+                            TH.util.logging.log(response.result);
                         }
                     },
                     error: function (req, status, error) {
-                        console.log("Error adding area: " + error);
+                        TH.util.logging.log("Error adding area: " + error);
                         /* TODO: Handle errors */
                     }
                 });
@@ -1532,11 +1532,11 @@ function save_map_edit() {
                         } else {
                             show_help_comment(response.result);
                             setTimeout(function() { hide_help_comment(); }, 2000);
-                            console.log(response.result);
+                            TH.util.logging.log(response.result);
                         }
                     },
                     error: function (req, status, error) {
-                        console.log("Error adding destination: " + error);
+                        TH.util.logging.log("Error adding destination: " + error);
                         /* TODO: Handle errors */
                     }
                 });
@@ -1599,7 +1599,7 @@ function setting_save() {
         localStorage.setItem("settings_sport_grade",    $("#settings_sport_grade").val());
         localStorage.setItem("settings_trad_grade",     $("#settings_trad_grade").val());
     } else {
-        console.log("Error: no local storage.");
+        TH.util.logging.log("Error: no local storage.");
     }
 }
 
@@ -1634,11 +1634,11 @@ function settings_update_grades(callback) {
                             callback(response.result);
                         }
                     } else {
-                        console.log("Error " + response.result);
+                        TH.util.logging.log("Error " + response.result);
                     }
                },
                error: function (req, status, error) {
-                   console.log("Error updating grade preferences.");
+                   TH.util.logging.log("Error updating grade preferences.");
                }
             });
         } else {
@@ -1763,11 +1763,11 @@ function show_photo_stream() {
                 $(".stream_photo").css( { marginLeft : photo_margin + "px" } );
                 stream_scroll = false;
             } else {
-                console.log("Error " + response.result);
+                TH.util.logging.log("Error " + response.result);
             }
         },
         error: function (req, status, error) {
-           console.log("Error getting photo stream: " + error);
+           TH.util.logging.log("Error getting photo stream: " + error);
         }
     });
 }
@@ -1842,14 +1842,14 @@ function update_current_route_tick() {
            data:     data,
            success:  function(response) {
                 if (response.result_code > 0) {
-                    console.log(response.result);
+                    TH.util.logging.log(response.result);
                     button_menu_ticks();
                 } else {
-                    console.log(response.result);
+                    TH.util.logging.log(response.result);
                 }
            },
            error: function (req, status, error) {
-               console.log("Error updating tick: " + error);
+               TH.util.logging.log("Error updating tick: " + error);
            }
         });
     } else {
@@ -1871,13 +1871,13 @@ function update_current_route_tick() {
            data:     data,
            success:  function(response) {
                 if (response.result_code > 0) {
-                    console.log(response.result);
+                    TH.util.logging.log(response.result);
                 } else {
-                    console.log(response.result);
+                    TH.util.logging.log(response.result);
                 }
            },
            error: function (req, status, error) {
-               console.log("Error updating tick: " + error);
+               TH.util.logging.log("Error updating tick: " + error);
            }
         });
     }
