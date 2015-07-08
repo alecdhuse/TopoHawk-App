@@ -372,7 +372,7 @@ function change_destination(destination_id) {
     $("#destination_search_results").html(loading_html);
 
     current_mode = MODE_DESTINATION;
-    map.set_destination(destination_id);
+    map.set_destination(destination_id, error_loading_destination);
 
     /* Remove selected route on Photo_Topo */
     photo_topo.selected_route_id = 0;
@@ -519,7 +519,7 @@ function click_stream_item(route_id, area_id, destination_id) {
 
     /* Get destination data, if new destination */
     if (map.selected_destination.destination_id != destination_id) {
-        map.set_destination(destination_id);
+        map.set_destination(destination_id, error_loading_destination);
         destination_callback = true;
     } else {
         proccess_destination_callback(destination_callback_change);
@@ -996,6 +996,10 @@ function edit_route_tick(tick_id, send_type, comment, date, public) {
 
     buttons_reset();
     $("#screen_tick_edit").css('visibility','visible');
+}
+
+function error_loading_destination() {
+    $("#destination_search_results").html("<div style='text-align:center;'>Destination could not be loaded.</div>");
 }
 
 function filter_list() {
@@ -2018,7 +2022,7 @@ function onDeviceReady() {
         if (window.StatusBar) {
             /* Change Header size for status bar */
             $("#menu_popup").css({"top" : "50px"});
-            $(".screen_about").css({"padding-top" : "20px"});
+            $(".screen").css({"padding-top" : "20px"});
             $("#top_bar_div").css({"padding-top" : "20px"});
         }
     }

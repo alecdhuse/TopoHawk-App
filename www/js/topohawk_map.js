@@ -197,8 +197,8 @@
             this.on_area_change();
         },
 
-        set_destination: function (destination_id) {
-            this._get_destination_data(destination_id, null, true);
+        set_destination: function (destination_id, fail_callback) {
+            this._get_destination_data(destination_id, fail_callback, true);
         },
 
         set_localization: function (change_view) {

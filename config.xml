@@ -88,6 +88,6 @@
     <access origin="https://topohawk.com" />
     <access origin="http://topohawk.com" />
     <access origin="http://foldingmap.co" />
-    <access origin="http://*.tiles.mapbox.com" />
-    <access origin="https://*.tiles.mapbox.com" />
+    <access origin="http://*.tiles.mapbox.com" subdomains="true"/>
+    <access origin="https://*.tiles.mapbox.com" subdomains="true"/>
 </widget>
