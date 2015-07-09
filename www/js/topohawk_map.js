@@ -1454,14 +1454,16 @@
 
     TH.util.offline.add_offline_destination = function (destination_obj, callback) {
         TH.util.storage.init(function(db_init) {
-            /* Save Destination Data */
-            TH.util.storage.add_destination(destination_obj, db_init);
+            if (db_init.db_type == "indexedDB") {
+                /* Save Destination Data */
+                TH.util.storage.add_destination(destination_obj, db_init.db);
 
-            /* Download Photos */
-            TH.util.storage.download_destination_photos(destination_obj.destination_id, db_init);
+                /* Download Photos */
+                TH.util.storage.download_destination_photos(destination_obj.destination_id, db_init.db);
 
-            /* Download Map Tiles */
-            TH.util.storage.download_destination_tiles(destination_obj.destination_id, callback, db_init);
+                /* Download Map Tiles */
+                TH.util.storage.download_destination_tiles(destination_obj.destination_id, callback, db_init.db);
+            }
         });
     };
 
@@ -1508,7 +1510,9 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.add_destination(destination_obj, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.add_destination(destination_obj, db_init.db);
+                }
             });
         }
     };
@@ -1540,7 +1544,9 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.add_photo(photo_obj, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.add_photo(photo_obj, db_init.db);
+                }
             });
         }
     };
@@ -1591,7 +1597,13 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.add_tile(x, y, z, db_init, callback);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.add_tile(x, y, z, db_init.db, callback);
+                } else {
+                    if (typeof callback !== 'undefined') {
+                        callback();
+                    }
+                }
             });
         }
      };
@@ -1626,7 +1638,11 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.get_all_destinations(callback, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.get_all_destinations(callback, db_init.db);
+                } else {
+                    callback(destinations);
+                }
             });
         }
      };
@@ -1648,7 +1664,11 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.get_destination(destination_id, callback, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.get_destination(destination_id, callback, db_init.db);
+                } else {
+                    callback(null);
+                }
             });
         }
      };
@@ -1687,7 +1707,9 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.remove_destination(destination_id, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.remove_destination(destination_id, db_init.db);
+                }
             });
         }
      };
@@ -1720,7 +1742,9 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.remove_destination_tiles(destination_id, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.remove_destination_tiles(destination_id, db_init.db);
+                }
             });
         }
      };
@@ -1744,7 +1768,9 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.remove_offline_photos(destination_id, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.remove_offline_photos(destination_id, db_init.db);
+                }
             });
         }
     };
@@ -1774,7 +1800,9 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.download_destination_photos(destination_id, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.download_destination_photos(destination_id, db_init.db);
+                }
             });
         }
     };
@@ -1793,7 +1821,9 @@
          } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.download_destination_tiles(destination_id, callback, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.download_destination_tiles(destination_id, callback, db_init.db);
+                }
             });
         }
     };
@@ -1844,7 +1874,11 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                TH.util.storage.get_photo(photo_id, callback, db_init);
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.get_photo(photo_id, callback, db_init.db);
+                } else {
+                    callback(photo_id, null);
+                }
             });
         }
     };
@@ -1875,14 +1909,14 @@
             };
         } else {
             /* DB is not given, get it */
-            if (window.indexedDB || window.webkitIndexedDB || window.msIndexedDB) {
-                TH.util.storage.init(function(db_init) {
-                    TH.util.storage.get_tile(x, y, z, callback, db_init);
-                });
-            } else {
-                /* indexedDB not available */
-                callback(null);
-            }
+            TH.util.storage.init(function(db_init) {
+                if (db_init.db_type == "indexedDB") {
+                    TH.util.storage.get_tile(x, y, z, callback, db_init.db);
+                } else {
+                    /* indexedDB not available */
+                    callback(null);
+                }
+            });
         }
     };
 
@@ -1907,82 +1941,94 @@
     };
 
     TH.util.storage.init = function (callback) {
-        var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
-        var request = indexedDB.open("TopoHawk-Cache", 10);
+        if (window.indexedDB || window.webkitIndexedDB || window.msIndexedDB) {
+            var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
+            var request = indexedDB.open("TopoHawk-Cache", 10);
 
-        request.onupgradeneeded = function(event) {
-            var db = event.target.result;
-            var dest_db_created  = false;
-            var photo_db_created = false;
-            var tiles_db_created = false;
-            var callback_made    = false;
+            request.onupgradeneeded = function(event) {
+                var db_obj = {
+                    db_type: "indexedDB",
+                    db:      event.target.result
+                }
 
-            if (!db.objectStoreNames.contains("destinations")) {
-                // Create destination db
-                var destination_store = db.createObjectStore("destinations", {keyPath: "destination_id"});
-                var destination_id_index = destination_store.createIndex("by_destination_id", "destination_id", {unique: true});
+                var dest_db_created  = false;
+                var photo_db_created = false;
+                var tiles_db_created = false;
+                var callback_made    = false;
 
-                destination_store.transaction.oncomplete = function(event) {
+                if (!db_obj.db.objectStoreNames.contains("destinations")) {
+                    // Create destination db
+                    var destination_store = db_obj.db.createObjectStore("destinations", {keyPath: "destination_id"});
+                    var destination_id_index = destination_store.createIndex("by_destination_id", "destination_id", {unique: true});
+
+                    destination_store.transaction.oncomplete = function(event) {
+                        dest_db_created = true;
+
+                        if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                            callback_made = true;
+                            callback(db_obj);
+                        }
+                    };
+                } else {
                     dest_db_created = true;
+                }
 
-                    if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
-                        callback_made = true;
-                        callback(db);
-                    }
-                };
-            } else {
-                dest_db_created = true;
-            }
+                // Create photo db
+                if (!db_obj.db.objectStoreNames.contains("photos")) {
+                    var photo_store = db_obj.db.createObjectStore("photos", {keyPath: "photo_id"});
+                    var photo_id_index = photo_store.createIndex("by_photo_id",        "photo_id", {unique: true});
+                    var dest_id_index  = photo_store.createIndex("by_destination_id",  "destination_id");
 
-            // Create photo db
-            if (!db.objectStoreNames.contains("photos")) {
-                var photo_store = db.createObjectStore("photos", {keyPath: "photo_id"});
-                var photo_id_index = photo_store.createIndex("by_photo_id",        "photo_id", {unique: true});
-                var dest_id_index  = photo_store.createIndex("by_destination_id",  "destination_id");
+                    photo_store.transaction.oncomplete = function(event) {
+                        photo_db_created = true;
 
-                photo_store.transaction.oncomplete = function(event) {
+                        if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                            callback_made = true;
+                            callback(db_obj);
+                        }
+                    };
+                } else {
                     photo_db_created = true;
+                }
 
-                    if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
-                        callback_made = true;
-                        callback(db);
-                    }
-                };
-            } else {
-                photo_db_created = true;
-            }
+                if (!db_obj.db.objectStoreNames.contains("map_tiles")) {
+                    // Create Map Tiles db
+                    var tiles_store = db_obj.db.createObjectStore("map_tiles", {keyPath: "tile_id"});
+                    var tile_id_index = tiles_store.createIndex("by_tile_id", "tile_id", {unique: true});
 
-            if (!db.objectStoreNames.contains("map_tiles")) {
-                // Create Map Tiles db
-                var tiles_store = db.createObjectStore("map_tiles", {keyPath: "tile_id"});
-                var tile_id_index = tiles_store.createIndex("by_tile_id", "tile_id", {unique: true});
+                    tiles_store.transaction.oncomplete = function(event) {
+                        tiles_db_created = true;
 
-                tiles_store.transaction.oncomplete = function(event) {
+                        if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                            callback_made = true;
+                            callback(db_obj);
+                        }
+                    };
+                } else {
                     tiles_db_created = true;
+                }
 
-                    if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
-                        callback_made = true;
-                        callback(db);
-                    }
-                };
-            } else {
-                tiles_db_created = true;
-            }
+                if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                    callback_made = true;
+                    callback(db_obj);
+                }
+            };
 
-            if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
-                callback_made = true;
-                callback(db);
-            }
-        };
+            request.onsuccess = function(event) {
+                var db_obj = {
+                    db_type: "indexedDB",
+                    db:      event.target.result
+                }
 
-        request.onsuccess = function(event) {
-            callback(event.target.result);
-        };
+                callback(db_obj);
+            };
 
-        request.onerror = function(event) {
-            TH.util.logging.log("error: " + event.target.errorCode);
-        };
+            request.onerror = function(event) {
+                TH.util.logging.log("error: " + event.target.errorCode);
+            };
+        } else {
 
+        }
     };
 
     /* Other Utils */

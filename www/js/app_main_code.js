@@ -660,12 +660,7 @@ function create_photo_canvas(photos) {
             $("#photo_topo_canvas").css({"height": max_height});
             $("#photo_topo_canvas").css({"width": max_width});
 
-            if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
-                photo_topo.init('photo_topo_canvas', photos[0], map.selected_destination, false);
-            } else {
-                photo_topo.init('photo_topo_canvas', photos[0], map.selected_destination, true);
-            }
-
+            photo_topo.init('photo_topo_canvas', photos[0], map.selected_destination, true);
             photo_topo.use_offline_images = true;
             photo_topo.resize([$("#photo_topo_canvas").height(), $("#photo_topo_canvas").width()]);
             photo_topo_init = true;
