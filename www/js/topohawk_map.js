@@ -1883,7 +1883,8 @@
                     TH.util.storage.get_tile(x, y, z, callback, db_init);
                 });
             } else {
-                return null;
+                /* indexedDB not available */
+                callback(null);
             }
         }
     };
