@@ -1963,7 +1963,7 @@ document.onreadystatechange = function(e) {
     if (navigator.splashscreen) {
         navigator.splashscreen.show();
     }
-    
+
     /* Device Specific Adjustments */
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
         if (window.StatusBar) {
@@ -1971,7 +1971,8 @@ document.onreadystatechange = function(e) {
             status_bar_height = 20;
             $("#menu_popup").css({"top" : "50px"});
             $(".screen").css({"padding-top" : "20px"});
-            $("#screen_map").css({"margin-top" : "10px"});
+            $("#screen_map").css({"margin-top" : "15px"});
+            $("#screen_map").css({"margin-bottom" : "15px"});
             $("#top_bar_div").css({"padding-top" : "20px"});
         }
     }
