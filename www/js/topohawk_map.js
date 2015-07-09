@@ -31,6 +31,7 @@
             this.selected_route         = {};
             this.selected_destination   = {destination_id: 0};
             this.visible_routes         = [];
+            this.local_db               = {db_type: "none"};
 
             this.route_filter = {
                 difficulty_max:   34,
@@ -52,6 +53,12 @@
             /* Adjustments for running in offline or app mode */
             if (this._options.offline === true) {
                 this._location_icon = L.icon({ iconUrl: 'images/loc-ort.svg', iconSize: [16, 16] });
+
+                /* Init local db */
+                var map_obj = this;
+                TH.util.storage.init(function(db_init) {
+                    map_obj.local_db = db_init;
+                });
             }
 
             /* Overridable Functions */
@@ -997,7 +1004,7 @@
                         } else {
                             img.src = tile_data_url;
                         }
-                    });
+                    }, this.local_db);
                 }
             }
         },
@@ -1454,16 +1461,17 @@
 
     TH.util.offline.add_offline_destination = function (destination_obj, callback) {
         TH.util.storage.init(function(db_init) {
-            if (db_init.db_type == "indexedDB") {
-                /* Save Destination Data */
-                TH.util.storage.add_destination(destination_obj, db_init.db);
+            /* Set offline status to downloading */
+            localStorage.setItem("offline_destination_id" + destination_obj.destination_id, "downloading");
 
-                /* Download Photos */
-                TH.util.storage.download_destination_photos(destination_obj.destination_id, db_init.db);
+            /* Save Destination Data */
+            TH.util.storage.add_destination(destination_obj, db_init);
 
-                /* Download Map Tiles */
-                TH.util.storage.download_destination_tiles(destination_obj.destination_id, callback, db_init.db);
-            }
+            /* Download Photos */
+            TH.util.storage.download_destination_photos(destination_obj.destination_id, db_init);
+
+            /* Download Map Tiles */
+            TH.util.storage.download_destination_tiles(destination_obj.destination_id, callback, db_init);
         });
     };
 
@@ -1488,31 +1496,41 @@
 
     TH.util.storage.add_destination = function (destination_obj, db) {
         if (typeof db !== 'undefined') {
-            var tx = db.transaction("destinations", "readwrite");
-            var store = tx.objectStore("destinations");
+            if (db.db_type == "indexedDB") {
+                var tx    = db.db.transaction("destinations", "readwrite");
+                var store = tx.objectStore("destinations");
 
-            store.put({
-                destination_id: destination_obj.destination_id,
-                timestamp: Math.floor(Date.now() / 1000),
-                json: JSON.stringify(destination_obj)
-            });
+                store.put({
+                    destination_id: destination_obj.destination_id,
+                    timestamp: Math.floor(Date.now() / 1000),
+                    json: JSON.stringify(destination_obj)
+                });
 
-            var local_store_item = "offline_destination_id" + destination_obj.destination_id;
-            localStorage.setItem(local_store_item, "downloading");
+                var local_store_item = "offline_destination_id" + destination_obj.destination_id;
 
-            tx.oncomplete = function() {
-                TH.util.logging.log("Destination info downloaded for desintation_id: " + destination_obj.destination_id);
-            };
+                tx.oncomplete = function() {
+                    TH.util.logging.log("Destination info downloaded for desintation_id: " + destination_obj.destination_id);
+                };
 
-            tx.onerror = function() {
-                TH.util.logging.log("Destination info NOT downloaded for desintation_id: " + destination_obj.destination_id);
-            };
+                tx.onerror = function() {
+                    TH.util.logging.log("Destination info NOT downloaded for desintation_id: " + destination_obj.destination_id);
+                };
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx){
+                    tx.executeSql("INSERT OR REPLACE into destinations values (?, ?);",
+                    [destination_obj.destination_id, JSON.stringify(destination_obj)],
+                    function(tx, response) {
+                        TH.util.logging.log("Destination info downloaded for desintation_id: " + destination_obj.destination_id);
+                    },
+                    function(e) {
+                        TH.util.logging.log("Destination info NOT downloaded for desintation_id: " + destination_obj.destination_id);
+                    });
+                });
+            }
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.add_destination(destination_obj, db_init.db);
-                }
+                TH.util.storage.add_destination(destination_obj, db_init);
             });
         }
     };
@@ -1526,32 +1544,43 @@
                 url:      'https://topohawk.com/api/v1/get_route_image_data_url.php',
                 data:     { file_name: image_file },
                 success:  function(response) {
-                    var tx = db.transaction("photos", "readwrite");
-                    var store = tx.objectStore("photos");
+                    if (db.db_type == "indexedDB") {
+                        var tx = db.db.transaction("photos", "readwrite");
+                        var store = tx.objectStore("photos");
 
-                    photo_obj.photo_file = response;
-                    store.put({photo_id: photo_obj.photo_id, destination_id: photo_obj.dest_id, json: JSON.stringify(photo_obj)});
+                        photo_obj.photo_file = response;
+                        store.put({photo_id: photo_obj.photo_id, destination_id: photo_obj.dest_id, json: JSON.stringify(photo_obj)});
 
-                    tx.oncomplete = function() {
-                        TH.util.logging.log("Photo downloaded: " + photo_obj.photo_id);
-                    };
+                        tx.oncomplete = function() {
+                            TH.util.logging.log("Photo downloaded: " + photo_obj.photo_id);
+                        };
+                    } else if (db.db_type == "SQLite") {
+                        db.db.transaction(function(tx){
+                            tx.executeSql("INSERT OR REPLACE into photos values (?, ?, ?, ?, ?);",
+                                [photo_obj.photo_id, photo_obj.dest_id, photo_obj.area_id, photo_obj.route_id, JSON.stringify(photo_obj)],
+                                function(tx, response) {
+                                    TH.util.logging.log("Photo downloaded: " + photo_obj.photo_id);
+                                },
+                                function(e) {
+                                    /* Error */
+                                    TH.util.logging.log("Photo NOT downloaded: " + photo_obj.photo_id);
+                                });
+                        });
+                    }
                 },
                 error: function (req, status, error) {
                    TH.util.logging.log("Error retrieving photo_ids.");
                 }
             });
-
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.add_photo(photo_obj, db_init.db);
-                }
+                TH.util.storage.add_photo(photo_obj, db_init);
             });
         }
     };
 
-    TH.util.storage.add_tile = function (x, y, z, db, callback) {
+    TH.util.storage.add_tile = function (x, y, z, destination_id, db, callback) {
         if (typeof db !== 'undefined') {
              $.ajax({
                 url: "http://foldingmap.co/map/get_tile.php",
@@ -1562,33 +1591,51 @@
                     'z': z
                 },
                 success: function (data) {
-                    var tx = db.transaction("map_tiles", "readwrite");
-                    var store = tx.objectStore("map_tiles");
-                    var tile_key = x + "," + y + "," + z;
+                    if (db.db_type == "indexedDB") {
+                        var tx = db.db.transaction("map_tiles", "readwrite");
+                        var store = tx.objectStore("map_tiles");
+                        var tile_key = x + "," + y + "," + z;
 
-                    var result = store.put({
-                        tile_id: tile_key,
-                        tile: data,
-                        x: x,
-                        y: y,
-                        z: z
-                    });
+                        var result = store.put({
+                            tile_id: tile_key,
+                            tile: data,
+                            x: x,
+                            y: y,
+                            z: z
+                        });
 
-                    result.onsuccess = function(ev) {
-                        TH.util.logging.log("Stored tile: " + tile_key);
+                        result.onsuccess = function(ev) {
+                            TH.util.logging.log("Stored tile: " + tile_key);
 
+                            if (typeof callback !== 'undefined') {
+                                callback();
+                            }
+                        };
+
+                        result.onerror = function(ev) {
+                            TH.util.logging.log("Failed to stored tile: " + tile_key + " - " + ev.srcElement.error.message);
+
+                            if (typeof callback !== 'undefined') {
+                                callback();
+                            }
+                        };
+                    } else if (db.db_type == "SQLite") {
+                        db.db.transaction(function(tx){
+                            tx.executeSql("INSERT OR REPLACE into map_tiles values (?, ?, ?, ?, ?);",
+                                [z, x, y, destination_id, data],
+                                function(tx, response) {
+                                    TH.util.logging.log("Tile: z: " + z + ", x: " + x + ", y: " + y + " downloaded");
+                                },
+                                function(e) {
+                                    /* Error */
+                                    TH.util.logging.log("Error retrieving map tile: " + x + ", " + y + ", " + z + " error.");
+                                });
+                        });
+                    } else {
                         if (typeof callback !== 'undefined') {
                             callback();
                         }
-                    };
-
-                    result.onerror = function(ev) {
-                        TH.util.logging.log("Failed to stored tile: " + tile_key + " - " + ev.srcElement.error.message);
-
-                        if (typeof callback !== 'undefined') {
-                            callback();
-                        }
-                    };
+                    }
                 },
                 error: function (req, status, error) {
                    TH.util.logging.log("Error retrieving map tile: " + x + ", " + y + ", " + z + " error: "+ error);
@@ -1597,13 +1644,7 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.add_tile(x, y, z, db_init.db, callback);
-                } else {
-                    if (typeof callback !== 'undefined') {
-                        callback();
-                    }
-                }
+                TH.util.storage.add_tile(x, y, z, destination_id, db_init, callback);
             });
         }
      };
@@ -1620,55 +1661,71 @@
     };
 
     TH.util.storage.get_all_destinations = function (callback, db) {
+        var destinations = [];
+
         if (typeof db !== 'undefined') {
-            var transaction  = db.transaction("destinations", "readonly");
-            var store        = transaction.objectStore("destinations");
-            var destinations = [];
+            if (db.db_type == "indexedDB") {
+                var transaction  = db.db.transaction("destinations", "readonly");
+                var store        = transaction.objectStore("destinations");
 
-            store.openCursor().onsuccess = function(event) {
-                var cursor       = event.target.result;
+                store.openCursor().onsuccess = function(event) {
+                    var cursor = event.target.result;
 
-                if (cursor) {
-                    destinations.push(JSON.parse(cursor.value.json));
-                    cursor.continue();
-                } else {
-                    callback(destinations);
-                }
-            };
+                    if (cursor) {
+                        destinations.push(JSON.parse(cursor.value.json));
+                        cursor.continue();
+                    } else {
+                        callback(destinations);
+                    }
+                };
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM destinations;",
+                    [],
+                    function(tx, response) {
+                        for (var i=0; i < response.rows.length; i++) {
+                            destinations.push(JSON.parse(response.rows.item(i).destination_json));
+                        }
+
+                        callback(destinations);
+                    },
+                    function(e) {
+                        callback(destinations);
+                    });
+                });
+            } else {
+                callback(destinations);
+            }
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.get_all_destinations(callback, db_init.db);
-                } else {
-                    callback(destinations);
-                }
+                TH.util.storage.get_all_destinations(callback, db_init);
             });
         }
      };
 
      TH.util.storage.get_destination = function (destination_id, callback, db) {
         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("destinations", "readwrite");
-            var store       = transaction.objectStore("destinations");
-            var index       = store.index("by_destination_id");
-            var request     = index.openCursor(IDBKeyRange.only(destination_id.toString()));
+            if (db.db_type == "indexedDB") {
+                var transaction = db.db.transaction("destinations", "readwrite");
+                var store       = transaction.objectStore("destinations");
+                var index       = store.index("by_destination_id");
+                var request     = index.openCursor(IDBKeyRange.only(destination_id.toString()));
 
-            request.onsuccess = function() {
-                var cursor = request.result;
+                request.onsuccess = function() {
+                    var cursor = request.result;
 
-                if (cursor) {
-                    callback(JSON.parse(cursor.value.json));
-                }
-            };
+                    if (cursor) {
+                        callback(JSON.parse(cursor.value.json));
+                    }
+                };
+            } else {
+                callback(null);
+            }
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.get_destination(destination_id, callback, db_init.db);
-                } else {
-                    callback(null);
-                }
+                TH.util.storage.get_destination(destination_id, callback, db_init);
             });
         }
      };
@@ -1686,30 +1743,45 @@
 
      TH.util.storage.remove_destination = function (destination_id, db) {
         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("destinations", "readwrite");
-            var store       = transaction.objectStore("destinations");
-            var index       = store.index("by_destination_id");
-            var request     = index.openCursor(IDBKeyRange.only(destination_id));
+            if (db.db_type == "indexedDB") {
+                var transaction = db.db.transaction("destinations", "readwrite");
+                var store       = transaction.objectStore("destinations");
+                var index       = store.index("by_destination_id");
+                var request     = index.openCursor(IDBKeyRange.only(destination_id));
 
-            request.onsuccess = function() {
-                var cursor = request.result;
+                request.onsuccess = function() {
+                    var cursor = request.result;
 
-                if (cursor) {
-                    cursor.delete();
-                    cursor.continue();
+                    if (cursor) {
+                        cursor.delete();
+                        cursor.continue();
 
-                    var local_store_item = "offline_destination_id" + destination_id;
-                    localStorage.removeItem(local_store_item);
+                        var local_store_item = "offline_destination_id" + destination_id;
+                        localStorage.removeItem(local_store_item);
 
-                    TH.util.logging.log("Destination data deleted: " + cursor.value.destination_id);
-                }
-            };
+                        TH.util.logging.log("Destination data deleted: " + cursor.value.destination_id);
+                    }
+                };
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("DELETE FROM destinations WHERE destination_id =?;",
+                    [destination_id],
+                    function(tx, response) {
+                        if (response.rowsAffected > 0) {
+                            TH.util.logging.log("Destination data deleted: " + destination_id);
+                        } else {
+                            TH.util.logging.log("Destination data NOT deleted: " + destination_id);
+                        }
+                    },
+                    function(e) {
+                        TH.util.logging.log("Destination data NOT deleted: " + destination_id);
+                    });
+                });
+            }
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.remove_destination(destination_id, db_init.db);
-                }
+                TH.util.storage.remove_destination(destination_id, db_init);
             });
         }
      };
@@ -1717,60 +1789,90 @@
      TH.util.storage.remove_destination_tiles = function (destination_id, db) {
         if (typeof db !== 'undefined') {
             /* Remove the tiles */
-            TH.util.storage.get_destination_tiles(destination_id, function(data) {
-                for (var i=0; i<(data.result.length - 1); i++) {
-                    if (parseInt(data.result[i][2]) > 12) {
-                        /* If zoom level is greater than 12 then remove it */
-                        var transaction = db.transaction("map_tiles", "readwrite");
-                        var store       = transaction.objectStore("map_tiles");
-                        var index       = store.index("by_tile_id");
-                        var tile_key = data.result[i][0].toString() + "," + data.result[i][1].toString() + "," + data.result[i][2].toString();
-                        var request = index.openCursor(IDBKeyRange.only(tile_key));
+            if (db.db_type == "indexedDB") {
+                TH.util.storage.get_destination_tiles(destination_id, function(data) {
+                    for (var i=0; i<(data.result.length - 1); i++) {
+                        if (parseInt(data.result[i][2]) > 12) {
+                            /* If zoom level is greater than 12 then remove it */
+                            var transaction = db.db.transaction("map_tiles", "readwrite");
+                            var store       = transaction.objectStore("map_tiles");
+                            var index       = store.index("by_tile_id");
+                            var tile_key    = data.result[i][0].toString() + "," + data.result[i][1].toString() + "," + data.result[i][2].toString();
+                            var request     = index.openCursor(IDBKeyRange.only(tile_key));
 
-                        request.onsuccess = function() {
-                            var cursor = this.result;
+                            request.onsuccess = function() {
+                                var cursor = this.result;
 
-                            if (cursor) {
-                                cursor.delete();
-                                cursor.continue();
-                                TH.util.logging.log("Tile deleted: " + cursor.value.tile_key);
-                            }
-                        };
+                                if (cursor) {
+                                    TH.util.logging.log("Tile deleted: " + cursor.value.tile_key);
+                                    cursor.delete();
+                                    cursor.continue();
+                                }
+                            };
+                        }
                     }
-                }
-            });
+                });
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("DELETE FROM map_tiles WHERE destination_id =?;",
+                    [destination_id],
+                    function(tx, response) {
+                        if (response.rowsAffected > 0) {
+                            TH.util.logging.log("Destination tiles deleted: " + destination_id);
+                        } else {
+                            TH.util.logging.log("Destination tiles NOT deleted: " + destination_id);
+                        }
+                    },
+                    function(e) {
+                        TH.util.logging.log("Destination tiles NOT deleted: " + destination_id);
+                    });
+                });
+            }
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.remove_destination_tiles(destination_id, db_init.db);
-                }
+                TH.util.storage.remove_destination_tiles(destination_id, db_init);
             });
         }
      };
 
      TH.util.storage.remove_offline_photos = function (destination_id, db) {
          if (typeof db !== 'undefined') {
-            var transaction = db.transaction("photos", "readwrite");
-            var store       = transaction.objectStore("photos");
-            var index       = store.index("by_destination_id");
-            var request     = index.openCursor(IDBKeyRange.only(destination_id.toString()));
+             if (db.db_type == "indexedDB") {
+                var transaction = db.db.transaction("photos", "readwrite");
+                var store       = transaction.objectStore("photos");
+                var index       = store.index("by_destination_id");
+                var request     = index.openCursor(IDBKeyRange.only(destination_id.toString()));
 
-            request.onsuccess = function() {
-                var cursor = request.result;
+                request.onsuccess = function() {
+                    var cursor = request.result;
 
-                if (cursor) {
-                    cursor.delete();
-                    cursor.continue();
-                    TH.util.logging.log("Photo deleted: " + cursor.value.photo_id);
-                }
-            };
+                    if (cursor) {
+                        cursor.delete();
+                        cursor.continue();
+                        TH.util.logging.log("Photo deleted: " + cursor.value.photo_id);
+                    }
+                };
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("DELETE FROM photos WHERE destination_id =?;",
+                    [destination_id],
+                    function(tx, response) {
+                        if (response.rowsAffected > 0) {
+                            TH.util.logging.log("Destination photos deleted: " + destination_id);
+                        } else {
+                            TH.util.logging.log("Destination photos NOT deleted: " + destination_id);
+                        }
+                    },
+                    function(e) {
+                        TH.util.logging.log("Destination photos NOT deleted: " + destination_id);
+                    });
+                });
+            }
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.remove_offline_photos(destination_id, db_init.db);
-                }
+                TH.util.storage.remove_offline_photos(destination_id, db_init);
             });
         }
     };
@@ -1800,9 +1902,7 @@
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.download_destination_photos(destination_id, db_init.db);
-                }
+                TH.util.storage.download_destination_photos(destination_id, db_init);
             });
         }
     };
@@ -1811,19 +1911,17 @@
         if (typeof db !== 'undefined') {
             TH.util.storage.get_destination_tiles(destination_id, function(data) {
                 for (var i=0; i<(data.result.length - 1); i++) {
-                    TH.util.storage.add_tile(data.result[i][0], data.result[i][1], data.result[i][2], db);
+                    TH.util.storage.add_tile(data.result[i][0], data.result[i][1], data.result[i][2], destination_id, db);
                 }
 
                 /* Special case for last tile so we can know if this operation is complete */
                 var i = (data.result.length - 1);
-                TH.util.storage.add_tile(data.result[i][0], data.result[i][1], data.result[i][2], db, callback);
+                TH.util.storage.add_tile(data.result[i][0], data.result[i][1], data.result[i][2], destination_id, db, callback);
             });
-         } else {
+        } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.download_destination_tiles(destination_id, callback, db_init.db);
-                }
+                TH.util.storage.download_destination_tiles(destination_id, callback, db_init);
             });
         }
     };
@@ -1851,71 +1949,100 @@
 
     TH.util.storage.get_photo = function (photo_id, callback, db) {
         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("photos", "readonly");
-            var store   = transaction.objectStore("photos");
-            var index   = store.index("by_photo_id");
-            var request = index.get(photo_id);
+            if (db.db_type == "indexedDB") {
+                var transaction = db.db.transaction("photos", "readonly");
+                var store       = transaction.objectStore("photos");
+                var index       = store.index("by_photo_id");
+                var request     = index.get(photo_id);
 
-            request.onsuccess = function() {
-                var matching = request.result;
+                request.onsuccess = function() {
+                    var matching = request.result;
 
-                if (typeof(matching) !== 'undefined' && matching !== null) {
-                    var photo_obj = JSON.parse(matching.json);
-                    callback(photo_id, photo_obj);
-                } else {
-                    TH.util.logging.log("Photo_id not in local db. " + photo_id);
-                    callback(photo_id, null);
-                }
-            };
+                    if (typeof(matching) !== 'undefined' && matching !== null) {
+                        var photo_obj = JSON.parse(matching.json);
+                        callback(photo_id, photo_obj);
+                    } else {
+                        TH.util.logging.log("Photo_id not in local db. " + photo_id);
+                        callback(photo_id, null);
+                    }
+                };
 
-            request.onerror = function() {
-                TH.util.logging.log("Error getting photo_id from local db. " + photo_id);
-            };
+                request.onerror = function() {
+                    TH.util.logging.log("Error getting photo_id from local db. " + photo_id);
+                };
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM photos WHERE photo_id =?",
+                    [photo_id],
+                    function(tx, response) {
+                        if (response.rows.length > 0) {
+                            callback(photo_id, JSON.parse(response.rows.item(0).photo_json));
+                        } else {
+                            callback(photo_id, null);
+                        }
+                    },
+                    function(e) {
+                        callback(photo_id, null);
+                    });
+                });
+            } else {
+                callback(photo_id, null);
+            }
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.get_photo(photo_id, callback, db_init.db);
-                } else {
-                    callback(photo_id, null);
-                }
+                TH.util.storage.get_photo(photo_id, callback, db_init);
             });
         }
     };
 
     TH.util.storage.get_tile = function (x, y, z, callback, db) {
         if (typeof db !== 'undefined') {
-            var transaction = db.transaction("map_tiles", "readonly");
-            var store       = transaction.objectStore("map_tiles");
-            var index       = store.index("by_tile_id");
-            var tile_key    = x + "," + y + "," + z;
-            var request     = index.get(tile_key);
+            if (db.db_type == "indexedDB") {
+                var transaction = db.db.transaction("map_tiles", "readonly");
+                var store       = transaction.objectStore("map_tiles");
+                var index       = store.index("by_tile_id");
+                var tile_key    = x + "," + y + "," + z;
+                var request     = index.get(tile_key);
 
-            request.onsuccess = function() {
-                var matching = request.result
+                request.onsuccess = function() {
+                    var matching = request.result
 
-                if (typeof(matching) !== 'undefined' && matching !== null) {
-                    var map_tile = matching.tile;
-                    callback(map_tile);
-                } else {
-                    //TH.util.logging.log("Tile not in local db. " + tile_key);
-                    callback(null);
-                }
+                    if (typeof(matching) !== 'undefined' && matching !== null) {
+                        var map_tile = matching.tile;
+                        callback(map_tile);
+                    } else {
+                        //TH.util.logging.log("Tile not in local db. " + tile_key);
+                        callback(null);
+                    }
+                };
 
-            };
-
-            request.onerror = function() {
-                TH.util.logging.log("Error getting map tile from local db. " + tile_key);
-            };
+                request.onerror = function() {
+                    TH.util.logging.log("Error getting map tile from local db. " + tile_key);
+                };
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM map_tiles WHERE zoom_level =? AND tile_column =? AND tile_row =?",
+                    [z, x, y],
+                    function(tx, response) {
+                        if (response.rows.length > 0) {
+                            var data_url = response.rows.item(0).data_url;
+                            callback(data_url);
+                        } else {
+                            callback(null);
+                        }
+                    },
+                    function(e) {
+                        callback(null);
+                    });
+                });
+            } else {
+                callback(null);
+            }
         } else {
             /* DB is not given, get it */
             TH.util.storage.init(function(db_init) {
-                if (db_init.db_type == "indexedDB") {
-                    TH.util.storage.get_tile(x, y, z, callback, db_init.db);
-                } else {
-                    /* indexedDB not available */
-                    callback(null);
-                }
+                TH.util.storage.get_tile(x, y, z, callback, db_init);
             });
         }
     };
@@ -2027,7 +2154,31 @@
                 TH.util.logging.log("error: " + event.target.errorCode);
             };
         } else {
+            /* Try other local storage methods */
+            if (window.openDatabase) {
+                var db_obj = {
+                    db_type: "SQLite",
+                    db:      openDatabase("TopoHawk-Cache", "1.0", "TopoHawk Local Cache", 10485760)
+                }
 
+                /* Create Tiles Table */
+                db_obj.db.transaction(function(tx) {
+                   tx.executeSql("CREATE TABLE IF NOT EXISTS map_tiles (zoom_level integer, tile_column integer, tile_row integer, destination_id, data_url text);", []);
+                   tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS map_index ON map_tiles (zoom_level, tile_column, tile_row);");
+                });
+
+                db_obj.db.transaction(function(tx) {
+                   tx.executeSql("CREATE TABLE IF NOT EXISTS photos (photo_id integer, destination_id integer, area_id integer, route_id integer, photo_json text);", []);
+                   tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS photo_id_index ON photos (photo_id);");
+                });
+
+                db_obj.db.transaction(function(tx) {
+                   tx.executeSql("CREATE TABLE IF NOT EXISTS destinations (destination_id integer, destination_json text);", []);
+                   tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS destination_id_index ON destinations (destination_id);");
+                });
+
+                callback(db_obj);
+            }
         }
     };
 

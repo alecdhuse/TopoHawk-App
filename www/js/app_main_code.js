@@ -643,7 +643,7 @@ function create_offline_destinations_list() {
         list_html += "</div>";
 
         $("#screen_offline_inner").html(list_html);
-    });
+    }, map.local_db);
 }
 
 function create_photo_canvas(photos) {
