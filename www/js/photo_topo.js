@@ -36,6 +36,7 @@ function PT(canvas_id) {
     this.photo_scale          = 1;
     this.photo_height_scaled  = 0;
     this.photo_width_scaled   = 0;
+    this.pt_canvas_size       = [];
     this.route_markers        = [];
     this.route_markers_outer  = [];
     this.route_marker_points  = [];
@@ -101,7 +102,7 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
             pt_obj._canvas_center_1st = paper.view.center;
         }
 
-        if (this._locked == false) {
+        if (this._locked === false) {
             if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
                 /* Zoom In */
                 paper.view.zoom += 0.2;
@@ -160,7 +161,9 @@ PT.prototype._create_loading_path = function() {
                 strokeWidth:  4
             });
         } else {
-            this.loading_path.removeSegments();
+            if (this.loading_path) {
+                this.loading_path.removeSegments();
+            }
 
             this.loading_path = new Path.Rectangle({
                 point:       [view.center.x-25, view.center.y-25],
@@ -181,7 +184,10 @@ PT.prototype._create_loading_path = function() {
         };
 
     } else {
-        this.loading_path.removeSegments();
+        if (this.loading_path) {
+            this.loading_path.removeSegments();
+        }
+
         paper.view.onFrame = function(event) {};
     }
 };
@@ -508,7 +514,11 @@ PT.prototype.resize = function(canvas_size) {
             paper.view.center = this._canvas_center_1st;
         }
 
-        if (typeof canvas_size !== "undefined") {
+        if (typeof canvas_size !== "undefined" && canvas_size !== null) {
+            this.pt_canvas_size = canvas_size;
+            paper.view.setViewSize(canvas_size[1], canvas_size[0]);
+        } else {
+            canvas_size = this.pt_canvas_size;
             paper.view.setViewSize(canvas_size[1], canvas_size[0]);
         }
 
@@ -516,7 +526,6 @@ PT.prototype.resize = function(canvas_size) {
             var photo_height_scaled_old;
             var photo_width_scaled_old;
 
-            paper = this.paper_scope;
             this.photo_raster.scale((1/this.photo_scale));
 
             var photo_size = this.photo_raster.size;
@@ -541,6 +550,8 @@ PT.prototype.resize = function(canvas_size) {
             this.photo_raster.scale(this.photo_scale);
             this.photo_raster.position = paper.view.center;
 
+            paper.view.update();
+
             var height_change = this.photo_height_scaled / photo_height_scaled_old;
             var width_change  = this.photo_width_scaled /  photo_width_scaled_old;
 
@@ -555,7 +566,7 @@ PT.prototype.resize = function(canvas_size) {
             this.photo_left_margin = left_margin;
             this.photo_top_margin  = top_margin;
 
-            if (this._paths_drawn == true) {
+            if (this._paths_drawn === true) {
                 for (var i=0; i<this.paths_json.length; i++) {
                     if (typeof this.paths[i] !== "undefined") {
                         path             = this.paths_json[i];
@@ -565,7 +576,6 @@ PT.prototype.resize = function(canvas_size) {
                         this.paths[i].removeSegments();
 
                         for (var j=0; j < path.points.length; j++) {
-
                             if (j == 1) {
                                 /* Adjust route marker */
                                 this.route_markers_outer[i].position = new Point(x, y + 20);
@@ -584,7 +594,7 @@ PT.prototype.resize = function(canvas_size) {
                     }
                 }
             } else {
-                if (this._destination_loaded == true) {
+                if (this._destination_loaded === true) {
                     for (var i=0; i<this.paths_json.length; i++) {
                         if (this.paths_json[i].route_id > 0) {
                             var route_object = this._get_route_from_id(this.paths_json[i].route_id);
@@ -598,8 +608,8 @@ PT.prototype.resize = function(canvas_size) {
             }
         }
 
-        paper.view.update();
         this.photo_resized();
+        paper.view.update();
     }
 
     this._create_loading_path();
