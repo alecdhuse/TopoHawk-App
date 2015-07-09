@@ -55,14 +55,14 @@
             }
 
             /* Overridable Functions */
-            this.on_area_change             = function () {};
-            this.on_area_click              = function (area_obj) {};
-            this.on_destination_click       = function (destination_obj) {};
-            this.destination_info_loaded    = function (destination_obj) {};
-            this.on_first_gps_fix           = function (lat, lng) {};
-            this.on_route_click             = function (route_obj) {};
-            this.on_user_info_loaded        = function () {};
-            this.on_destination_info_loaded = function () {};
+            this.on_area_change              = function () {};
+            this.on_area_click               = function (area_obj) {};
+            this.on_destination_click        = function (destination_obj) {};
+            this.destination_info_loaded     = function (destination_obj) {};
+            this.on_first_gps_fix            = function (lat, lng) {};
+            this.on_route_click              = function (route_obj) {};
+            this.on_user_info_loaded         = function () {};
+            this.on_destinations_info_loaded = function () {};
 
             this._initialize_map_layers();
             this._create_leaflet_map();
@@ -1119,7 +1119,6 @@
             }
 
             this.destination_info_loaded(data);
-            this.on_destination_info_loaded();
             this._draw_map_objects();
         },
 
@@ -1140,7 +1139,7 @@
             }
 
             map_obj._draw_map_objects();
-            map_obj.destination_info_loaded();
+            map_obj.on_destinations_info_loaded();
         },
 
         _update_location: function (e, map_obj) {

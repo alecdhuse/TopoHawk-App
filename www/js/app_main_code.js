@@ -58,8 +58,8 @@ map.on_area_click               = function (area_obj)        { map_area_clicked(
 map.on_destination_click        = function (destination_obj) { };
 map.on_route_click              = function (route_obj)       { map_route_clicked(route_obj); };
 map.on_user_info_loaded         = function ()                { user_info_loaded(); };
-map.destination_info_loaded     = function (destination_obj) { create_destination_list(); };
-map.on_destination_info_loaded  = function ()                { destination_info_loaded(); };
+map.destination_info_loaded     = function (destination_obj) { destination_info_loaded(); };
+map.on_destinations_info_loaded = function ()                { create_destination_list(); };
 
 function add_new_destination() {
     current_mode = MODE_NONE;
@@ -804,7 +804,7 @@ function destination_info_loaded() {
         info_html += "<br /><div>";
         info_html += "<div style='font-weight:bold;margin-bottom:5px;'><img src='images/campsite-12.svg' align='top' height='20; width='20'> Camping:</div>";
 
-        for (var j=0; i<camping.length; i++) {
+        for (var j=0; j<camping.length; j++) {
             info_html += "<div style='margin-left:12px;'><div class='amenity_name'>" + camping[j].properties.name + "</div>";
             info_html += "<div class='amenity_description'>" + camping[j].properties.description + "</div></div><br />";
         }
