@@ -15,6 +15,7 @@ var destination_callback = false;
 var edit_new_object      = true;
 var edit_step            = 0;
 var map_finished         = false;
+var map_height_adjust    = 0;
 var perform_grade_update = true;
 var photo_ids            = [];
 var photo_index          = 0;
@@ -1427,9 +1428,10 @@ function resize_window() {
     var max_crumb_width = ($(window).width() - 45)
     $("#breadcrumbs_div").css({"max-width": max_crumb_width});
 
-    $("#screen_map").height($(window).height() - 80 - status_bar_height).width($(window).width());
-    var search_box_width = ($(window).width() - 48);
+    var map_height = $(window).height() - 80 - status_bar_height + map_height_adjust;
+    $("#screen_map").height(map_height).width($(window).width());
 
+    var search_box_width = ($(window).width() - 48);
     $("#search_box").css({"width": search_box_width});
     map.invalidate_size();
 
@@ -1969,10 +1971,11 @@ document.onreadystatechange = function(e) {
         if (window.StatusBar) {
             /* Change Header size for status bar */
             status_bar_height = 20;
+            map_height_adjust = -15;
+
             $("#menu_popup").css({"top" : "50px"});
             $(".screen").css({"padding-top" : "20px"});
             $("#screen_map").css({"margin-top" : "15px"});
-            $("#screen_map").css({"margin-bottom" : "15px"});
             $("#top_bar_div").css({"padding-top" : "20px"});
         }
     }
