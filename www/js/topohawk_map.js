@@ -1447,9 +1447,6 @@
     TH.util.logging.log = function (message) {
         if (message !== 'undefined') {
             console.log(message);
-            /* Temp for debugging */
-            var new_log_msg = $("#log_msgs").html() + "<br />" + message;
-            $("#log_msgs").html(new_log_msg);
         } else {
             console.log("Unknown Error");
         }
