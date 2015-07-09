@@ -1878,9 +1878,13 @@
             };
         } else {
             /* DB is not given, get it */
-            TH.util.storage.init(function(db_init) {
-                TH.util.storage.get_tile(x, y, z, callback, db_init);
-            });
+            if (window.indexedDB || window.webkitIndexedDB || window.msIndexedDB) {
+                TH.util.storage.init(function(db_init) {
+                    TH.util.storage.get_tile(x, y, z, callback, db_init);
+                });
+            } else {
+                return null;
+            }
         }
     };
 
