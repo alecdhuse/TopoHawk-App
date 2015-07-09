@@ -165,6 +165,12 @@ function button4_click() {
     $("#button4_img").attr("src", "images/button-map-selected.svg");
     $("#screen_map").css('visibility','visible');
     $(".leaflet-control-attribution").css('visibility','visible');
+    $("#breadcrumbs_div_1").html("Map");
+
+    if (current_mode >= MODE_AREA) {
+        $("#breadcrumbs_div_2").html("• " + map.selected_destination.properties.destination_name);
+    }
+
     map.enable_device_location(true);
 }
 
@@ -1954,6 +1960,10 @@ window.onresize = function () {
 }
 
 document.onreadystatechange = function(e) {
+    if (navigator.splashscreen) {
+        navigator.splashscreen.show();
+    }
+    
     /* Device Specific Adjustments */
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
         if (window.StatusBar) {
@@ -1961,7 +1971,7 @@ document.onreadystatechange = function(e) {
             status_bar_height = 20;
             $("#menu_popup").css({"top" : "50px"});
             $(".screen").css({"padding-top" : "20px"});
-            $("#screen_map").css({"padding-top" : "10px"});
+            $("#screen_map").css({"margin-top" : "10px"});
             $("#top_bar_div").css({"padding-top" : "20px"});
         }
     }
@@ -2026,10 +2036,6 @@ document.onreadystatechange = function(e) {
 };
 
 function onDeviceReady() {
-    if (navigator.splashscreen) {
-        navigator.splashscreen.show();
-    }
-
     map.enable_device_location(true);
     settings_load();
     get_user_info();
