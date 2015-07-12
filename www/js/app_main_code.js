@@ -129,12 +129,29 @@ function bread_crumb_logo_click() {
 
 function button1_click() {
     buttons_reset();
-    $("#button1_img").attr("src", "images/button-info-selected.svg");
-    $("#screen_info").css('visibility', 'visible');
+
+    var description = "";
+    var info_html   = "";
 
     if (current_mode === MODE_NONE) {
         $("#breadcrumbs_div_2").html("");
+        create_home_screen();
+    } else {
+        if (current_mode == MODE_DESTINATION) {
+            $("#screen_info_title").html(create_destination_title());
+            description = map.selected_destination.description;
+        } else if (current_mode == MODE_AREA) {
+            $("#screen_info_title").html(map.selected_area.properties.name);
+            description = map.selected_area.properties.description;
+        }
+
+        description = description.replace(/(?:\r\n|\r|\n)/g, "<br />");
+        info_html += "<div>" + description + "</div>";
+        $("#screen_info_inner").html(info_html);
     }
+
+    $("#button1_img").attr("src", "images/button-info-selected.svg");
+    $("#screen_info").css('visibility', 'visible');
 }
 
 function button2_click() {
@@ -144,6 +161,7 @@ function button2_click() {
 
     if (current_mode == MODE_NONE) {
         $("#breadcrumbs_div_1").html("Destinations");
+        $("#breadcrumbs_div_2").html("");
     }
 }
 
@@ -182,6 +200,8 @@ function button4_click() {
 
     if (current_mode >= MODE_AREA) {
         $("#breadcrumbs_div_2").html("• " + map.selected_destination.destination_name);
+    } else {
+        $("#breadcrumbs_div_2").html("");
     }
 
     map.enable_device_location(true);
@@ -200,6 +220,16 @@ function button_back_click() {
 
         button2_click();
     } else if ($("#screen_info").css('visibility') == 'visible') {
+        if (current_mode == MODE_DESTINATION) {
+            current_mode = MODE_NONE;
+            create_destination_list();
+        } else if (current_mode == MODE_AREA) {
+            current_mode = MODE_DESTINATION;
+            create_area_list();
+        } else if (current_mode == MODE_ROUTE) {
+            current_mode = MODE_AREA;
+        }
+
         button2_click();
     } else if ($("#screen_map").css('visibility') == 'visible') {
         current_mode = MODE_AREA;
@@ -637,6 +667,37 @@ function create_destination_list() {
     }
 }
 
+function create_destination_title() {
+    /* Change title info */
+    var title_html = "<div>" + map.selected_destination.destination_name;
+    title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
+
+    var offline_status = TH.util.storage.get_destination_status(map.selected_destination.destination_id);
+
+    if (offline_status == "downloaded") {
+        title_html += "<div class='download_icon' id='destination_downloaded'>";
+    } else if (offline_status == "downloading") {
+        title_html += "<div class='download_icon' id='destination_downloading'>";
+    } else {
+        title_html += "<div class='download_icon' id='destination_download' onclick='download_selected_destination()'>";
+    }
+
+    title_html += "<svg width='36' height='34'><g transform='scale(1,1) translate(0,0)' ><circle class='download_outer_circle' cx='175' cy='20' r='14' transform='rotate(-90, 95, 95)'/><g><path style='stroke:none;stroke-opacity:1;fill-opacity:1'd='m 15,14.013038 c -0.288333,-0.296648 -0.120837,-0.785812 0.379028,-0.785812 0.65373,0 1.306936,0 1.960405,0 0,-2.427829 0,-4.855658 0,-7.283712 0,-0.250992 0.244035,-0.4603768 0.536562,-0.4603768 1.450579,0 2.900896,0 4.350688,0 0.292527,0 0.536563,0.2093848 0.536563,0.4603768 0,2.428054 0,4.855883 0,7.283712 0.653468,0 1.306674,0 1.960405,0 0.499865,0 0.667361,0.489164 0.379027,0.785812 -1.557262,1.605358 -3.114787,3.210716 -4.67205,4.816075 -0.114285,0.118072 -0.249277,0.160801 -0.379288,0.153158 -0.130013,0.0077 -0.264481,-0.03531 -0.37929,-0.153158 -1.557263,-1.605359 -3.114787,-3.210717 -4.67205,-4.816075 z' /><rect y='22' x='13' height='0.17780706' width='14' style='opacity:1;fill-opacity:1;fill-rule:evenodd;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' /></g></svg></div>";
+
+    return title_html;
+}
+
+function create_home_screen() {
+    var html = "";
+
+    html += "<div id='welcome_logo'><br />";
+    html += "<img src='images/logo-black.svg' style='width:100%;'>";
+    html += "<p style='font-size:x-large;text-align:center;width:100%;'>Welcome!</p></div>";
+
+    $("#screen_info_title").html("");
+    $("#screen_info_inner").html(html);
+}
+
 function create_offline_destinations_list() {
     TH.util.storage.get_all_destinations( function (offline_destinations) {
         var list_html = "<div>";
@@ -833,23 +894,7 @@ function destination_info_loaded() {
     $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
     $("#breadcrumbs_div_2").html("");
 
-    /* Change title info */
-    var title_html = "<div>" + map.selected_destination.destination_name;
-    title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
-
-    var offline_status = TH.util.storage.get_destination_status(map.selected_destination.destination_id);
-
-    if (offline_status == "downloaded") {
-        title_html += "<div class='download_icon' id='destination_downloaded'>";
-    } else if (offline_status == "downloading") {
-        title_html += "<div class='download_icon' id='destination_downloading'>";
-    } else {
-        title_html += "<div class='download_icon' id='destination_download' onclick='download_selected_destination()'>";
-    }
-
-    title_html += "<svg width='36' height='34'><g transform='scale(1,1) translate(0,0)' ><circle class='download_outer_circle' cx='175' cy='20' r='14' transform='rotate(-90, 95, 95)'/><g><path style='stroke:none;stroke-opacity:1;fill-opacity:1'd='m 15,14.013038 c -0.288333,-0.296648 -0.120837,-0.785812 0.379028,-0.785812 0.65373,0 1.306936,0 1.960405,0 0,-2.427829 0,-4.855658 0,-7.283712 0,-0.250992 0.244035,-0.4603768 0.536562,-0.4603768 1.450579,0 2.900896,0 4.350688,0 0.292527,0 0.536563,0.2093848 0.536563,0.4603768 0,2.428054 0,4.855883 0,7.283712 0.653468,0 1.306674,0 1.960405,0 0.499865,0 0.667361,0.489164 0.379027,0.785812 -1.557262,1.605358 -3.114787,3.210716 -4.67205,4.816075 -0.114285,0.118072 -0.249277,0.160801 -0.379288,0.153158 -0.130013,0.0077 -0.264481,-0.03531 -0.37929,-0.153158 -1.557263,-1.605359 -3.114787,-3.210717 -4.67205,-4.816075 z' /><rect y='22' x='13' height='0.17780706' width='14' style='opacity:1;fill-opacity:1;fill-rule:evenodd;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1' /></g></svg></div>";
-
-    $("#screen_info_title").html(title_html);
+    $("#screen_info_title").html(create_destination_title());
     $("#screen_info_inner").html(info_html);
     $("#destination_search_filter").val("");
 
