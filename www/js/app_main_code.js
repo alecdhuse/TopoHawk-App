@@ -151,12 +151,24 @@ function button3_click() {
     buttons_reset();
     $("#button3_img").attr("src", "images/button-photos-selected.svg");
 
-    if (current_mode != MODE_NONE) {
+    if (current_mode > MODE_NONE) {
         get_photo_ids();
         $("#screen_photo").css('visibility','visible');
+        $("#breadcrumbs_div_1").html("Photos");
+
+        if (current_mode == MODE_DESTINATION) {
+            $("#breadcrumbs_div_2").html("• " + map.selected_destination.destination_name);
+        } else if (current_mode == MODE_AREA) {
+            $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
+        } else if (current_mode == MODE_ROUTE) {
+                $("#breadcrumbs_div_2").html("• " + map.selected_route.properties.name);
+        } else {
+            $("#breadcrumbs_div_2").html("");
+        }
     } else {
         show_photo_stream();
         $("#screen_stream").css('visibility','visible');
+        $("#breadcrumbs_div_1").html("TopoHawk");
         $("#breadcrumbs_div_2").html("• Photo Stream");
     }
 }
@@ -169,7 +181,7 @@ function button4_click() {
     $("#breadcrumbs_div_1").html("Map");
 
     if (current_mode >= MODE_AREA) {
-        $("#breadcrumbs_div_2").html("• " + map.selected_destination.properties.destination_name);
+        $("#breadcrumbs_div_2").html("• " + map.selected_destination.destination_name);
     }
 
     map.enable_device_location(true);
