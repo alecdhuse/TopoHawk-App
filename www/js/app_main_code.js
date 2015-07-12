@@ -993,6 +993,11 @@ function do_sign_up() {
 function download_selected_destination() {
     /* Start download animation */
     $(".download_icon").attr("id","destination_downloading");
+
+    /* Show help popup */
+    show_help_comment("Downloading Destination");
+    setTimeout(function() { hide_help_comment(); }, 2000);
+
     /* TODO: Set as animation if switching between destinations */
 
     TH.util.offline.add_offline_destination(map.selected_destination, function() {

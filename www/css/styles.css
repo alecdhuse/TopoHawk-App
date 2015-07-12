@@ -272,8 +272,11 @@ body {
 
 #help_comment_inner {
     background-color: rgba(255,255,255,0.8);
+    border: 2px solid rgb(237, 237, 237);
     border-radius: 5px;
     margin: auto;
+    padding-bottom: 2px;
+    padding-top: 2px;
     text-align: center;
     width: 90%;
 }
