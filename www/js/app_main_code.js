@@ -798,9 +798,10 @@ function destination_info_loaded() {
     var camping   = [];
     var info_html = "";
     var lodging   = [];
+    var destination_description = map.selected_destination.description.replace(/(?:\r\n|\r|\n)/g, "<br />");
 
     current_mode = MODE_DESTINATION;
-    info_html += "<div>" + map.selected_destination.description + "</div>";
+    info_html += "<div>" + destination_description + "</div>";
 
     for (var i=0; i<map.selected_destination.amenities.features.length; i++) {
         current_amenity = map.selected_destination.amenities.features[i];
