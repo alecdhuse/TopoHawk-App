@@ -1025,7 +1025,7 @@
                         } else {
                             img.src = tile_data_url;
                         }
-                    });
+                    }, this.local_db);
                 }
             }
         },
@@ -2089,7 +2089,30 @@
     };
 
     TH.util.storage.init = function (callback) {
-        if (window.indexedDB || window.webkitIndexedDB || window.msIndexedDB) {
+        if (window.openDatabase) {
+            var db_obj = {
+                db_type: "SQLite",
+                db:      openDatabase("TopoHawk-Cache", "1.0", "TopoHawk Local Cache", 10485760)
+            }
+
+            /* Create Tiles Table */
+            db_obj.db.transaction(function(tx) {
+               tx.executeSql("CREATE TABLE IF NOT EXISTS map_tiles (zoom_level integer, tile_column integer, tile_row integer, destination_id, data_url text);", []);
+               tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS map_index ON map_tiles (zoom_level, tile_column, tile_row);");
+            });
+
+            db_obj.db.transaction(function(tx) {
+               tx.executeSql("CREATE TABLE IF NOT EXISTS photos (photo_id integer, destination_id integer, area_id integer, route_id integer, photo_json text);", []);
+               tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS photo_id_index ON photos (photo_id);");
+            });
+
+            db_obj.db.transaction(function(tx) {
+               tx.executeSql("CREATE TABLE IF NOT EXISTS destinations (destination_id integer, destination_json text);", []);
+               tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS destination_id_index ON destinations (destination_id);");
+            });
+
+            callback(db_obj);
+        } else if (window.indexedDB || window.webkitIndexedDB || window.msIndexedDB) {
             var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
             var request = indexedDB.open("TopoHawk-Cache", 10);
 
@@ -2174,32 +2197,6 @@
             request.onerror = function(event) {
                 TH.util.logging.log("error: " + event.target.errorCode);
             };
-        } else {
-            /* Try other local storage methods */
-            if (window.openDatabase) {
-                var db_obj = {
-                    db_type: "SQLite",
-                    db:      openDatabase("TopoHawk-Cache", "1.0", "TopoHawk Local Cache", 10485760)
-                }
-
-                /* Create Tiles Table */
-                db_obj.db.transaction(function(tx) {
-                   tx.executeSql("CREATE TABLE IF NOT EXISTS map_tiles (zoom_level integer, tile_column integer, tile_row integer, destination_id, data_url text);", []);
-                   tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS map_index ON map_tiles (zoom_level, tile_column, tile_row);");
-                });
-
-                db_obj.db.transaction(function(tx) {
-                   tx.executeSql("CREATE TABLE IF NOT EXISTS photos (photo_id integer, destination_id integer, area_id integer, route_id integer, photo_json text);", []);
-                   tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS photo_id_index ON photos (photo_id);");
-                });
-
-                db_obj.db.transaction(function(tx) {
-                   tx.executeSql("CREATE TABLE IF NOT EXISTS destinations (destination_id integer, destination_json text);", []);
-                   tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS destination_id_index ON destinations (destination_id);");
-                });
-
-                callback(db_obj);
-            }
         }
     };
 
