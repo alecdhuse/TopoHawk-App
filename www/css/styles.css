@@ -281,6 +281,10 @@ body {
     width: 90%;
 }
 
+#home_image {
+
+}
+
 .loading_full_screen {
     background-color: rgba(24,24,24,0.4);
     position: fixed;
@@ -299,6 +303,16 @@ body {
 .loading_screen_spinner {
     margin-left: 27px;
     margin-top: 27px;
+}
+
+#local_destinations_loading {
+    text-align: center;
+}
+
+#local_destinations_title {
+    font-size: large;
+    margin-bottom: 4px;
+    text-align: center;
 }
 
 #logo_image {
@@ -482,6 +496,9 @@ body {
 }
 
 #screen_info_title {
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
     font-weight: bold;
     margin: 8px;
 }

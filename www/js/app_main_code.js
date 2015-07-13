@@ -14,6 +14,8 @@ var current_mode         = MODE_NONE;
 var destination_callback = false;
 var edit_new_object      = true;
 var edit_step            = 0;
+var home_image           = "";
+var local_destinations   = [];
 var map_finished         = false;
 var map_height_adjust    = 0;
 var perform_grade_update = true;
@@ -48,7 +50,7 @@ var map = TH.map('screen_map', {
     cluster:        true,
     mobile:         true,
     offline:        true,
-    show_location:  false,
+    show_location:  true,
     lat:            40.6,
     lng:            -98.0,
     zoom:           3
@@ -356,6 +358,11 @@ function buttons_reset() {
      $("#screen_spray").css('visibility','hidden');
      $("#screen_tick_edit").css('visibility','hidden');
      $("#screen_ticks").css('visibility','hidden');
+
+     /* Reset CSS */
+     $("#screen_info_title").css({"margin": "8px"});
+     $("#screen_info_title").css({"height": "auto"});
+     $("#screen_info_title").css({"background-image": "none"});
 }
 
 function cancel_map_edit() {
@@ -690,12 +697,34 @@ function create_destination_title() {
 function create_home_screen() {
     var html = "";
 
-    html += "<div id='welcome_logo'><br />";
-    html += "<img src='images/logo-black.svg' style='width:100%;'>";
+    /*
+    html += "<div id='home_image'>";
+    html += "<img src='" + home_image + "' style='width:100%;'>";
     html += "<p style='font-size:x-large;text-align:center;width:100%;'>Welcome!</p></div>";
+    */
+
+    /* Create list of local destinations */
+    html += "<div id='local_destinations'>";
+    html += "<div id='local_destinations_title'>Near By Destinations</div>";
+
+    if (local_destinations.length > 0) {
+        for (var i=0; i<3; i++) {
+            html += "<div class='local_destinations_item'>" + local_destinations[i].destination_name + "</div>";
+        }
+    } else {
+        html += "<div id='local_destinations_loading'>Loading...</div>";
+    }
+
+    html += "</div>";
 
     $("#screen_info_title").html("");
     $("#screen_info_inner").html(html);
+
+    /* Set CSS */
+    var background_url = "url('" + home_image + "')"
+    $("#screen_info_title").css({"margin": "0px"});
+    $("#screen_info_title").css({"height": "180px"});
+    $("#screen_info_title").css({"background-image": background_url});
 }
 
 function create_offline_destinations_list() {
@@ -2029,6 +2058,9 @@ document.onreadystatechange = function(e) {
         navigator.splashscreen.show();
     }
 
+    /* Find Randomized Home Image */
+    home_image = "images/home/" + Math.floor((Math.random() * 6) + 1) + ".jpg";
+
     /* Device Specific Adjustments */
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
         if (window.StatusBar) {
@@ -2097,6 +2129,29 @@ document.onreadystatechange = function(e) {
 
     map.on_first_gps_fix = function (lat, lng) {
         do_checkin();
+
+        /* Find Closest Locations */
+        var destination_distance = 0;
+        var destination_list = [];
+        var user_location = L.latLng(lat, lng);
+
+        for (var i=0; i < map.destinations.features.length; i++) {
+            destination_distance = user_location.distanceTo(L.latLng(map.destinations.features[i].geometry.coordinates[1], map.destinations.features[i].geometry.coordinates[0]));
+
+            if (destination_distance < 370500) {
+                destination_list.push({
+                        destination_name:   map.destinations.features[i].properties.name,
+                        destination_id:     map.destinations.features[i].properties.destination_id,
+                        distance:           destination_distance
+                });
+            }
+        }
+
+        local_destinations = destination_list.sort(function(a, b) {
+            return ((a.distance < b.distance) ? -1 : ((a.distance > b.distance) ? 1 : 0));
+        });
+
+        create_home_screen();
     };
 
     //TH.util.storage.delete_indexedDB();

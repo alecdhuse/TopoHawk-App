@@ -101,10 +101,6 @@
                     }
                 }
             }
-
-            if (this._options.show_location) {
-                this._leaflet_map.locate({setView: false, watch: false, enableHighAccuracy: true});
-            }
         },
 
         add_marker: function (lat, lng, marker_type) {
@@ -376,6 +372,7 @@
                             label = label + "<br />";
                         }
                     }
+                    
                     var mouseover_text = map_obj._map_name + ".show_cluster_label(" + cluster._latlng.lat + ", " + cluster._latlng.lng + ", '" + label + "')";
                     var marker_html = "<div onmouseover=\"" + mouseover_text + "\" onmouseout='" + map_obj._map_name + ".hide_cluster_label()'><span>" + cluster.getChildCount() + "</span></div>";
 
@@ -429,12 +426,16 @@
             }
 
             /* Geo Location */
+            this._leaflet_map.on('locationerror', function(e) {
+                console.log("Error finding location.");
+            });
+
             this._leaflet_map.on('locationfound', function(e) {
                 map_obj._update_location(e, map_obj);
             });
 
             if (this._options.show_location) {
-                this._leaflet_map.locate({setView: false, maxZoom: 20, watch: true, maximumAge: 10000, enableHighAccuracy: true});
+                this._leaflet_map.locate({setView: false, watch: false, enableHighAccuracy: true});
                 this._initialize_device_orientation(map_obj);
                 this._gps_orientation_init = true;
             }
@@ -1119,8 +1120,6 @@
                 if (this._options.route_id > 0) {
                     this.set_route(this._options.route_id);
                 }
-
-                this._first_location_fix = false;
             }
 
             /* Set selected destination and clear out selected area and route. */
