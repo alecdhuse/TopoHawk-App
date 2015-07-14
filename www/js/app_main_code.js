@@ -24,6 +24,7 @@ var photo_index          = 0;
 var photo_topo           = new PT();
 var photo_topo_init      = false;
 var photos_loaded        = false;
+var route_sort_by        = "topo";
 var status_bar_height    = 0;
 var stream_offset        = 0;
 var stream_scroll        = false;
@@ -842,6 +843,38 @@ function create_route_list(area_id) {
     var route_list_html = "";
     var search_string   = $("#destination_search_filter").val();
     var show_route      = false;
+
+    route_list_html += "<div id='route_sort_button_bar'>";
+    route_list_html += "<div style='float:left;width:50%'>";
+
+    if (route_sort_by == "topo") {
+        route_list_html += "<div style='float:left;' class='route_sort_button_selected' onclick='sort_routes(&quot;topo&quot;)'>Topo</div>";
+    } else {
+        route_list_html += "<div style='float:left;' class='route_sort_button' onclick='sort_routes(&quot;topo&quot;)'>Topo</div>";
+    }
+
+    if (route_sort_by == "alpha") {
+        route_list_html += "<div style='float:right;' class='route_sort_button_selected' onclick='sort_routes(&quot;alpha&quot;)'>ABC</div>";
+    } else {
+        route_list_html += "<div style='float:right;' class='route_sort_button' onclick='sort_routes(&quot;alpha&quot;)'>ABC</div>";
+    }
+
+    route_list_html += "</div>";
+    route_list_html += "<div style='float:right;width:50%'>";
+
+    if (route_sort_by == "difficulty") {
+        route_list_html += "<div style='float:left;' class='route_sort_button_selected' onclick='sort_routes(&quot;difficulty&quot;)'>Difficulty</div>";
+    } else {
+        route_list_html += "<div style='float:left;' class='route_sort_button' onclick='sort_routes(&quot;difficulty&quot;)'>Difficulty</div>";
+    }
+
+    if (route_sort_by == "rating") {
+        route_list_html += "<div style='float:right;' class='route_sort_button_selected' onclick='sort_routes(&quot;rating&quot;)'>Rating</div>";
+    } else {
+        route_list_html += "<div style='float:right;' class='route_sort_button' onclick='sort_routes(&quot;rating&quot;)'>Rating</div>";
+    }
+
+    route_list_html += "</div></div>";
 
     for (var i=0; i < map.routes.features.length; i++) {
         current_route = map.routes.features[i];
@@ -1960,6 +1993,29 @@ function show_upload_photo_info(img_dataurl) {
     photo_uploader.dataurl = img_dataurl;
     $('#upload_photo_preview').hide();
     $('#upload_photo_info').show();
+}
+
+function sort_routes(sort_by) {
+    if (sort_by == "alpha" || sort_by == "alphabetical") {
+        map.routes.features = map.routes.features.sort(function(a, b) {
+            return ((a.properties.name < b.properties.name) ? -1 : ((a.properties.name > b.properties.name) ? 1 : 0));
+        });
+    } else if (sort_by == "difficulty") {
+        map.routes.features = map.routes.features.sort(function(a, b) {
+            return ((a.properties.route_grade.difficulty < b.properties.route_grade.difficulty) ? 1 : ((a.properties.route_grade.difficulty > b.properties.route_grade.difficulty) ? -1 : 0));
+        });
+    } else if (sort_by == "rating") {
+        map.routes.features = map.routes.features.sort(function(a, b) {
+            return ((a.properties.rating < b.properties.rating) ? 1 : ((a.properties.rating > b.properties.rating) ? -1 : 0));
+        });
+    } else if (sort_by == "topo") {
+        map.routes.features = map.routes.features.sort(function(a, b) {
+            return ((a.properties.display_order < b.properties.display_order) ? 1 : ((a.properties.display_order > b.properties.display_order) ? -1 : 0));
+        });
+    }
+
+    route_sort_by = sort_by;
+    create_route_list(map.selected_area.properties.area_id);
 }
 
 function update_current_route_tick() {

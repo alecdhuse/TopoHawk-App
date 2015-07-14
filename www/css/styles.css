@@ -459,6 +459,27 @@ body {
     width: auto;
 }
 
+.route_sort_button {
+    color: white;
+    margin-right: 5px;
+    width: 45%;
+}
+
+.route_sort_button_selected {
+    color: #00bbe0;
+    margin-right: 5px;
+    width: 45%;
+}
+
+#route_sort_button_bar {
+    background-color: black;
+    height:20px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: center;
+    width:100%;
+}
+
 .route_tick_colored {
     background-color: #E7E3E3;
     margin-bottom: 3px;
