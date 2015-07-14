@@ -1739,7 +1739,7 @@ function settings_load() {
             $("#settings_high_res_photos").prop('checked', false);
         }
 
-        if (typeof(localStorage.use_high_res_photos) !== "undefined") {
+        if (typeof(localStorage.use_metric) !== "undefined") {
             use_metric = (localStorage.use_metric == "true") ? true : false;
         }
 
