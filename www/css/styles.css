@@ -160,6 +160,8 @@ body {
     border: 1px solid rgb(237, 237, 237);
     box-shadow: 2px 2px 5px rgba(0,0,0,.4);
     margin-right: 4px;
+    padding-bottom: 4px;
+    padding-left: 4px;
 }
     padding: 4px;
 }
@@ -293,6 +295,11 @@ body {
 
 }
 
+.loading_animation {
+    margin: auto;
+    width: 40px;
+}
+
 .loading_full_screen {
     background-color: rgba(24,24,24,0.4);
     position: fixed;
@@ -311,6 +318,11 @@ body {
 .loading_screen_spinner {
     margin-left: 27px;
     margin-top: 27px;
+}
+
+.local_destinations_item {
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 #local_destinations_loading {

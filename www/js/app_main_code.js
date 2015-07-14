@@ -709,10 +709,13 @@ function create_home_screen() {
 
     if (local_destinations.length > 0) {
         for (var i=0; i<3; i++) {
-            html += "<div class='local_destinations_item'>" + local_destinations[i].destination_name + "</div>";
+            html += "<div class='local_destinations_item' onclick='change(" + local_destinations[i].destination_id + ", 0, 0, true)'>" + local_destinations[i].destination_name + "</div>";
         }
     } else {
-        html += "<div id='local_destinations_loading'>Loading...</div>";
+        html += "<div id='local_destinations_loading'><br />";
+        html += "<div id='destination_downloading' class='loading_animation'>";
+        html += "<svg width='36' height='34'><g transform='scale(1,1) translate(0,0)' ><circle class='download_outer_circle' cx='175' cy='20' r='14' transform='rotate(-90, 95, 95)'/><g></svg>";
+        html += "</div></div>";
     }
 
     html += "</div>";
