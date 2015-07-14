@@ -953,7 +953,8 @@ function destination_info_loaded() {
     var lodging   = [];
     var destination_description = map.selected_destination.description.replace(/(?:\r\n|\r|\n)/g, "<br />");
 
-    current_mode = MODE_DESTINATION;
+    current_mode  = MODE_DESTINATION;
+    route_sort_by = "topo";
     info_html += "<div>" + destination_description + "</div>";
 
     for (var i=0; i<map.selected_destination.amenities.features.length; i++) {
@@ -2010,7 +2011,7 @@ function sort_routes(sort_by) {
         });
     } else if (sort_by == "topo") {
         map.routes.features = map.routes.features.sort(function(a, b) {
-            return ((a.properties.display_order < b.properties.display_order) ? 1 : ((a.properties.display_order > b.properties.display_order) ? -1 : 0));
+            return ((a.properties.display_order < b.properties.display_order) ? -1 : ((a.properties.display_order > b.properties.display_order) ? 1 : 0));
         });
     }
 

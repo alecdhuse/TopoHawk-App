@@ -372,8 +372,8 @@
                             label = label + "<br />";
                         }
                     }
-                    
-                    var mouseover_text = map_obj._map_name + ".show_cluster_label(" + cluster._latlng.lat + ", " + cluster._latlng.lng + ", '" + label + "')";
+
+                    var mouseover_text = map_obj._map_name + ".show_cluster_label(" + cluster._latlng.lat + ", " + cluster._latlng.lng + ", &quot;" + label + "&quot;)";
                     var marker_html = "<div onmouseover=\"" + mouseover_text + "\" onmouseout='" + map_obj._map_name + ".hide_cluster_label()'><span>" + cluster.getChildCount() + "</span></div>";
 
                     var div_icon = new L.DivIcon({
