@@ -28,6 +28,7 @@ var status_bar_height    = 0;
 var stream_offset        = 0;
 var stream_scroll        = false;
 var swipe_binded         = false;
+var use_metric           = false;
 var user_id              = -1;
 var version              = "1.0.0";
 var welcome_html         = "";
@@ -303,7 +304,8 @@ function button_menu_settings() {
     buttons_reset();
     $("#menu_popup").css('visibility','hidden');
     $("#screen_settings").css('visibility','visible');
-    $("#breadcrumbs_div_2").html("• Settings");
+    $("#breadcrumbs_div_2").html("Settings");
+    $("#breadcrumbs_div_2").html("");
 }
 
 function button_menu_spray() {
@@ -709,7 +711,20 @@ function create_home_screen() {
 
     if (local_destinations.length > 0) {
         for (var i=0; i<3; i++) {
-            html += "<div class='local_destinations_item' onclick='change(" + local_destinations[i].destination_id + ", 0, 0, true)'>" + local_destinations[i].destination_name + "</div>";
+            html += "<div class='local_destinations_item' onclick='change(" + local_destinations[i].destination_id + ", 0, 0, true)'>";
+            html += "<span>";
+            html += local_destinations[i].destination_name;
+            html += "</span>";
+            html += "<span style='float:right;margin-right:4px;'>";
+
+            if (use_metric === true) {
+                html += parseInt(local_destinations[i].distance * 0.0013) + " km";
+            } else {
+                html += parseInt(local_destinations[i].distance * 0.0009) + " mi";
+            }
+
+            html += "</span>";
+            html += "</div>";
         }
     } else {
         html += "<div id='local_destinations_loading'><br />";
@@ -1677,7 +1692,7 @@ function set_area_slider_val(min, max) {
 function settings_load() {
     var use_high_res_photos = false;
 
-    if(typeof(Storage) !== "undefined") {
+    if (typeof(Storage) !== "undefined") {
         if (typeof(localStorage.use_high_res_photos) !== "undefined") {
             use_high_res_photos = (localStorage.use_high_res_photos == "true") ? true : false;
         }
@@ -1688,6 +1703,16 @@ function settings_load() {
             $("#settings_high_res_photos").prop('checked', "checked");
         } else {
             $("#settings_high_res_photos").prop('checked', false);
+        }
+
+        if (typeof(localStorage.use_high_res_photos) !== "undefined") {
+            use_metric = (localStorage.use_metric == "true") ? true : false;
+        }
+
+        if (use_metric === true) {
+            $("#settings_use_metric").prop('checked', "checked");
+        } else {
+            $("#settings_use_metric").prop('checked', false);
         }
 
         /* load key and user_id */
@@ -1715,6 +1740,7 @@ function setting_save() {
         var use_high_res_photos = Boolean($("#settings_high_res_photos").is(":checked"));
 
         localStorage.setItem("use_high_res_photos",     use_high_res_photos);
+        localStorage.setItem("use_metric",              use_metric);
         localStorage.setItem("settings_aid_grade",      $("#settings_aid_grade").val());
         localStorage.setItem("settings_boulder_grade",  $("#settings_boulder_grade").val());
         localStorage.setItem("settings_sport_grade",    $("#settings_sport_grade").val());
@@ -1766,6 +1792,11 @@ function settings_update_grades(callback) {
             /* User not logged in */
         }
     }
+}
+
+function settings_update_use_metric() {
+    use_metric = $("#settings_use_metric").is(":checked");
+    setting_save();
 }
 
 function show_help_comment(comment_text) {
