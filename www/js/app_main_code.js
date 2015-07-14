@@ -704,7 +704,7 @@ function create_home_screen() {
     */
 
     /* Create list of local destinations */
-    html += "<div id='local_destinations'>";
+    html += "<div id='local_destinations' class='card'>";
     html += "<div id='local_destinations_title'>Near By Destinations</div>";
 
     if (local_destinations.length > 0) {
