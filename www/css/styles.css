@@ -473,6 +473,7 @@ body {
 
 #route_sort_button_bar {
     background-color: black;
+    border-radius: 8px;
     height:20px;
     padding-top: 4px;
     padding-bottom: 4px;
