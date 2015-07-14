@@ -142,16 +142,15 @@ function button1_click() {
         create_home_screen();
     } else {
         if (current_mode == MODE_DESTINATION) {
-            $("#screen_info_title").html(create_destination_title());
-            description = map.selected_destination.description;
+            create_destination_info();
         } else if (current_mode == MODE_AREA) {
             $("#screen_info_title").html(map.selected_area.properties.name);
             description = map.selected_area.properties.description;
-        }
 
-        description = description.replace(/(?:\r\n|\r|\n)/g, "<br />");
-        info_html += "<div>" + description + "</div>";
-        $("#screen_info_inner").html(info_html);
+            description = description.replace(/(?:\r\n|\r|\n)/g, "<br />");
+            info_html += "<div>" + description + "</div>";
+            $("#screen_info_inner").html(info_html);
+        }
     }
 
     $("#button1_img").attr("src", "images/button-info-selected.svg");
@@ -634,6 +633,46 @@ function create_area_list() {
     }
 }
 
+function create_destination_info() {
+    var current_amenity;
+    var camping   = [];
+    var info_html = "";
+    var lodging   = [];
+
+    $("#screen_info_title").html(create_destination_title());
+    destination_description = map.selected_destination.description.replace(/(?:\r\n|\r|\n)/g, "<br />");
+    info_html += "<div>" + destination_description + "</div>";
+
+    for (var i=0; i<map.selected_destination.amenities.features.length; i++) {
+        current_amenity = map.selected_destination.amenities.features[i];
+
+        if (current_amenity.properties.amenity_type == "Camping") {
+            camping.push(current_amenity);
+        } else if (current_amenity.properties.amenity_type == "Lodging") {
+            lodging.push(current_amenity);
+        }
+    }
+
+    if (camping.length > 0) {
+        info_html += "<br /><div>";
+        info_html += "<div style='font-weight:bold;margin-bottom:5px;'><img src='images/campsite-12.svg' align='top' height='20; width='20'> Camping:</div>";
+
+        for (var j=0; j<camping.length; j++) {
+            info_html += "<div style='margin-left:12px;'><div class='amenity_name'>" + camping[j].properties.name + "</div>";
+            info_html += "<div class='amenity_description'>" + camping[j].properties.description + "</div></div><br />";
+        }
+
+        info_html += "</div>";
+    }
+
+    /* Add Area Option */
+    if (api_key_th.length > 0) {
+        info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
+    }
+
+    $("#screen_info_inner").html(info_html);
+}
+
 function create_destination_list() {
     var destination_id          = 0;
     var destination_list_html   = "";
@@ -947,50 +986,14 @@ function create_search_result_html(search_results) {
 }
 
 function destination_info_loaded() {
-    var current_amenity;
-    var camping   = [];
-    var info_html = "";
-    var lodging   = [];
-    var destination_description = map.selected_destination.description.replace(/(?:\r\n|\r|\n)/g, "<br />");
-
     current_mode  = MODE_DESTINATION;
     route_sort_by = "topo";
-    info_html += "<div>" + destination_description + "</div>";
-
-    for (var i=0; i<map.selected_destination.amenities.features.length; i++) {
-        current_amenity = map.selected_destination.amenities.features[i];
-
-        if (current_amenity.properties.amenity_type == "Camping") {
-            camping.push(current_amenity);
-        } else if (current_amenity.properties.amenity_type == "Lodging") {
-            lodging.push(current_amenity);
-        }
-    }
-
-    if (camping.length > 0) {
-        info_html += "<br /><div>";
-        info_html += "<div style='font-weight:bold;margin-bottom:5px;'><img src='images/campsite-12.svg' align='top' height='20; width='20'> Camping:</div>";
-
-        for (var j=0; j<camping.length; j++) {
-            info_html += "<div style='margin-left:12px;'><div class='amenity_name'>" + camping[j].properties.name + "</div>";
-            info_html += "<div class='amenity_description'>" + camping[j].properties.description + "</div></div><br />";
-        }
-
-        info_html += "</div>";
-    }
-
-    /* Add Area Option */
-    if (api_key_th.length > 0) {
-        info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
-    }
 
     $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
     $("#breadcrumbs_div_2").html("");
-
-    $("#screen_info_title").html(create_destination_title());
-    $("#screen_info_inner").html(info_html);
     $("#destination_search_filter").val("");
 
+    create_destination_info();
     photo_topo.set_destination(map.selected_destination);
     create_area_list();
 
