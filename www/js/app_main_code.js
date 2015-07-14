@@ -64,6 +64,7 @@ map.on_route_click              = function (route_obj)       { map_route_clicked
 map.on_user_info_loaded         = function ()                { user_info_loaded(); };
 map.destination_info_loaded     = function (destination_obj) { destination_info_loaded(); };
 map.on_destinations_info_loaded = function ()                { create_destination_list(); };
+map.on_localization_complete    = function ()                { finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport)); };
 
 function add_new_destination() {
     current_mode = MODE_NONE;
@@ -750,7 +751,7 @@ function create_home_screen() {
     html += "<div id='local_destinations_title'>Near By Destinations</div>";
 
     if (local_destinations.length > 0) {
-        for (var i=0; i<3; i++) {
+        for (var i=0; (i<4 && i<local_destinations.length); i++) {
             html += "<div class='local_destinations_item' onclick='change(" + local_destinations[i].destination_id + ", 0, 0, true)'>";
             html += "<span>";
             html += local_destinations[i].destination_name;
@@ -1470,6 +1471,7 @@ function get_user_info() {
             $("#settings_trad_grade").val(localStorage.settings_trad_grade);
 
             this.perform_grade_update = true;
+            finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport));
         } else {
             map.set_localization();
         }

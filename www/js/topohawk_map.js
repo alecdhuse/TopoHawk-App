@@ -70,6 +70,7 @@
             this.on_route_click              = function (route_obj) {};
             this.on_user_info_loaded         = function () {};
             this.on_destinations_info_loaded = function () {};
+            this.on_localization_complete    = function () {};
 
             this._initialize_map_layers();
             this._create_leaflet_map();
@@ -228,6 +229,7 @@
                 },
                 success: function(response) {
                     map_obj._update_route_grades(response, map_obj);
+                    map_obj.on_localization_complete();
 
                     if (map_obj._options.mobile === false) {
                         if (change_view === true) {
