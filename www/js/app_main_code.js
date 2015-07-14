@@ -720,6 +720,18 @@ function create_home_screen() {
 
     html += "</div>";
 
+    if (api_key_th.length > 0) {
+        /* User logged in */
+    } else {
+        /* Not logged in */
+        html += "<div id='welcome_account_links' class='card' style='height:34px;padding-top:6px;'>";
+        html += "<div style='float:left;text-align:center;width:49%;'>";
+        html += "<div style='text-align:center;font-size:x-large;'><a nohref onclick='show_signup()'>Sign Up</a></div></div>";
+        html += "<div style='float:right;width:49%;'>";
+        html += "<div style='text-align:center;font-size:x-large;'><a nohref onclick='show_login()'>Login</a></div></div>";
+        html += "</div>";
+    }
+
     $("#screen_info_title").html("");
     $("#screen_info_inner").html(html);
 
