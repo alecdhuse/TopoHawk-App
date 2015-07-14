@@ -169,6 +169,7 @@ body {
 
 #center_div {
     height: 100%;
+    overflow: hidden;
     width: 100%;
 }
 
