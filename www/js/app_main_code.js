@@ -1970,8 +1970,8 @@ function show_main_buttons() {
 
 function show_photo_stream() {
     $.ajax({
-        type: 'POST',
-        url:  'http://topohawk.com/api/v1/get_photo_stream.php',
+        type: 'GET',
+        url:  'http://topohawk.com/api/v1.1/get_photo_stream.php',
         dataType: 'json',
         data: {
             'offset': stream_offset,
@@ -1990,7 +1990,8 @@ function show_photo_stream() {
             }
         },
         error: function (req, status, error) {
-           TH.util.logging.log("Error getting photo stream: " + error);
+            $("#photo_stream_div").html("<div class='network_unavailable_outer'><div class='network_unavailable_inner'><img src='images/no-connection.svg' width='150px' /></div></div>");
+            TH.util.logging.log("Error getting photo stream: " + error);
         }
     });
 }

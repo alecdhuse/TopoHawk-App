@@ -53,7 +53,7 @@
                     <div class="menu_item" onclick="button_menu_about()">About</div><hr/>
                     <div class="menu_item" onclick="button_menu_settings()">Settings</div><hr/>
                     <div class="menu_item" id="menu_login_logout" onclick="button_login_logout()">Login</div>
-                </div>                                
+                </div>
 
                 <div id="screen_about" class="screen">
                     <div class="screen_inner">
@@ -116,7 +116,7 @@
 
                 <div id="screen_destinations" class="screen">
                     <div class="search_filter">
-                        <input class="search_text" type="text" name="destination_search" id="destination_search_filter"/>
+                        <input class="search_text" type="search" name="destination_search" id="destination_search_filter" autocomplete="off" />
                         <div id="filter_hidden_items"></div>
                     </div>
                     <div class="screen_inner">
@@ -348,7 +348,7 @@
                         </div>
                     </div>
                     <div class="search_box_div">
-                        <input class="search_text" type="text" name="search_box" id="search_box"/>
+                        <input class="search_text" type="search" name="search_box" id="search_box" autocomplete="off"/>
                         <img id="search_image" src="images/search.svg" onclick="do_search()" style='float:right;margin-top: 5px;'/>
                     </div>
                     <div class="screen_inner" id="search_screen_inner">
