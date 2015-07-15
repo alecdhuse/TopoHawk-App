@@ -63,7 +63,7 @@ map.on_destination_click        = function (destination_obj) { };
 map.on_route_click              = function (route_obj)       { map_route_clicked(route_obj); };
 map.on_user_info_loaded         = function ()                { user_info_loaded(); };
 map.destination_info_loaded     = function (destination_obj) { destination_info_loaded(); };
-map.on_destinations_info_loaded = function ()                { create_destination_list(); };
+map.on_destinations_info_loaded = function ()                { on_destinations_info_loaded(); };
 map.on_localization_complete    = function ()                { finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport)); };
 
 function add_new_destination() {
@@ -1347,6 +1347,33 @@ function get_edit_route_data() {
     return route_data;
 }
 
+function get_local_destinations() {
+    if (local_destinations.length === 0) {
+        /* Find Closest Locations */
+        var destination_distance = 0;
+        var destination_list = [];
+        var user_location = map._gps_location;
+
+        for (var i=0; i < map.destinations.features.length; i++) {
+            destination_distance = user_location.distanceTo(L.latLng(map.destinations.features[i].geometry.coordinates[1], map.destinations.features[i].geometry.coordinates[0]));
+
+            if (destination_distance < 370500) {
+                destination_list.push({
+                        destination_name:   map.destinations.features[i].properties.name,
+                        destination_id:     map.destinations.features[i].properties.destination_id,
+                        distance:           destination_distance
+                });
+            }
+        }
+
+        local_destinations = destination_list.sort(function(a, b) {
+            return ((a.distance < b.distance) ? -1 : ((a.distance > b.distance) ? 1 : 0));
+        });
+
+        create_home_screen();
+    }
+}
+
 function get_photo_ids() {
     var data;
     var make_request = true;
@@ -1493,6 +1520,11 @@ function map_area_clicked(area_obj) {
 
 function map_route_clicked(route_obj) {
     change_route(route_obj.properties.route_id, false, false);
+}
+
+function on_destinations_info_loaded() {
+     create_destination_list();
+     get_local_destinations();
 }
 
 function on_load() {
@@ -2237,29 +2269,7 @@ document.onreadystatechange = function(e) {
 
     map.on_first_gps_fix = function (lat, lng) {
         do_checkin();
-
-        /* Find Closest Locations */
-        var destination_distance = 0;
-        var destination_list = [];
-        var user_location = L.latLng(lat, lng);
-
-        for (var i=0; i < map.destinations.features.length; i++) {
-            destination_distance = user_location.distanceTo(L.latLng(map.destinations.features[i].geometry.coordinates[1], map.destinations.features[i].geometry.coordinates[0]));
-
-            if (destination_distance < 370500) {
-                destination_list.push({
-                        destination_name:   map.destinations.features[i].properties.name,
-                        destination_id:     map.destinations.features[i].properties.destination_id,
-                        distance:           destination_distance
-                });
-            }
-        }
-
-        local_destinations = destination_list.sort(function(a, b) {
-            return ((a.distance < b.distance) ? -1 : ((a.distance > b.distance) ? 1 : 0));
-        });
-
-        create_home_screen();
+        get_local_destinations();
     };
 
     //TH.util.storage.delete_indexedDB();
