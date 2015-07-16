@@ -326,6 +326,7 @@ function button_menu_ticks() {
         get_route_ticks_html(0, 0, "#user_route_ticks");
     } else {
         $("#user_route_ticks").html("You must be logged in to use the route ticks feature.");
+        $("#tick_help").html("<p>Ticks are used to record climbs sent or projected by users.</p>");
     }
 }
 
@@ -561,10 +562,12 @@ function check_for_human() {
 
                 window.verification_id = response.result.verification_id;
             } else {
+                $("#verification_text").html("Verification Error: " + response.result);
                 TH.util.logging.log("Error " + response.result);
             }
        },
        error: function (req, status, error) {
+           $("#verification_text").html("Verification Error: " + error);
            TH.util.logging.log("Error performing human check: " + error);
        }
     });
@@ -1128,7 +1131,9 @@ function do_sign_up() {
             }
        },
        error: function (req, status, error) {
-           TH.util.logging.log("Error performing seach: " + error);
+           $("#signup_message").addClass("red_text");
+           $("#signup_message").html("Error with user signup: " + error);
+           TH.util.logging.log("Error with user signup: " + error);
        }
     });
 }
@@ -1682,8 +1687,9 @@ function save_map_edit() {
                     error: function (req, status, error) {
                         show_help_comment("Could Not Add Route");
                         setTimeout(function() { hide_help_comment(); }, 2000);
-                       TH.util.logging.log("Error adding route: " + error);
-                       /* TODO: Handle errors */
+                        TH.util.logging.log("Error adding route: " + error);
+
+                        /* TODO: Handle errors */
                     }
                 });
             } else {

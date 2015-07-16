@@ -25,6 +25,12 @@ body {
     width: 100%;
 }
 
+hr {
+    background-color: rgb(33, 33, 33);
+    border: 0px none;
+    height: 1px;
+}
+
 .amenity_description {
     font-size: 12px;
 }
@@ -161,6 +167,8 @@ body {
     box-shadow: 2px 2px 5px rgba(0,0,0,.4);
     margin-bottom: 8px;
     margin-right: 4px;
+    max-width: 450px;
+    min-width: 300px;
     padding-bottom: 4px;
     padding-left: 4px;
     padding: 4px;
@@ -527,6 +535,12 @@ body {
     height: 40px;
     text-align: right;
     width: 40%;
+}
+
+#search_image {
+    float:right;
+    margin-right: 2px;
+    margin-top: 2px;
 }
 
 #search_results {
