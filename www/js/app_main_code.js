@@ -755,11 +755,11 @@ function create_home_screen() {
 
     if (local_destinations.length > 0) {
         for (var i=0; (i<4 && i<local_destinations.length); i++) {
-            html += "<div class='local_destinations_item' onclick='change(" + local_destinations[i].destination_id + ", 0, 0, true)'>";
-            html += "<span>";
+            html += "<div class='local_destinations_item'>";
+            html += "<span onclick='change(" + local_destinations[i].destination_id + ", 0, 0, true)'>";
             html += local_destinations[i].destination_name;
             html += "</span>";
-            html += "<span style='float:right;margin-right:4px;'>";
+            html += "<span style='float:right;margin-right:4px;' onclick='set_map_view(L.latLng(" + local_destinations[i].lat + "," + local_destinations[i].lng + "))'>";
 
             if (use_metric === true) {
                 html += parseInt(local_destinations[i].distance * 0.0013) + " km";
@@ -1366,7 +1366,9 @@ function get_local_destinations() {
                 destination_list.push({
                         destination_name:   map.destinations.features[i].properties.name,
                         destination_id:     map.destinations.features[i].properties.destination_id,
-                        distance:           destination_distance
+                        distance:           destination_distance,
+                        lat:                map.destinations.features[i].geometry.coordinates[1],
+                        lng:                map.destinations.features[i].geometry.coordinates[0]
                 });
             }
         }
@@ -1764,6 +1766,11 @@ function set_area_slider_val(min, max) {
     $("#noUiSlider_area").val([min, max]);
     $("#noUiSlider_area").find(".noUi-handle-lower").html('<div style="background: white; margin-left: 7px; margin-top: 4px;">' + min + '</div>');
     $("#noUiSlider_area").find(".noUi-handle-upper").html('<div style="background: white; margin-left: 7px; margin-top: 4px;">' + max + '</div>');
+}
+
+function set_map_view(lat, lng) {
+    map.set_view(L.latLng(lat,lng), 9);
+    button4_click();
 }
 
 function settings_load() {
