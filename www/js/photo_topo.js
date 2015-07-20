@@ -219,6 +219,9 @@ PT.prototype._get_destination_data = function(destination_id) {
 PT.prototype._get_photo_info = function(photo_id) {
     var pt_obj = this;
 
+    this.paper_scope.project.clear();
+    this._create_loading_path();
+
     if (pt_obj.use_offline_images === true) {
         TH.util.storage.get_photo(photo_id, function(photo_id, photo_obj) {
             pt_obj.update_photo_object(photo_id, photo_obj, pt_obj);
@@ -255,7 +258,7 @@ PT.prototype._load_photo = function(result) {
         this.photo_url = result.photo_file;
     }
 
-    this.photo_raster = new Raster(this.photo_url);
+    pt_obj.photo_raster = new Raster(this.photo_url);
 
     pt_obj.photo_raster.onLoad = function () {
         pt_obj._photo_loaded = true;
@@ -297,7 +300,6 @@ PT.prototype.change_photo = function(photo_id) {
     this.photo_id = photo_id;
 
     if (typeof this.paper_scope !== 'undefined' && this.paper_scope !== null) {
-        this.paper_scope.project.clear();
         paper = this.paper_scope;
 
         if (paper.view.zoom > 1) {
@@ -421,23 +423,31 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
             /* X Overlap */
             var marker_x_test = marker_x - 10;
             var best_marker_x = marker_x + 13;
+            var alt_marker_x  = marker_x;
 
             while (marker_x_test < marker_x + 12) {
                 if ((marker_x_test - 13) < this.route_marker_points[i][0] && (marker_x_test + 13) > this.route_marker_points[i][0]) {
-                    /* Still Overlapping */
-                    marker_x_test += 4;
+                    /* Still Overlapping, but maybe this placment is better  */
+                    if (Math.abs(marker_x_test - marker_x) < Math.abs(alt_marker_x - marker_x)) {
+                        alt_marker_x = marker_x_test;
+                    }
                 } else {
                     if (Math.abs(marker_x_test - marker_x) < Math.abs(best_marker_x - marker_x)) {
                         best_marker_x = marker_x_test;
                     }
-
-                    marker_x_test += 4;
                 }
+
+                marker_x_test += 4;
             }
 
             marker_x = best_marker_x;
         } else if ((marker_y - 11) < this.route_marker_points[i][1] && (marker_y + 11) > this.route_marker_points[i][1]) {
             /* Y Overlap */
+        }
+
+        /* Couldn't find non-overlapping, use best X placement */
+        if (Math.abs(best_marker_x - marker_x) < Math.abs(alt_marker_x - marker_x)) {
+            marker_x = alt_marker_x;
         }
     }
 
@@ -509,17 +519,17 @@ PT.prototype.resize = function(canvas_size) {
     paper = this.paper_scope;
 
     if (typeof paper !== "undefined") {
-        if (paper.view.zoom > 1) {
-            paper.view.zoom = 1;
-            paper.view.center = this._canvas_center_1st;
+        if (this.paper_scope.view.zoom > 1) {
+            this.paper_scope.view.zoom = 1;
+            this.paper_scope.view.center = this._canvas_center_1st;
         }
 
         if (typeof canvas_size !== "undefined" && canvas_size !== null) {
             this.pt_canvas_size = canvas_size;
-            paper.view.setViewSize(canvas_size[1], canvas_size[0]);
+            this.paper_scope.view.setViewSize(canvas_size[1], canvas_size[0]);
         } else {
             canvas_size = this.pt_canvas_size;
-            paper.view.setViewSize(canvas_size[1], canvas_size[0]);
+            this.paper_scope.view.setViewSize(canvas_size[1], canvas_size[0]);
         }
 
         if (this._photo_loaded === true) {
@@ -529,7 +539,7 @@ PT.prototype.resize = function(canvas_size) {
             this.photo_raster.scale((1/this.photo_scale));
 
             var photo_size = this.photo_raster.size;
-            var view_size = paper.view.size;
+            var view_size = this.paper_scope.view.size;
 
             var width_ratio  = view_size.width  / photo_size.width;
             var height_ratio = view_size.height / photo_size.height;
@@ -548,9 +558,9 @@ PT.prototype.resize = function(canvas_size) {
             }
 
             this.photo_raster.scale(this.photo_scale);
-            this.photo_raster.position = paper.view.center;
+            this.photo_raster.position = this.paper_scope.view.center;
 
-            paper.view.update();
+            this.paper_scope.view.update();
 
             var height_change = this.photo_height_scaled / photo_height_scaled_old;
             var width_change  = this.photo_width_scaled /  photo_width_scaled_old;
@@ -559,7 +569,7 @@ PT.prototype.resize = function(canvas_size) {
             var top_margin  = (view_size.height - this.photo_height_scaled) / 2.0 ;
 
             var height_diff, width_diff;
-            var new_path_points  = [];
+            var new_path_points = [];
             var path;
             var x, y;
 
@@ -602,6 +612,7 @@ PT.prototype.resize = function(canvas_size) {
                         }
                     }
 
+                    this.paper_scope.view.update();
                     this.photo_topo_loaded();
                     this._paths_drawn = true;
                 }
@@ -609,7 +620,7 @@ PT.prototype.resize = function(canvas_size) {
         }
 
         this.photo_resized();
-        paper.view.update();
+        this.paper_scope.view.update();
     }
 
     this._create_loading_path();
