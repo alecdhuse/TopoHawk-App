@@ -145,12 +145,7 @@ function button1_click() {
         if (current_mode == MODE_DESTINATION) {
             create_destination_info();
         } else if (current_mode == MODE_AREA) {
-            $("#screen_info_title").html(map.selected_area.properties.name);
-            description = map.selected_area.properties.description;
-
-            description = description.replace(/(?:\r\n|\r|\n)/g, "<br />");
-            info_html += "<div>" + description + "</div>";
-            $("#screen_info_inner").html(info_html);
+            create_area_info();
         }
     }
 
@@ -587,6 +582,21 @@ function click_stream_item(route_id, area_id, destination_id) {
     } else {
         proccess_destination_callback(destination_callback_change);
     }
+}
+
+function create_area_info() {
+    $("#screen_info_title").html(map.selected_area.properties.name);
+
+    description = map.selected_area.properties.description;
+    description = description.replace(/(?:\r\n|\r|\n)/g, "<br />");
+
+    var info_html = "<div>" + description + "</div>";
+
+    if (api_key_th.length > 0) {
+        info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
+    }
+
+    $("#screen_info_inner").html(info_html);
 }
 
 function create_area_list() {
@@ -1760,6 +1770,13 @@ function save_map_edit() {
             }
         }
     }
+}
+
+function select_area_edit_description() {
+    //TODO: Fix this
+    $("#screen_edit_area_inner").animate({
+        scrollTop:$("#area_description_label").position().top
+    }, 200);
 }
 
 function set_area_slider_val(min, max) {

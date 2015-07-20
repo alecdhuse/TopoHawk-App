@@ -134,7 +134,7 @@
                 </div>
 
                 <div id="screen_edit_area" class="screen">
-                    <div class="screen_inner" style="padding-left:4px;">
+                    <div class="screen_inner" id="screen_edit_area_inner" style="padding-left:4px;">
                         <div class="edit_field">
                             <label for="area_name_txt">Name:</label><br>
                             <input name="area_name_txt" type="text" id="area_name_txt" size="40" style="width:96%;">
@@ -165,10 +165,11 @@
                         </div>
 
                         <div class="edit_field">
-                            <label for="area_desc">Description:</label><br>
-                            <textarea name="area_desc" cols="35" rows="6" id="area_desc" style="width:96%;"></textarea>
+                            <label for="area_desc" id="area_description_label">Description:</label><br>
+                            <textarea name="area_desc" cols="35" rows="6" id="area_desc" style="width:96%;" onclick="select_area_edit_description()"></textarea>
                         </div>
 
+                        <div style="height:600px;"></div>
                     </div>
                 </div>
 
@@ -295,7 +296,7 @@
 
                             <div style='height:70px;width:100%'> </div>
                         </div>
-                        <div style="height:100px;text-align:center;width:100%;"> </div>
+                        <div style="height:100px;text-align:center;width:300%;"> </div>
                     </div>
                 </div>
 
