@@ -78,6 +78,8 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
     this.paper_scope = new paper.PaperScope();
     this.paper_scope.setup(this.canvas);
 
+    paper = this.paper_scope;
+
     if (typeof offline !== "undefined") {
         this._offline_operation = offline;
         this.use_offline_images = offline;
@@ -89,8 +91,9 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
         this._destination_loaded = true;
     }
 
-    paper = this.paper_scope;
-    this._get_photo_info(photo_id);
+    if (typeof photo_id !== "undefined" && photo_id > 0) {
+        this._get_photo_info(photo_id);
+    }
 
     /* Bind Scroll Events */
     var pt_obj = this;
