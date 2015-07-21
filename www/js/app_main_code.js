@@ -1165,6 +1165,9 @@ function download_selected_destination() {
         /* Set download as completed */
         var local_store_item = "offline_destination_id" + map.selected_destination.destination_id;
         localStorage.setItem(local_store_item, "downloaded");
+
+        show_help_comment("Download of " + map.selected_destination.destination_name + " complete.");
+        setTimeout(function() { hide_help_comment(); }, 2000);
     });
 }
 

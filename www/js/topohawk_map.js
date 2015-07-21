@@ -1684,6 +1684,10 @@
                                 [z, x, y, destination_id, data],
                                 function(tx, response) {
                                     TH.util.logging.log("Tile: z: " + z + ", x: " + x + ", y: " + y + " downloaded");
+
+                                    if (typeof callback !== 'undefined') {
+                                        callback();
+                                    }                                    
                                 },
                                 function(e) {
                                     /* Error */
