@@ -2192,6 +2192,30 @@ function update_route_edit_grade() {
     $("#difficulty_grade").val(map.get_grade_systems()[route_type]);
 }
 
+function upload_changes(changes_array) {
+    if (changes_array.length > 0) {
+        TH.util.logging.log("Local changes found, uploading.");
+
+        for (var i=0; i<changes_array.length; i++) {
+            if (changes_array[i].change_type == "add_area") {
+
+            } else if (changes_array[i].change_type == "add_destination") {
+
+            } else if (changes_array[i].change_type == "add_photo") {
+
+            } else if (changes_array[i].change_type == "add_route") {
+
+            } else if (changes_array[i].change_type == "edit_tick") {
+
+            } else if (changes_array[i].change_type == "add_tick") {
+
+            } else {
+                TH.util.logging.log("Unknown change type: " + changes_array[i].change_type);
+            }
+        }
+    }
+}
+
 function upload_photo() {
     $('#upload_photo_message').html('Uploading Photo...');
     $('#upload_photo_info').hide();
@@ -2350,4 +2374,7 @@ function onDeviceReady() {
 
     resize_window();
     button1_click();
+
+    /* Check for any localy stored changes and upload them. */
+    TH.util.storage.get_all_changes(upload_changes, map.local_db);
 }

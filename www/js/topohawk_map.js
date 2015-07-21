@@ -1522,7 +1522,7 @@
                 var store = tx.objectStore("changes");
 
                 store.put({
-                    change_type: hange_type,
+                    change_type: change_type,
                     change_json: JSON.stringify(change_json)
                 });
 
@@ -1718,6 +1718,61 @@
             }
         }
     };
+
+    TH.util.storage.get_all_changes = function (callback, db) {
+        var changes = [];
+        var current_change = {};
+
+        if (typeof db !== 'undefined') {
+            if (db.db_type == "indexedDB") {
+                var transaction  = db.db.transaction("changes", "readonly");
+                var store        = transaction.objectStore("changes");
+
+                store.openCursor().onsuccess = function(event) {
+                    var cursor = event.target.result;
+
+                    if (cursor) {
+                        current_change = {
+                            change_type: cursor.value.change_type,
+                            change_json: JSON.parse(cursor.value.change_json)
+                        };
+
+                        changes.push(current_change);
+                        cursor.continue();
+                    } else {
+                        callback(changes);
+                    }
+                };
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM changes;",
+                    [],
+                    function(tx, response) {
+                        for (var i=0; i < response.rows.length; i++) {
+                            current_change = {
+                                change_type: response.rows.item(i).change_type,
+                                change_json: JSON.parse(response.rows.item(i).change_json)
+                            };
+
+                            changes.push(current_change);
+                        }
+
+                        callback(changes);
+                    },
+                    function(e) {
+                        callback(changes);
+                    });
+                });
+            } else {
+                callback(changes);
+            }
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.get_all_changes(callback, db_init);
+            });
+        }
+    }
 
     TH.util.storage.get_all_destinations = function (callback, db) {
         var destinations = [];
