@@ -1455,12 +1455,12 @@
             L.DomEvent.addListener(newButton,            'click', L.DomEvent.stop);
             L.DomEvent.addListener(filter_close,         'click', this._close_filter, this);
             L.DomEvent.addListener(newButton,            'click', this._clicked,      this);
-            L.DomEvent.addListener(filter_chk_boulder,   'click',  this._proccess_filter_checkboxes, this);
-            L.DomEvent.addListener(filter_chk_sport,     'click',  this._proccess_filter_checkboxes, this);
-            L.DomEvent.addListener(filter_chk_trad,      'click',  this._proccess_filter_checkboxes, this);
-            L.DomEvent.addListener(filter_chk_mixed,     'click',  this._proccess_filter_checkboxes, this);
-            L.DomEvent.addListener(filter_chk_toprope,   'click',  this._proccess_filter_checkboxes, this);
-            L.DomEvent.addListener(filter_chk_aid,       'click',  this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_boulder,   'click', this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_sport,     'click', this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_trad,      'click', this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_mixed,     'click', this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_toprope,   'click', this._proccess_filter_checkboxes, this);
+            L.DomEvent.addListener(filter_chk_aid,       'click', this._proccess_filter_checkboxes, this);
 
             L.DomEvent.disableClickPropagation(newButton);
 
@@ -1518,7 +1518,21 @@
     TH.util.storage.add_change = function (change_type, change_json, db) {
         if (typeof db !== 'undefined') {
             if (db.db_type == "indexedDB") {
+                var tx    = db.db.transaction("changes", "readwrite");
+                var store = tx.objectStore("changes");
 
+                store.put({
+                    change_type: hange_type,
+                    change_json: JSON.stringify(change_json)
+                });
+
+                tx.oncomplete = function() {
+                    TH.util.logging.log("Change saved.");
+                };
+
+                tx.onerror = function() {
+                    TH.util.logging.log("Change could not be saved.");
+                }
             } else if (db.db_type == "SQLite") {
                 db.db.transaction(function(tx){
                     tx.executeSql("INSERT OR REPLACE into chnages values (NULL, ?, ?);",
@@ -2150,10 +2164,11 @@
                     db:      event.target.result
                 }
 
-                var dest_db_created  = false;
-                var photo_db_created = false;
-                var tiles_db_created = false;
-                var callback_made    = false;
+                var changes_db_created  = false;
+                var dest_db_created     = false;
+                var photo_db_created    = false;
+                var tiles_db_created    = false;
+                var callback_made       = false;
 
                 if (!db_obj.db.objectStoreNames.contains("destinations")) {
                     // Create destination db
@@ -2163,7 +2178,7 @@
                     destination_store.transaction.oncomplete = function(event) {
                         dest_db_created = true;
 
-                        if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                        if (dest_db_created && photo_db_created && tiles_db_created && changes_db_created && callback_made === false) {
                             callback_made = true;
                             callback(db_obj);
                         }
@@ -2181,7 +2196,7 @@
                     photo_store.transaction.oncomplete = function(event) {
                         photo_db_created = true;
 
-                        if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                        if (dest_db_created && photo_db_created && tiles_db_created && changes_db_created && callback_made === false) {
                             callback_made = true;
                             callback(db_obj);
                         }
@@ -2198,7 +2213,7 @@
                     tiles_store.transaction.oncomplete = function(event) {
                         tiles_db_created = true;
 
-                        if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                        if (dest_db_created && photo_db_created && tiles_db_created && changes_db_created && callback_made === false) {
                             callback_made = true;
                             callback(db_obj);
                         }
@@ -2207,7 +2222,21 @@
                     tiles_db_created = true;
                 }
 
-                if (dest_db_created && photo_db_created && tiles_db_created && callback_made === false) {
+                /* Create Changes DB */
+                if (!db_obj.db.objectStoreNames.contains("changes")) {
+                    var changes_store = db_obj.db.createObjectStore("changes", {autoIncrement : true});
+
+                    tiles_store.transaction.oncomplete = function(event) {
+                        changes_db_created = true;
+
+                        if (dest_db_created && photo_db_created && tiles_db_created && changes_db_created && callback_made === false) {
+                            callback_made = true;
+                            callback(db_obj);
+                        }
+                    };
+                }
+
+                if (dest_db_created && photo_db_created && tiles_db_created && changes_db_created && callback_made === false) {
                     callback_made = true;
                     callback(db_obj);
                 }
