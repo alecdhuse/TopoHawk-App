@@ -1687,7 +1687,7 @@
 
                                     if (typeof callback !== 'undefined') {
                                         callback();
-                                    }                                    
+                                    }
                                 },
                                 function(e) {
                                     /* Error */
@@ -2215,7 +2215,7 @@
             callback(db_obj);
         } else if (window.indexedDB || window.webkitIndexedDB || window.msIndexedDB) {
             var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
-            var request = indexedDB.open("TopoHawk-Cache", 10);
+            var request = indexedDB.open("TopoHawk-Cache", 11);
 
             request.onupgradeneeded = function(event) {
                 var db_obj = {
