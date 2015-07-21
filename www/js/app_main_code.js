@@ -1679,11 +1679,11 @@ function save_map_edit() {
 
                 /* Add new Route */
                 $.ajax({
-                     dataType: 'json',
-                     type: 'POST',
-                     url: 'https://topohawk.com/api/v1.1/add_route.php',
-                     data: route_data,
-                     success: function(response) {
+                     dataType:  'json',
+                     type:      'POST',
+                     url:       'https://topohawk.com/api/v1.1/add_route.php',
+                     data:      route_data,
+                     success:   function(response) {
                         if (response.result_code > 0) {
                             map.set_destination(map.selected_destination.destination_id);
                             button1_click();
@@ -1697,16 +1697,17 @@ function save_map_edit() {
                         }
                     },
                     error: function (req, status, error) {
-                        show_help_comment("Could Not Add Route");
+                        show_help_comment("No connection, change saved localy.");
                         setTimeout(function() { hide_help_comment(); }, 2000);
-                        TH.util.logging.log("Error adding route: " + error);
 
-                        /* TODO: Handle errors */
+                        /* No Connection, save change localy, and try to submit later */
+                        map.util.storage.add_change("add_route", route_data, map.local_db);
+                        TH.util.logging.log("Error adding route, saved to local changes.");
                     }
                 });
             } else {
                 /* Update existing route */
-
+                /* TODO: Finish update route */
             }
         } else if (current_edit_mode == EDIT_MODE_AREA) {
             var area_data = get_edit_area_data();
@@ -1717,7 +1718,7 @@ function save_map_edit() {
                     dataType:   'json',
                     url:        'https://topohawk.com/api/v1.1/add_area.php',
                     data:       area_data,
-                    success: function(response) {
+                    success:    function(response) {
                         if (response.result_code > 0) {
                             map.set_destination(map.selected_destination.destination_id);
                             button1_click();
@@ -1731,8 +1732,12 @@ function save_map_edit() {
                         }
                     },
                     error: function (req, status, error) {
-                        TH.util.logging.log("Error adding area: " + error);
-                        /* TODO: Handle errors */
+                        show_help_comment("No connection, change saved localy.");
+                        setTimeout(function() { hide_help_comment(); }, 2000);
+
+                        /* No Connection, save change localy, and try to submit later */
+                        map.util.storage.add_change("add_area", area_data, map.local_db);
+                        TH.util.logging.log("Error adding area, saved to local changes.");
                     }
                 });
             } else {
@@ -1747,7 +1752,7 @@ function save_map_edit() {
                     dataType:   'json',
                     url:        'https://topohawk.com/api/v1.1/add_destination.php',
                     data:       destination_data,
-                    success: function(response) {
+                    success:    function(response) {
                         if (response.result_code > 0) {
                             /* TODO update destination lists */
                             button1_click();
@@ -1761,8 +1766,12 @@ function save_map_edit() {
                         }
                     },
                     error: function (req, status, error) {
-                        TH.util.logging.log("Error adding destination: " + error);
-                        /* TODO: Handle errors */
+                        show_help_comment("No connection, change saved localy.");
+                        setTimeout(function() { hide_help_comment(); }, 2000);
+
+                        /* No Connection, save change localy, and try to submit later */
+                        map.util.storage.add_change("add_destination", destination_data, map.local_db);
+                        TH.util.logging.log("Error adding estination, saved to local changes.");
                     }
                 });
             } else {
@@ -2119,14 +2128,23 @@ function update_current_route_tick() {
            data:     data,
            success:  function(response) {
                 if (response.result_code > 0) {
+                    show_help_comment("Route tick saved.");
+                    setTimeout(function() { hide_help_comment(); }, 2000);
                     TH.util.logging.log(response.result);
                     button_menu_ticks();
                 } else {
                     TH.util.logging.log(response.result);
+                    show_help_comment("Error updating route tick: " + response.result);
+                    setTimeout(function() { hide_help_comment(); }, 2000);
                 }
            },
            error: function (req, status, error) {
-               TH.util.logging.log("Error updating tick: " + error);
+               show_help_comment("No connection, change saved localy.");
+               setTimeout(function() { hide_help_comment(); }, 2000);
+
+               /* No Connection, save change localy, and try to submit later */
+               map.util.storage.add_change("edit_tick", data, map.local_db);
+               TH.util.logging.log("Error updating tick, saved to local changes.");
            }
         });
     } else {
@@ -2149,17 +2167,24 @@ function update_current_route_tick() {
            success:  function(response) {
                 if (response.result_code > 0) {
                     TH.util.logging.log(response.result);
+                    show_help_comment("Route tick saved.");
+                    setTimeout(function() { hide_help_comment(); }, 2000);
                 } else {
                     TH.util.logging.log(response.result);
+                    show_help_comment("Error saving route tick: " + response.result);
+                    setTimeout(function() { hide_help_comment(); }, 2000);
                 }
            },
            error: function (req, status, error) {
-               TH.util.logging.log("Error updating tick: " + error);
+               show_help_comment("No connection, change saved localy.");
+               setTimeout(function() { hide_help_comment(); }, 2000);
+
+               /* No Connection, save change localy, and try to submit later */
+               map.util.storage.add_change("add_tick", data, map.local_db);
+               TH.util.logging.log("Error saving tick, saved to local changes.");
            }
         });
     }
-
-    //TODO: Handle Errors
 }
 
 function update_route_edit_grade() {
@@ -2202,6 +2227,10 @@ function upload_photo() {
         },
         error: function (req, status, error) {
             $('#upload_photo_message').html('Photo Upload Failed.');
+
+            /* No Connection, save change localy, and try to submit later */
+            map.util.storage.add_change("add_photo", post_data, map.local_db);
+            TH.util.logging.log("Error uploading photo, saved to local changes.");
         }
     });
 

@@ -1515,6 +1515,29 @@
     };
 
     /* Storage Utils */
+    TH.util.storage.add_change = function (change_type, change_json, db) {
+        if (typeof db !== 'undefined') {
+            if (db.db_type == "indexedDB") {
+
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx){
+                    tx.executeSql("INSERT OR REPLACE into chnages values (NULL, ?, ?);",
+                    [change_type, JSON.stringify(change_json)],
+                    function(tx, response) {
+                        TH.util.logging.log("Change saved.");
+                    },
+                    function(e) {
+                        TH.util.logging.log("Change could not be saved.");
+                    });
+                });
+            }
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.add_change(change_type, change_json, db_init);
+            });
+        }
+    }
 
     TH.util.storage.add_destination = function (destination_obj, db) {
         if (typeof db !== 'undefined') {
@@ -2112,6 +2135,10 @@
                tx.executeSql("CREATE UNIQUE INDEX IF NOT EXISTS destination_id_index ON destinations (destination_id);");
             });
 
+            db_obj.db.transaction(function(tx) {
+               tx.executeSql("CREATE TABLE IF NOT EXISTS changes (change_id INTEGER PRIMARY KEY, change_type text, change_json text);", []);
+            });
+
             callback(db_obj);
         } else if (window.indexedDB || window.webkitIndexedDB || window.msIndexedDB) {
             var indexedDB = window.indexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -2567,10 +2594,10 @@
             'V0+',
             'V0+',
             'V1',
-            'V1',
+            'V1+',
             'V2',
             'V3',
-            'V3',
+            'V3+',
             'V4',
             'V5',
             'V6',
@@ -2844,6 +2871,7 @@
             'V0'    : 17,
             'V0+'   : 19,
             'V1'    : 20,
+            'V1+'   : 21,
             'V2'    : 22,
             'V3'    : 23,
             'V4'    : 25,
@@ -2859,7 +2887,7 @@
             'V14'   : 38,
             'V15'   : 39,
             'V16'   : 40,
-            'count' : 21,
+            'count' : 22,
             key: function (n) {
                 return this[Object.keys(this)[n]];
             }
