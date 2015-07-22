@@ -1904,6 +1904,45 @@
         }
      };
 
+     TH.util.storage.remove_changes = function (db) {
+         if (typeof db !== 'undefined') {
+             if (db.db_type == "indexedDB") {
+                 var transaction = db.db.transaction("changes", "readwrite");
+                 var store       = transaction.objectStore("changes");
+
+                 transaction.oncomplete = function(event) {
+                     TH.util.logging.log("Pending local symc items removed.");
+                 };
+
+                 transaction.onerror = function(event) {
+                   TH.util.logging.log("Error removing local sync items.");
+                 };
+
+                 store.clear();
+             } else if (db.db_type == "SQLite") {
+                 db.db.transaction(function(tx) {
+                     tx.executeSql("DELETE FROM changes;",
+                     [],
+                     function(tx, response) {
+                         if (response.rowsAffected > 0) {
+                             TH.util.logging.log("Pending local sync items removed.");
+                         } else {
+                             TH.util.logging.log("No local pending sync items.");
+                         }
+                     },
+                     function(e) {
+                         TH.util.logging.log("Error removing pending local sync items.");
+                     });
+                 });
+             }
+         } else {
+             /* DB is not given, get it */
+             TH.util.storage.init(function(db_init) {
+                 TH.util.storage.remove_changes(db_init);
+             });
+         }
+     }
+
      TH.util.storage.remove_destination_tiles = function (destination_id, db) {
         if (typeof db !== 'undefined') {
             /* Remove the tiles */

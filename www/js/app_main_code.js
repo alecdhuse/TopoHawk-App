@@ -86,6 +86,120 @@ function add_tick() {
     $("#screen_tick_edit").css('visibility', 'visible');
 }
 
+function api_add_area(data, show_ui_messages) {
+    var ui_message = "";
+
+    $.ajax({
+        type:       'POST',
+        dataType:   'json',
+        url:        'https://topohawk.com/api/v1.1/add_area.php',
+        data:       area_data,
+        success:    function(response) {
+            if (response.result_code > 0) {
+                map.set_destination(map.selected_destination.destination_id);
+                button1_click();
+                show_main_buttons();
+                show_ui_messages = "Area Added";
+            } else {
+                show_ui_messages = response.result;
+            }
+
+            TH.util.logging.log(ui_message);
+
+            if (show_ui_messages) {
+                show_help_comment(ui_message);
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+        },
+        error: function (req, status, error) {
+            if (show_ui_messages) {
+                show_help_comment("No connection, change saved localy.");
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+
+            /* No Connection, save change localy, and try to submit later */
+            map.util.storage.add_change("add_area", area_data, map.local_db);
+            TH.util.logging.log("Error adding area, saved to local changes.");
+        }
+    });
+}
+
+function api_add_destination(data, show_ui_messages) {
+    var ui_message = "";
+
+    $.ajax({
+        type:       'POST',
+        dataType:   'json',
+        url:        'https://topohawk.com/api/v1.1/add_destination.php',
+        data:       data,
+        success:    function(response) {
+            if (response.result_code > 0) {
+                /* TODO update destination lists */
+                button1_click();
+                show_main_buttons();
+                show_ui_messages = "Destination Added";
+            } else {
+                show_ui_messages = response.result;
+            }
+
+            TH.util.logging.log(ui_message);
+
+            if (show_ui_messages) {
+                show_help_comment(ui_message);
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+        },
+        error: function (req, status, error) {
+            if (show_ui_messages) {
+                show_help_comment("No connection, change saved localy.");
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+
+            /* No Connection, save change localy, and try to submit later */
+            map.util.storage.add_change("add_destination", destination_data, map.local_db);
+            TH.util.logging.log("Error adding estination, saved to local changes.");
+        }
+    });
+}
+
+function api_add_route(data, show_ui_messages) {
+    var ui_message = "";
+
+    $.ajax({
+         dataType:  'json',
+         type:      'POST',
+         url:       'https://topohawk.com/api/v1.1/add_route.php',
+         data:      data,
+         success:   function(response) {
+            if (response.result_code > 0) {
+                map.set_destination(map.selected_destination.destination_id);
+                button1_click();
+                show_main_buttons();
+                ui_message = "Route Added";
+            } else {
+                ui_message = response.result;
+            }
+
+            TH.util.logging.log(ui_message);
+
+            if (show_ui_messages) {
+                show_help_comment(ui_message);
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+        },
+        error: function (req, status, error) {
+            if (show_ui_messages) {
+                show_help_comment("No connection, change saved localy.");
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+
+            /* No Connection, save change localy, and try to submit later */
+            map.util.storage.add_change("add_route", route_data, map.local_db);
+            TH.util.logging.log("Error adding route, saved to local changes.");
+        }
+    });
+}
+
 function bind_swipes() {
     if (swipe_binded === false) {
         $("#screen_photo").on("swipeleft", function() {
@@ -527,8 +641,6 @@ function check_for_human() {
     var user_location = [user_latlng.lat.toFixed(2), user_latlng.lng.toFixed(2)];
     var email_addr = $("#signup_email").val();
 
-    /* $(".captcha_check").prop('checked', false); */
-
     $("#verification_text").html("<img src='images/ui-anim_basic_16x16.gif' />");
 
     var data = {
@@ -752,12 +864,6 @@ function create_destination_title() {
 
 function create_home_screen() {
     var html = "";
-
-    /*
-    html += "<div id='home_image'>";
-    html += "<img src='" + home_image + "' style='width:100%;'>";
-    html += "<p style='font-size:x-large;text-align:center;width:100%;'>Welcome!</p></div>";
-    */
 
     /* Create list of local destinations */
     html += "<div id='local_destinations' class='card'>";
@@ -1678,107 +1784,26 @@ function save_map_edit() {
         /* Just transitioned from the information screen */
         if (current_edit_mode == EDIT_MODE_ROUTE) {
             if (edit_new_object === true) {
-                var route_data = get_edit_route_data();
-
                 /* Add new Route */
-                $.ajax({
-                     dataType:  'json',
-                     type:      'POST',
-                     url:       'https://topohawk.com/api/v1.1/add_route.php',
-                     data:      route_data,
-                     success:   function(response) {
-                        if (response.result_code > 0) {
-                            map.set_destination(map.selected_destination.destination_id);
-                            button1_click();
-                            show_main_buttons();
-                            show_help_comment("Route Added");
-                            setTimeout(function() { hide_help_comment(); }, 2000);
-                        } else {
-                            show_help_comment(response.result);
-                            setTimeout(function() { hide_help_comment(); }, 2000);
-                            TH.util.logging.log(response.result);
-                        }
-                    },
-                    error: function (req, status, error) {
-                        show_help_comment("No connection, change saved localy.");
-                        setTimeout(function() { hide_help_comment(); }, 2000);
-
-                        /* No Connection, save change localy, and try to submit later */
-                        map.util.storage.add_change("add_route", route_data, map.local_db);
-                        TH.util.logging.log("Error adding route, saved to local changes.");
-                    }
-                });
+                api_add_route(get_edit_route_data(), true);
             } else {
                 /* Update existing route */
                 /* TODO: Finish update route */
             }
         } else if (current_edit_mode == EDIT_MODE_AREA) {
-            var area_data = get_edit_area_data();
-
             if (edit_new_object === true) {
-                $.ajax({
-                    type:       'POST',
-                    dataType:   'json',
-                    url:        'https://topohawk.com/api/v1.1/add_area.php',
-                    data:       area_data,
-                    success:    function(response) {
-                        if (response.result_code > 0) {
-                            map.set_destination(map.selected_destination.destination_id);
-                            button1_click();
-                            show_main_buttons();
-                            show_help_comment("Area Added");
-                            setTimeout(function() { hide_help_comment(); }, 2000);
-                        } else {
-                            show_help_comment(response.result);
-                            setTimeout(function() { hide_help_comment(); }, 2000);
-                            TH.util.logging.log(response.result);
-                        }
-                    },
-                    error: function (req, status, error) {
-                        show_help_comment("No connection, change saved localy.");
-                        setTimeout(function() { hide_help_comment(); }, 2000);
-
-                        /* No Connection, save change localy, and try to submit later */
-                        map.util.storage.add_change("add_area", area_data, map.local_db);
-                        TH.util.logging.log("Error adding area, saved to local changes.");
-                    }
-                });
+                /* Add new Area */
+                api_add_area(get_edit_area_data(), true);
             } else {
-
+                /* Update existing area */
+                /* TODO: Finish update area */
             }
         } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
-            var destination_data = get_edit_destination_data();
-
             if (edit_new_object === true) {
-                $.ajax({
-                    type:       'POST',
-                    dataType:   'json',
-                    url:        'https://topohawk.com/api/v1.1/add_destination.php',
-                    data:       destination_data,
-                    success:    function(response) {
-                        if (response.result_code > 0) {
-                            /* TODO update destination lists */
-                            button1_click();
-                            show_main_buttons();
-                            show_help_comment("Destination Added");
-                            setTimeout(function() { hide_help_comment(); }, 2000);
-                        } else {
-                            show_help_comment(response.result);
-                            setTimeout(function() { hide_help_comment(); }, 2000);
-                            TH.util.logging.log(response.result);
-                        }
-                    },
-                    error: function (req, status, error) {
-                        show_help_comment("No connection, change saved localy.");
-                        setTimeout(function() { hide_help_comment(); }, 2000);
-
-                        /* No Connection, save change localy, and try to submit later */
-                        map.util.storage.add_change("add_destination", destination_data, map.local_db);
-                        TH.util.logging.log("Error adding estination, saved to local changes.");
-                    }
-                });
+                api_add_destination(get_edit_destination_data(), true);
             } else {
-
+                /* Update existing destination */
+                /* TODO: Finish destination area */
             }
         }
     }
@@ -2201,13 +2226,13 @@ function upload_changes(changes_array) {
 
         for (var i=0; i<changes_array.length; i++) {
             if (changes_array[i].change_type == "add_area") {
-
+                api_add_area(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "add_destination") {
-
+                api_add_destination(get_edit_destination_data(), false);
             } else if (changes_array[i].change_type == "add_photo") {
 
             } else if (changes_array[i].change_type == "add_route") {
-
+                api_add_route(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_tick") {
 
             } else if (changes_array[i].change_type == "add_tick") {
