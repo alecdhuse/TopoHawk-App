@@ -174,7 +174,7 @@ function api_add_photo(data, show_ui_messages) {
             if (response.result_code > 0) {
                 ui_message = "Photo Uploaded.";
             } else {
-                ui_message = "Photo Upload Failed: " + response.result)
+                ui_message = "Photo Upload Failed: " + response.result;
             }
 
             if (show_ui_messages) {
@@ -266,6 +266,12 @@ function api_add_route_tick(data, show_ui_messages) {
            TH.util.logging.log("Error saving tick, saved to local changes.");
        }
     });
+}
+
+function api_edit_route(data, show_ui_messages) {
+    var ui_message = "";
+
+    /* TODO: Finish update route */
 }
 
 function api_edit_route_tick(data, show_ui_messages) {
@@ -725,6 +731,7 @@ function change_route(route_id, screen_switch, change_map_view) {
     /* Add photo link */
     if (api_key_th.length > 0) {
         inner_html += "<br /><a nohref onclick='show_upload_photo()'>Upload Photo</a>";
+        inner_html += "<br /><a nohref onclick='edit_current_route()'>Edit Route</a>";
     }
 
     /* Set inner screen html */
@@ -1380,6 +1387,53 @@ function download_selected_destination() {
     });
 }
 
+function edit_current_route() {
+    current_edit_mode = EDIT_MODE_ROUTE;
+    edit_new_object   = false;
+
+    var grade_system = map.get_grade_systems();
+    var route_difficulty = TH.util.grades.convert_common_to(grade_system[map.selected_route.properties.route_type], map.selected_route.properties.route_grade);
+    var route_latlng = L.latLng(map.selected_route.geometry.coordinates[1], map.selected_route.geometry.coordinates[0]);
+
+    /* Set map location to the routes location */
+    map._first_location_fix = false;
+    map.set_view(route_latlng, map.get_zoom());
+
+    /* fill fields */
+    $("#route_name").val(map.selected_route.properties.name);
+    $("#area_name_select").val(map.selected_route.properties.area_id);
+    $("#route_difficulty").val(route_difficulty);
+    $("#difficulty_grade").val(grade_system[map.selected_route.properties.route_type]);
+    $("#route_pitches").val(map.selected_route.properties.pitches);
+    $("#route_description").html(map.selected_route.properties.description);
+
+    /* Reset checks */
+    $("#aid").prop("checked", false);
+    $("#top_rope").prop("checked", false);
+    $("#sport").prop("checked", false);
+    $("#trad").prop("checked", false);
+    $("#mixed").prop("checked", false);
+    $("#boulder").prop("checked", false);
+
+    if (map.selected_route.properties.route_type == 'Boulder') {
+        $("#boulder").prop("checked", true);
+    } else if (map.selected_route.properties.route_type == 'Sport') {
+         $("#sport").prop("checked", true);
+    } else if (map.selected_route.properties.route_type == 'Trad') {
+         $("#trad").prop("checked", true);
+    } else if (map.selected_route.properties.route_type == 'Mixed') {
+         $("#mixed").prop("checked", true);
+    } else if (map.selected_route.properties.route_type == 'Top Rope') {
+         $("#top_rope").prop("checked", true);
+    } else if (map.selected_route.properties.route_type == 'Aid') {
+         $("#aid").prop("checked", true);
+    } else if (map.selected_route.properties.route_type == 'Ice') {
+    } else if (map.selected_route.properties.route_type == 'Alpine') {
+    }
+
+    show_map_edit_buttons(true);
+}
+
 function edit_route_tick(tick_id, send_type, comment, date, is_public) {
     var sel = "#tick_send_type option[value='" + send_type + "']";
     $(sel).prop("selected", true)
@@ -1891,7 +1945,7 @@ function save_map_edit() {
                 api_add_route(get_edit_route_data(), true);
             } else {
                 /* Update existing route */
-                /* TODO: Finish update route */
+                api_edit_route(get_edit_route_data(), true);
             }
         } else if (current_edit_mode == EDIT_MODE_AREA) {
             if (edit_new_object === true) {
