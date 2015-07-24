@@ -271,7 +271,37 @@ function api_add_route_tick(data, show_ui_messages) {
 function api_edit_route(data, show_ui_messages) {
     var ui_message = "";
 
-    /* TODO: Finish update route */
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1.1/update_route.php',
+       dataType: 'json',
+       data:     data,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                ui_message = "Route updated.";
+                button_menu_ticks();
+            } else {
+                ui_message = "Error updating route: " + response.result;
+            }
+
+            TH.util.logging.log(ui_message);
+
+            if (show_ui_messages) {
+                show_help_comment(ui_message);
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+       },
+       error: function (req, status, error) {
+           if (show_ui_messages) {
+               show_help_comment("No connection, change saved localy.");
+               setTimeout(function() { hide_help_comment(); }, 2000);
+           }
+
+           /* No Connection, save change localy, and try to submit later */
+           map.util.storage.add_change("edit_route", data, map.local_db);
+           TH.util.logging.log("Error updating route, saved to local changes.");
+       }
+    });
 }
 
 function api_edit_route_tick(data, show_ui_messages) {
@@ -2341,6 +2371,8 @@ function upload_changes(changes_array) {
                 api_add_photo(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "add_route") {
                 api_add_route(changes_array[i].change_json, false);
+            } else if (changes_array[i].change_type == "edit_route") {
+                api_edit_route(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_tick") {
                 api_edit_route_tick(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "add_tick") {
