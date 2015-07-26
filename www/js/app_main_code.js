@@ -94,6 +94,7 @@ function api_add_area(data, show_ui_messages) {
         dataType:   'json',
         url:        'https://topohawk.com/api/v1.1/add_area.php',
         data:       area_data,
+        timeout:    6000,
         success:    function(response) {
             if (response.result_code > 0) {
                 map.set_destination(map.selected_destination.destination_id);
@@ -107,12 +108,16 @@ function api_add_area(data, show_ui_messages) {
             TH.util.logging.log(ui_message);
 
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message);
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment("No connection, change saved localy.");
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
@@ -132,6 +137,7 @@ function api_add_destination(data, show_ui_messages) {
         dataType:   'json',
         url:        'https://topohawk.com/api/v1.1/add_destination.php',
         data:       data,
+        timeout:    6000,
         success:    function(response) {
             if (response.result_code > 0) {
                 /* TODO update destination lists */
@@ -145,12 +151,16 @@ function api_add_destination(data, show_ui_messages) {
             TH.util.logging.log(ui_message);
 
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message);
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment("No connection, change saved localy.");
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
@@ -170,6 +180,7 @@ function api_add_photo(data, show_ui_messages) {
         dataType:   'json',
         url:        'https://topohawk.com/api/v1/add_photo.php',
         data:       post_data,
+        timeout:    6000,
         success: function(response) {
             if (response.result_code > 0) {
                 ui_message = "Photo Uploaded.";
@@ -179,6 +190,7 @@ function api_add_photo(data, show_ui_messages) {
 
             if (show_ui_messages) {
                 $('#upload_photo_message').html('Photo Upload Failed: ' + response.result);
+                $("#search_loading_screen").css('visibility','hidden');
 
                 setTimeout(function(){
                     button1_click();
@@ -187,6 +199,8 @@ function api_add_photo(data, show_ui_messages) {
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 $('#upload_photo_message').html('Photo Upload Failed.');
             }
 
@@ -205,6 +219,7 @@ function api_add_route(data, show_ui_messages) {
          type:      'POST',
          url:       'https://topohawk.com/api/v1.1/add_route.php',
          data:      data,
+         timeout:   6000,
          success:   function(response) {
             if (response.result_code > 0) {
                 map.set_destination(map.selected_destination.destination_id);
@@ -218,12 +233,16 @@ function api_add_route(data, show_ui_messages) {
             TH.util.logging.log(ui_message);
 
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message);
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment("No connection, change saved localy.");
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
@@ -243,6 +262,7 @@ function api_add_route_tick(data, show_ui_messages) {
        url:      'https://topohawk.com/api/v1/add_route_tick.php',
        dataType: 'json',
        data:     data,
+       timeout:  6000,
        success:  function(response) {
             if (response.result_code > 0) {
                 ui_message = "Route tick saved.";
@@ -251,12 +271,16 @@ function api_add_route_tick(data, show_ui_messages) {
             }
 
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message);
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
+               /* Hide loading screen */
+               $("#search_loading_screen").css('visibility','hidden');
                show_help_comment("No connection, change saved localy.");
                setTimeout(function() { hide_help_comment(); }, 2000);
            }
@@ -276,6 +300,7 @@ function api_edit_route(data, show_ui_messages) {
        url:      'https://topohawk.com/api/v1.1/update_route.php',
        dataType: 'json',
        data:     data,
+       timeout:  6000,
        success:  function(response) {
             if (response.result_code > 0) {
                 ui_message = "Route updated.";
@@ -287,12 +312,16 @@ function api_edit_route(data, show_ui_messages) {
             TH.util.logging.log(ui_message);
 
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message);
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
+               /* Hide loading screen */
+               $("#search_loading_screen").css('visibility','hidden');
                show_help_comment("No connection, change saved localy.");
                setTimeout(function() { hide_help_comment(); }, 2000);
            }
@@ -312,6 +341,7 @@ function api_edit_route_tick(data, show_ui_messages) {
        url:      'https://topohawk.com/api/v1/edit_route_tick.php',
        dataType: 'json',
        data:     data,
+       timeout:  6000, 
        success:  function(response) {
             if (response.result_code > 0) {
                 ui_message = "Route tick saved.";
@@ -323,12 +353,16 @@ function api_edit_route_tick(data, show_ui_messages) {
             TH.util.logging.log(ui_message);
 
             if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message);
                 setTimeout(function() { hide_help_comment(); }, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
+               /* Hide loading screen */
+               $("#search_loading_screen").css('visibility','hidden');
                show_help_comment("No connection, change saved localy.");
                setTimeout(function() { hide_help_comment(); }, 2000);
            }
@@ -1969,6 +2003,9 @@ function save_map_edit() {
         edit_step = 2;
     } else if (edit_step == 2) {
         /* Just transitioned from the information screen */
+        /* Show loading screen */
+        $("#search_loading_screen").css('visibility','visible');
+
         if (current_edit_mode == EDIT_MODE_ROUTE) {
             if (edit_new_object === true) {
                 /* Add new Route */
