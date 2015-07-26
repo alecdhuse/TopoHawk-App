@@ -341,7 +341,7 @@ function api_edit_route_tick(data, show_ui_messages) {
        url:      'https://topohawk.com/api/v1/edit_route_tick.php',
        dataType: 'json',
        data:     data,
-       timeout:  6000, 
+       timeout:  6000,
        success:  function(response) {
             if (response.result_code > 0) {
                 ui_message = "Route tick saved.";
@@ -2036,7 +2036,7 @@ function save_map_edit() {
 function select_area_edit_description() {
     //TODO: Fix this
     $("#screen_edit_area_inner").animate({
-        scrollTop:$("#area_description_label").position().top
+        scrollTop:$("#area_visibility_label").position().top
     }, 200);
 }
 
