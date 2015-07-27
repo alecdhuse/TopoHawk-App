@@ -1041,7 +1041,7 @@ function create_home_screen() {
 
     /* Create list of local destinations */
     html += "<div id='local_destinations' class='card'>";
-    html += "<div id='local_destinations_title'>Near By Destinations</div>";
+    html += "<div class='card_title'>Near By Destinations</div>";
 
     if (local_destinations.length > 0) {
         for (var i=0; (i<4 && i<local_destinations.length); i++) {
@@ -1071,6 +1071,14 @@ function create_home_screen() {
 
     if (api_key_th.length > 0) {
         /* User logged in */
+        html += "<div id='tick_history_card' class='card' style='height:120px;padding-top:6px;'>";
+        html += "<div class='card_title'>Tick History</div>";
+        html += "<div id='tick_history_graph_div'><br /><br />";
+        html += "<div id='destination_downloading' class='loading_animation'>";
+        html += "<svg width='36' height='34'><g transform='scale(1,1) translate(0,0)' ><circle class='download_outer_circle' cx='175' cy='20' r='14' transform='rotate(-90, 95, 95)'/><g></svg>";
+        html += "</div></div></div>";
+
+        load_tick_history_card();
     } else {
         /* Not logged in */
         html += "<div id='welcome_account_links' class='card' style='height:34px;padding-top:6px;'>";
@@ -1859,6 +1867,117 @@ function hide_help_comment() {
 function hide_image_upload_info() {
     show_upload_photo();
     return false;
+}
+
+function load_tick_history_card() {
+    get_route_ticks(user_id, -1, function(results) {
+        if (results.length > 0) {
+            var graph_width = $("#tick_history_card").width() - 4;
+            $("#tick_history_graph_div").html("<canvas id='canvas_tick_history' height='90px' width='" + graph_width + "px'></canvas>");
+
+            var high_difficulty = 0;
+            var low_difficulty  = 40;
+            var sends = {
+                    'Boulder':    new Array(41),
+                    'Sport':      new Array(41),
+                    'Top Rope':   new Array(41),
+                    'Trad':       new Array(41)
+            };
+
+            for (var i=0; i<results.length; i++) {
+                if (results[i].send_type != "Project") {
+                    if (results[i].difficulty < low_difficulty) {
+                        low_difficulty = results[i].difficulty
+                    }
+
+                    if (results[i].difficulty > high_difficulty) {
+                        high_difficulty = results[i].difficulty
+                    }
+
+                    if (typeof sends[results[i].route_type][results[i].difficulty] === 'undefined') {
+                        sends[results[i].route_type][results[i].difficulty] = 1;
+                    } else {
+                        sends[results[i].route_type][results[i].difficulty]++;
+                    }
+                }
+            }
+
+            var grade_spread = high_difficulty - low_difficulty;
+            var sends_adj = {
+                    'Boulder':    new Array(grade_spread),
+                    'Sport':      new Array(grade_spread),
+                    'Top Rope':   new Array(grade_spread),
+                    'Trad':       new Array(grade_spread)
+            };
+
+            /* Get route lables baised off of prefered grade */
+            var grade_labels = new Array(grade_spread);
+            for (var i=low_difficulty; i<high_difficulty; i++) {
+                    sends_adj['Boulder'][i-low_difficulty] = sends['Boulder'][i];
+                    sends_adj['Sport'][i-low_difficulty] = sends['Sport'][i];
+                    sends_adj['Top Rope'][i-low_difficulty] = sends['Top Rope'][i];
+                    sends_adj['Trad'][i-low_difficulty] = sends['Trad'][i];
+
+                    grade_labels[i-low_difficulty] = TH.util.grades.convert_common_to(map.get_grade_systems()['Sport'], i);
+            }
+
+            /* Create Data Sets */
+            var datasets = [
+                {
+                    fillColor : "rgba(0,0,255,0.5)",
+                    strokeColor : "rgba(0,0,255,0.75)",
+                    pointColor : "rgba(0,0,255,1)",
+                    pointstrokeColor : "yellow",
+                    data : sends_adj["Sport"],
+                },
+                {
+                    fillColor : "rgba(255,0,0,0.5)",
+                    strokeColor : "rgba(255,0,0,0.75)",
+                    pointColor : "rgba(255,0,0,1)",
+                    pointstrokeColor : "yellow",
+                    data : sends_adj["Trad"],
+                }
+            ];
+
+            var graph_data = {
+            	labels : grade_labels,
+            	datasets : datasets
+            }
+
+            var mydata1 = {
+            	labels : ["5.10a","5.10b","5.10c","5.10d","5.11a","5.11b","5.11c"],
+            	datasets : [
+            		{
+            			fillColor : "rgba(220,220,220,0.5)",
+            			strokeColor : "rgba(220,220,220,1)",
+            			pointColor : "rgba(220,220,220,1)",
+            			pointstrokeColor : "yellow",
+            			data : [95,53,99,,73,27,82],
+                        title : "2014"
+            		}
+            	]
+            }
+
+            var opt1 = {
+                  animationStartWithDataset : 1,
+                  animationStartWithData : 1,
+                  animationSteps : 200,
+                  canvasBorders : false,
+                  canvasBordersWidth : 0,
+                  canvasBordersColor : "white",
+                  graphTitle : "",
+                  legend : false,
+                  inGraphDataShow : false,
+                  annotateDisplay : false,
+                  graphTitleFontSize: 10
+            }
+
+            var myBar = new Chart(document.getElementById("canvas_tick_history").getContext("2d")).Bar(graph_data, opt1);
+        } else {
+            /* User has no route ticks */
+            $("#tick_history_graph_div").html("<div class='card_title'>No ticks saved.</div>");
+        }
+    });
 }
 
 function map_area_clicked(area_obj) {

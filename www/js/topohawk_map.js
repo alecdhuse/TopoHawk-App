@@ -1852,7 +1852,7 @@
         var local_store_item = "offline_destination_id" + destination_id;
         var local_val = localStorage.getItem(local_store_item);
 
-        if (local_val !== null && local_val != 'undefined') {
+        if (local_val !== null && local_val !== 'undefined') {
             return local_val;
         } else {
             return "none";
