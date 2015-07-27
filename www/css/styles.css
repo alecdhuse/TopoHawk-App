@@ -177,7 +177,7 @@ hr {
 .card_title {
     font-size: large;
     margin-bottom: 4px;
-    text-align: center;    
+    text-align: center;
 }
 
 #center_div {
@@ -512,6 +512,7 @@ hr {
     margin-bottom: 3px;
     margin-top: 3px;
     min-height: 40px;
+    overflow-y: hidden;
     width: 100%;
 }
 
@@ -519,6 +520,7 @@ hr {
     margin-bottom: 3px;
     margin-top: 3px;
     min-height: 40px;
+    overflow-y: hidden;
     width: 100%;
 }
 

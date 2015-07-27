@@ -266,6 +266,8 @@ function api_add_route_tick(data, show_ui_messages) {
        success:  function(response) {
             if (response.result_code > 0) {
                 ui_message = "Route tick saved.";
+                get_route_ticks_html(0, 0, "#user_route_ticks");
+                button1_click();
             } else {
                 ui_message = "Error saving route tick: " + response.result;
             }
@@ -1071,13 +1073,13 @@ function create_home_screen() {
 
     if (api_key_th.length > 0) {
         /* User logged in */
-        html += "<div id='tick_history_card' class='card' style='height:120px;padding-top:6px;'>";
+        html += "<div id='tick_history_card' class='card' style='height:300px;padding-top:6px;'>";
         html += "<div class='card_title'>Tick History</div>";
         html += "<div id='tick_history_graph_div'><br /><br />";
         html += "<div id='destination_downloading' class='loading_animation'>";
         html += "<svg width='36' height='34'><g transform='scale(1,1) translate(0,0)' ><circle class='download_outer_circle' cx='175' cy='20' r='14' transform='rotate(-90, 95, 95)'/><g></svg>";
         html += "</div></div></div>";
-
+        html += "<div style='height:300px;'></div>";
         load_tick_history_card();
     } else {
         /* Not logged in */
@@ -1829,6 +1831,7 @@ function get_route_ticks_html(user_id, route_id, html_element) {
             html += "</div>";
         }
 
+        html += "<div style='height:100px;width:100%'></div>";
         $(html_element).html(html);
     });
 }
@@ -1872,8 +1875,9 @@ function hide_image_upload_info() {
 function load_tick_history_card() {
     get_route_ticks(user_id, -1, function(results) {
         if (results.length > 0) {
-            var graph_width = $("#tick_history_card").width() - 4;
-            $("#tick_history_graph_div").html("<canvas id='canvas_tick_history' height='90px' width='" + graph_width + "px'></canvas>");
+            var graph_height = $("#tick_history_card").height() - 30;
+            var graph_width  = $("#tick_history_card").width() - 4;
+            $("#tick_history_graph_div").html("<canvas id='canvas_tick_history' height='" + graph_height + "px' width='" + graph_width + "px'></canvas>");
 
             var high_difficulty = 0;
             var low_difficulty  = 40;
@@ -1895,9 +1899,17 @@ function load_tick_history_card() {
                     }
 
                     if (typeof sends[results[i].route_type][results[i].difficulty] === 'undefined') {
-                        sends[results[i].route_type][results[i].difficulty] = 1;
+                        if (results[i].send_type == 'Top Rope') {
+                            sends['Top Rope'][results[i].difficulty] = 1;
+                        } else {
+                            sends[results[i].route_type][results[i].difficulty] = 1;
+                        }
                     } else {
-                        sends[results[i].route_type][results[i].difficulty]++;
+                        if (results[i].send_type == 'Top Rope') {
+                            sends['Top Rope'][results[i].difficulty]++;
+                        } else {
+                            sends[results[i].route_type][results[i].difficulty]++;
+                        }
                     }
                 }
             }
@@ -1936,26 +1948,26 @@ function load_tick_history_card() {
                     pointColor : "rgba(255,0,0,1)",
                     pointstrokeColor : "yellow",
                     data : sends_adj["Trad"],
+                },
+                {
+                    fillColor : "rgba(0,240,0,0.5)",
+                    strokeColor : "rgba(0,240,0,0.75)",
+                    pointColor : "rgba(0,240,0,1)",
+                    pointstrokeColor : "yellow",
+                    data : sends_adj["Boulder"],
+                },
+                {
+                    fillColor : "rgba(255,215,0,0.5)",
+                    strokeColor : "rgba(255,215,0,0.75)",
+                    pointColor : "rgba(255,215,0,1)",
+                    pointstrokeColor : "yellow",
+                    data : sends_adj["Top Rope"],
                 }
             ];
 
             var graph_data = {
             	labels : grade_labels,
             	datasets : datasets
-            }
-
-            var mydata1 = {
-            	labels : ["5.10a","5.10b","5.10c","5.10d","5.11a","5.11b","5.11c"],
-            	datasets : [
-            		{
-            			fillColor : "rgba(220,220,220,0.5)",
-            			strokeColor : "rgba(220,220,220,1)",
-            			pointColor : "rgba(220,220,220,1)",
-            			pointstrokeColor : "yellow",
-            			data : [95,53,99,,73,27,82],
-                        title : "2014"
-            		}
-            	]
             }
 
             var opt1 = {
@@ -1972,7 +1984,7 @@ function load_tick_history_card() {
                   graphTitleFontSize: 10
             }
 
-            var myBar = new Chart(document.getElementById("canvas_tick_history").getContext("2d")).Bar(graph_data, opt1);
+            var myBar = new Chart(document.getElementById("canvas_tick_history").getContext("2d")).HorizontalBar(graph_data, opt1);
         } else {
             /* User has no route ticks */
             $("#tick_history_graph_div").html("<div class='card_title'>No ticks saved.</div>");
