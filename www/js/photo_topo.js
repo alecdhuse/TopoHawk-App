@@ -507,6 +507,12 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     this.route_marker_text.push(marker_point_text);
 
     marker_point_text.onClick = function(event) {
+        if (event.event.clientY === 0 && event.event.clientX === 0) {
+            /* Touch Event is sending position (0,0)*/
+            event.event.clientX = marker_x - text_position_offset;
+            event.event.clientY = first_point.y + y_offset;
+        }
+
         photo_topo_obj.show_route_popup(event, this, route);
         path.strokeColor = photo_topo_obj.path_color_selected;
     };

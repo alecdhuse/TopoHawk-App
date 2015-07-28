@@ -31,7 +31,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.0.1";
+var version              = "1.0.2";
 var welcome_html         = "";
 
 var destination_callback_change   = {
