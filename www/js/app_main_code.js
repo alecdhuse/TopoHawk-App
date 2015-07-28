@@ -1139,6 +1139,7 @@ function create_photo_canvas(photos) {
             photo_topo.init('photo_topo_canvas', photos[0], map.selected_destination, true);
             photo_topo.use_offline_images = true;
             photo_topo.resize([$("#photo_topo_canvas").height(), $("#photo_topo_canvas").width()]);
+            photo_topo.route_label_double_clicked = function(route) { photo_topo_label_double_click(route); };
             photo_topo_init = true;
             photo_bullets_update();
         } else {
@@ -2070,6 +2071,10 @@ function photo_show_previous() {
     }
 
     change_photo_topo_photo(photo_ids[photo_index]);
+}
+
+function photo_topo_label_double_click(route) {
+    change_route(route.properties.route_id, true, true);
 }
 
 function proccess_destination_callback(destination_callback_change_obj) {

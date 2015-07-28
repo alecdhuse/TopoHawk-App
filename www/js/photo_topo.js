@@ -28,11 +28,9 @@ function PT(canvas_id) {
     this.photo_left_margin    = 0;
     this.photo_json           = {};
     this.photo_top_margin     = 0;
-    this.photo_topo_loaded    = function() {};
     this.photo_url            = '';
     this.photo_user_id        = -1;
     this.photo_raster;
-    this.photo_resized        = function() {};
     this.photo_scale          = 1;
     this.photo_height_scaled  = 0;
     this.photo_width_scaled   = 0;
@@ -44,6 +42,11 @@ function PT(canvas_id) {
     this.selected_route_id    = 0;
     this.show_high_res_photos = true;
     this.use_offline_images   = true;
+
+    /* Overridable Functions */
+    this.photo_topo_loaded          = function() {};
+    this.photo_resized              = function() {};
+    this.route_label_double_clicked = function(route) {};
 
     this.type_colors = {
         'Aid':      "#d3d3d3",
@@ -502,6 +505,15 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     });
 
     this.route_marker_text.push(marker_point_text);
+
+    marker_point_text.onClick = function(event) {
+        photo_topo_obj.show_route_popup(event, this, route);
+        path.strokeColor = photo_topo_obj.path_color_selected;
+    };
+
+    marker_point_text.onDoubleClick = function(event) {
+        photo_topo_obj.route_label_double_clicked(route);
+    };
 
     marker_point_text.onMouseEnter = function(event) {
         photo_topo_obj.show_route_popup(event, this, route);
