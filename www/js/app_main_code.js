@@ -1073,9 +1073,9 @@ function create_home_screen() {
 
     if (api_key_th.length > 0) {
         /* User logged in */
-        html += "<div id='tick_history_card' class='card' style='height:300px;padding-top:6px;'>";
+        html += "<div id='tick_history_card' class='card' style='height:100px;padding-top:6px;'>";
         html += "<div class='card_title'>Tick History</div>";
-        html += "<div id='tick_history_graph_div'><br /><br />";
+        html += "<div id='tick_history_graph_div'><br />";
         html += "<div id='destination_downloading' class='loading_animation'>";
         html += "<svg width='36' height='34'><g transform='scale(1,1) translate(0,0)' ><circle class='download_outer_circle' cx='175' cy='20' r='14' transform='rotate(-90, 95, 95)'/><g></svg>";
         html += "</div></div></div>";
@@ -1875,10 +1875,6 @@ function hide_image_upload_info() {
 function load_tick_history_card() {
     get_route_ticks(user_id, -1, function(results) {
         if (results.length > 0) {
-            var graph_height = $("#tick_history_card").height() - 30;
-            var graph_width  = $("#tick_history_card").width() - 4;
-            $("#tick_history_graph_div").html("<canvas id='canvas_tick_history' height='" + graph_height + "px' width='" + graph_width + "px'></canvas>");
-
             var high_difficulty = 0;
             var low_difficulty  = 40;
             var sends = {
@@ -1932,6 +1928,12 @@ function load_tick_history_card() {
 
                     grade_labels[i-low_difficulty] = TH.util.grades.convert_common_to(map.get_grade_systems()['Sport'], i);
             }
+
+            /* Create Canvas */
+            var graph_height = (grade_spread * 20) + 80;
+            var graph_width  = $("#tick_history_card").width() - 4;
+            $("#tick_history_card").height(graph_height + 24);
+            $("#tick_history_graph_div").html("<canvas id='canvas_tick_history' height='" + graph_height + "px' width='" + graph_width + "px'></canvas>");
 
             /* Create Data Sets */
             var datasets = [
@@ -1987,7 +1989,8 @@ function load_tick_history_card() {
             var myBar = new Chart(document.getElementById("canvas_tick_history").getContext("2d")).HorizontalBar(graph_data, opt1);
         } else {
             /* User has no route ticks */
-            $("#tick_history_graph_div").html("<div class='card_title'>No ticks saved.</div>");
+            $("#tick_history_card").height(70);
+            $("#tick_history_graph_div").html("<div class='card_title' style='margin-top:10px;'>No route ticks saved.</div>");
         }
     });
 }
