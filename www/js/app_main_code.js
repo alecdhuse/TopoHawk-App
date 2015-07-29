@@ -616,6 +616,7 @@ function button_menu_ticks() {
 
 function buttons_reset() {
      map.enable_device_location(false);
+     photo_topo.hide_popups();
      hide_help_comment();
 
      $("#button1_img").attr("src", "images/button-info.svg");

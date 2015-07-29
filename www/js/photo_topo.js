@@ -71,7 +71,11 @@ function PT(canvas_id) {
 };
 
 PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
-    $('body').append("<div class='leaflet-label' id='route_popup' style='position:absolute;visibility:hidden;'></div>");
+    if ($("#route_popup").length) {
+        /* route popup exits already */
+    } else {
+        $('body').append("<div class='leaflet-label' id='route_popup' style='position:absolute;visibility:hidden;'></div>");
+    }
 
     paper.install(window);
 
@@ -535,6 +539,10 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
         }
     };
 };
+
+PT.prototype.hide_popups = function() {
+    $("#route_popup").css('visibility', 'hidden');
+}
 
 PT.prototype.resize = function(canvas_size) {
     paper = this.paper_scope;
