@@ -2505,7 +2505,7 @@ function update_current_route_tick() {
     var year1  = $("#tick_date").datepicker('getDate').getFullYear();
     var tick_date = year1 + "-" + month1 + "-" + day1;
 
-    if ($("#edit_tick_id").val(0) > 0) {
+    if (tick_id > 0) {
         //Update existing tick
         var data = {
             'user_id':       user_id,
