@@ -450,6 +450,12 @@ function button2_click() {
     if (current_mode == MODE_NONE) {
         $("#breadcrumbs_div_1").html("Destinations");
         $("#breadcrumbs_div_2").html("");
+    } else if (current_mode == MODE_DESTINATION) {
+        $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
+        $("#breadcrumbs_div_2").html("");
+    } else if (current_mode == MODE_AREA) {
+        $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
+        $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
     }
 }
 
