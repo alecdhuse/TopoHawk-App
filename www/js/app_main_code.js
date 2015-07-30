@@ -864,6 +864,9 @@ function click_stream_item(route_id, area_id, destination_id) {
     destination_callback_change.area_id        = area_id;
     destination_callback_change.route_id       = route_id;
 
+    /* Show loading screen */
+    $("#stream_loading_screen").css('visibility','visible');
+
     /* Get destination data, if new destination */
     if (map.selected_destination.destination_id != destination_id) {
         map.set_destination(destination_id, error_loading_destination);
@@ -2097,6 +2100,7 @@ function proccess_destination_callback(destination_callback_change_obj) {
 
     /* Hide any loading screens */
     $("#search_loading_screen").css('visibility','hidden');
+    $("#stream_loading_screen").css('visibility','hidden');
 }
 
 function remove_offline_destination(destination_id) {
