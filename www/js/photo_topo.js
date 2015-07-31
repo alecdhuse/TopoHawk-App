@@ -511,13 +511,20 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     this.route_marker_text.push(marker_point_text);
 
     marker_point_text.onClick = function(event) {
-        if (event.event.clientY === 0 && event.event.clientX === 0) {
-            /* Touch Event is sending position (0,0)*/
-            event.event.clientX = marker_x - text_position_offset;
-            event.event.clientY = first_point.y + y_offset;
+        if (event.event.clientY && event.event.clientX) {
+            photo_topo_obj.show_route_popup(event.event.clientX, event.event.clientY, this, route);
+        } else if (event.point) {
+            /* Touch Event uses different variable for location */
+            photo_topo_obj.show_route_popup(event.point.x, (event.point.y + 25), this, route);
+        } else {
+            photo_topo_obj.show_route_popup((marker_x - text_position_offset), (first_point.y + y_offset), this, route);
         }
 
-        photo_topo_obj.show_route_popup(event, this, route);
+        /* Reset all path colors */
+        for (var i=0; i<photo_topo_obj.paths.length; i++) {
+            photo_topo_obj.paths[i].strokeColor = photo_topo_obj.path_color;
+        }
+
         path.strokeColor = photo_topo_obj.path_color_selected;
     };
 
@@ -526,7 +533,7 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     };
 
     marker_point_text.onMouseEnter = function(event) {
-        photo_topo_obj.show_route_popup(event, this, route);
+        photo_topo_obj.show_route_popup(event.event.clientX, event.event.clientY, this, route);
         path.strokeColor = photo_topo_obj.path_color_selected;
     };
 
@@ -664,9 +671,9 @@ PT.prototype.set_locked = function(is_locked) {
     this._locked = is_locked;
 }
 
-PT.prototype.show_route_popup = function(event, point_text, route) {
-    var top  = event.event.clientY - 10;
-    var left = event.event.clientX + 25;
+PT.prototype.show_route_popup = function(x, y, point_text, route) {
+    var top  = y - 10;
+    var left = x + 25;
     var difficulty = TH.util.grades.convert_common_to(this.grade_system[route.properties.route_type], route.properties.route_grade);
 
     var lable_text = "<b>" + route.properties.name + "</b><br/>" + difficulty + " " + route.properties.route_type + "<br/>" + TH.util.get_star_html(route.properties.rating, true, this._offline_operation);
