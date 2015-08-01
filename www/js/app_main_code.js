@@ -2064,6 +2064,7 @@ function photo_bullets_update() {
 }
 
 function photo_show_next() {
+    photo_topo.hide_popups();
     photo_index++;
 
     if (photo_index >= photo_ids.length) {
@@ -2074,6 +2075,7 @@ function photo_show_next() {
 }
 
 function photo_show_previous() {
+    photo_topo.hide_popups();
     photo_index--;
 
     if (photo_index < 0) {
