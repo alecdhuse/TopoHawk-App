@@ -140,18 +140,28 @@
                             <input name="area_name_txt" type="text" id="area_name_txt" size="40" style="width:96%;">
                         </div>
 
-                        <div class="edit_field">
-                            <label for="textfield">Latitude:</label><br>
-                            <input name="textfield" type="text" class="latitude" id="area_latitude" size="40">
+                        <div style="width:100%;">
+                            <div style="float:left;width:75%;">
+                                <div class="edit_field">
+                                    <label for="textfield">Latitude:</label><br />
+                                    <input name="textfield" type="text" class="latitude" id="area_latitude" size="40" />
+                                </div>
+
+                                <div class="edit_field">
+                                    <label for="textfield">Longitude:</label><br />
+                                    <input name="textfield" type="text" class="longitude" id="area_longitude" size="40" />
+                                </div>
+                            </div>
+
+                            <div style="float:right;width:25%;">
+                                <div style="margin-left:auto;margin-right:auto;margin-top:24px;width:50px;">
+                                    <img src="images/map-icon-black.svg" onclick="show_map_edit_buttons(true)" />
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="edit_field">
-                            <label for="textfield">Longitude:</label><br>
-                            <input name="textfield" type="text" class="longitude" id="area_longitude" size="40">
-                        </div>
-
-                        <div class="edit_field">
-                            <label for="area_destination">Destination:</label><br>
+                        <div class="edit_field" style="width:100%;">
+                            <label for="area_destination">Destination:</label><br />
                             <select id="area_destination" name="area_destination">
                                 <option value="-1">Select a Destination</option>
                             </select>
@@ -185,17 +195,27 @@
                             <input name="dest_loc" id="dest_loc" size="40" type="text">
                         </div>
 
-                        <div class="edit_field">
-                            <label for="textfield">Latitude:</label><br>
-                            <input name="textfield" class="latitude" id="dest_lat" size="40" type="text">
+                        <div style="width:100%;">
+                            <div style="float:left;width:75%;">
+                                <div class="edit_field">
+                                    <label for="textfield">Latitude:</label><br />
+                                    <input name="textfield" type="text" class="latitude" id="dest_lat" size="40" />
+                                </div>
+
+                                <div class="edit_field">
+                                    <label for="textfield">Longitude:</label><br />
+                                    <input name="textfield" type="text" class="longitude" id="dest_lng" size="40" />
+                                </div>
+                            </div>
+
+                            <div style="float:right;width:25%;">
+                                <div style="margin-left:auto;margin-right:auto;margin-top:24px;width:50px;">
+                                    <img src="images/map-icon-black.svg" onclick="show_map_edit_buttons(true)" />
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="edit_field">
-                            <label for="textfield">Longitude:</label><br>
-                            <input name="textfield" class="longitude" id="dest_lng" size="40" type="text">
-                        </div>
-
-                        <div class="edit_field">
+                        <div class="edit_field" style="width:100%">
                             <label for="dest_desc">Description:</label><br>
                             <textarea name="dest_desc" cols="36" rows="23" id="dest_desc"></textarea>
                         </div>
@@ -238,24 +258,25 @@
                         <div style="width:100%;">
                             <div style="float:left;width:75%;">
                                 <div class="edit_field">
-                                    <label for="textfield">Latitude:</label><br>
-                                    <input name="textfield" class="latitude" id="route_latitude" size="40" type="text">
+                                    <label for="textfield">Latitude:</label><br />
+                                    <input name="textfield" class="latitude" id="route_latitude" size="40" type="text" />
                                 </div>
 
                                 <div class="edit_field">
-                                    <label for="textfield">Longitude:</label><br>
-                                    <input name="textfield" class="longitude" id="route_longitude" size="40" type="text">
+                                    <label for="textfield">Longitude:</label><br />
+                                    <input name="textfield" class="longitude" id="route_longitude" size="40" type="text" />
                                 </div>
                             </div>
+
                             <div style="float:right;width:25%;">
                                 <div style="margin-left:auto;margin-right:auto;margin-top:24px;width:50px;">
-                                    <img src="images/map-icon-black.svg" onclick="show_map_edit_buttons(true)">
+                                    <img src="images/map-icon-black.svg" onclick="show_map_edit_buttons(true)" />
                                 </div>
                             </div>
                         </div>
 
-                        <div class="edit_field">
-                            <label for="textarea">Description:</label><br>
+                        <div class="edit_field" style="width:100%">
+                            <label for="textarea">Description:</label><br />
                             <textarea name="textarea" cols="35" rows="6" id="route_description" style="width:96%;"></textarea>
                         </div>
 
