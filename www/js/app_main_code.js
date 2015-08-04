@@ -294,6 +294,14 @@ function api_add_route_tick(data, show_ui_messages) {
     });
 }
 
+function api_edit_area(data, show_ui_messages) {
+
+}
+
+function api_edit_destination(data, show_ui_messages) {
+
+}
+
 function api_edit_route(data, show_ui_messages) {
     var ui_message = "";
 
@@ -2560,6 +2568,10 @@ function upload_changes(changes_array) {
                 api_add_photo(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "add_route") {
                 api_add_route(changes_array[i].change_json, false);
+            } else if (changes_array[i].change_type == "edit_area") {
+                api_edit_area(changes_array[i].change_json, false);
+            } else if (changes_array[i].change_type == "edit_destination") {    
+                api_edit_destination(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_route") {
                 api_edit_route(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_tick") {
