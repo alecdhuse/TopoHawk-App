@@ -26,6 +26,7 @@ var photo_topo_init      = false;
 var photos_loaded        = false;
 var route_sort_by        = "topo";
 var status_bar_height    = 0;
+var stream_increment     = 10;
 var stream_offset        = 0;
 var stream_scroll        = false;
 var swipe_binded         = false;
@@ -2426,7 +2427,7 @@ function show_photo_stream() {
         dataType: 'json',
         data: {
             'offset': stream_offset,
-            'limit':  10
+            'limit':  stream_increment
         },
         success: function(response) {
             if (response.result_code > 0) {
@@ -2570,7 +2571,7 @@ function upload_changes(changes_array) {
                 api_add_route(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_area") {
                 api_edit_area(changes_array[i].change_json, false);
-            } else if (changes_array[i].change_type == "edit_destination") {    
+            } else if (changes_array[i].change_type == "edit_destination") {
                 api_edit_destination(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_route") {
                 api_edit_route(changes_array[i].change_json, false);
@@ -2690,7 +2691,7 @@ document.onreadystatechange = function(e) {
                 if (stream_scroll === false) {
                     /* load more photos */
                     stream_scroll  = true;
-                    stream_offset += 10;
+                    stream_offset += stream_increment;
                     show_photo_stream();
                 }
             }
