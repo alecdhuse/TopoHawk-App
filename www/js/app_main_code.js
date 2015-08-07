@@ -32,7 +32,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.0.3";
+var version              = "1.0.4";
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -296,11 +296,83 @@ function api_add_route_tick(data, show_ui_messages) {
 }
 
 function api_edit_area(data, show_ui_messages) {
+    var ui_message = "";
 
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1.1/update_area.php',
+       dataType: 'json',
+       data:     data,
+       timeout:  6000,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                ui_message = "Area updated.";
+            } else {
+                ui_message = "Error updating area: " + response.result;
+            }
+
+            TH.util.logging.log(ui_message);
+
+            if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
+                show_help_comment(ui_message);
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+       },
+       error: function (req, status, error) {
+           if (show_ui_messages) {
+               /* Hide loading screen */
+               $("#search_loading_screen").css('visibility','hidden');
+               show_help_comment("No connection, change saved localy.");
+               setTimeout(function() { hide_help_comment(); }, 2000);
+           }
+
+           /* No Connection, save change localy, and try to submit later */
+           map.util.storage.add_change("edit_area", data, map.local_db);
+           TH.util.logging.log("Error updating area, saved to local changes.");
+       }
+    });
 }
 
 function api_edit_destination(data, show_ui_messages) {
+    var ui_message = "";
 
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1/update_destination.php',
+       dataType: 'json',
+       data:     data,
+       timeout:  6000,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                ui_message = "Destination updated.";
+            } else {
+                ui_message = "Error updating destination: " + response.result;
+            }
+
+            TH.util.logging.log(ui_message);
+
+            if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
+                show_help_comment(ui_message);
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+       },
+       error: function (req, status, error) {
+           if (show_ui_messages) {
+               /* Hide loading screen */
+               $("#search_loading_screen").css('visibility','hidden');
+               show_help_comment("No connection, change saved localy.");
+               setTimeout(function() { hide_help_comment(); }, 2000);
+           }
+
+           /* No Connection, save change localy, and try to submit later */
+           map.util.storage.add_change("edit_destination", data, map.local_db);
+           TH.util.logging.log("Error updating destination, saved to local changes.");
+       }
+    });
 }
 
 function api_edit_route(data, show_ui_messages) {
@@ -315,7 +387,6 @@ function api_edit_route(data, show_ui_messages) {
        success:  function(response) {
             if (response.result_code > 0) {
                 ui_message = "Route updated.";
-                button_menu_ticks();
             } else {
                 ui_message = "Error updating route: " + response.result;
             }
@@ -2168,28 +2239,11 @@ function save_map_edit() {
         $("#search_loading_screen").css('visibility','visible');
 
         if (current_edit_mode == EDIT_MODE_ROUTE) {
-            if (edit_new_object === true) {
-                /* Add new Route */
-                api_add_route(get_edit_route_data(), true);
-            } else {
-                /* Update existing route */
-                api_edit_route(get_edit_route_data(), true);
-            }
+            api_edit_route(get_edit_route_data(), true);
         } else if (current_edit_mode == EDIT_MODE_AREA) {
-            if (edit_new_object === true) {
-                /* Add new Area */
-                api_add_area(get_edit_area_data(), true);
-            } else {
-                /* Update existing area */
-                /* TODO: Finish update area */
-            }
+            api_add_area(get_edit_area_data(), true);
         } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
-            if (edit_new_object === true) {
-                api_add_destination(get_edit_destination_data(), true);
-            } else {
-                /* Update existing destination */
-                /* TODO: Finish destination area */
-            }
+            api_add_destination(get_edit_destination_data(), true);
         }
     }
 }
