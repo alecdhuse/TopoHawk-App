@@ -787,6 +787,7 @@ function change_area(area_id, change_map_view) {
 
     if (api_key_th.length > 0) {
         /* Show the add new route option */
+        area_inner_html += "<div style='margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
         area_inner_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
     }
 
@@ -801,6 +802,7 @@ function change_area(area_id, change_map_view) {
 
 function change_destination(destination_id) {
     var loading_html = "<div style='margin-top:5px;text-align:center;'>Loading Area List <img src='images/ui-anim_basic_16x16.gif'></div>";
+
     $("#destination_search_results").html(loading_html);
 
     current_mode = MODE_DESTINATION;
@@ -971,6 +973,7 @@ function create_area_info() {
     var info_html = "<div>" + description + "</div>";
 
     if (api_key_th.length > 0) {
+        info_html += "<div style='margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
         info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
     }
 
@@ -1059,6 +1062,7 @@ function create_destination_info() {
 
     /* Add Area Option */
     if (api_key_th.length > 0) {
+        info_html += "<div style='margin-top:6px;'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
         info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
     }
 
@@ -1554,7 +1558,6 @@ function download_selected_destination() {
 
 function edit_current_area() {
     current_edit_mode = EDIT_MODE_AREA;
-    edit_new_object   = false;
 
     var object_latlng = L.latLng(map.selected_area.geometry.coordinates[1], map.selected_area.geometry.coordinates[0]);
 
@@ -1567,31 +1570,33 @@ function edit_current_area() {
     $("#area_desc").val(map.selected_area.properties.description);
     $("#area_destination").val(map.selected_area.properties.destination_id);
     $("#noUiSlider_area").val([map.selected_area.properties.min_zoom, map.selected_area.properties.max_zoom]);
+    $(".latitude").val(map.selected_area.geometry.coordinates[1]);
+    $(".longitude").val(map.selected_area.geometry.coordinates[0]);
 
-    show_map_edit_buttons(true);
+    show_map_edit_buttons(false);
 }
 
 function edit_current_destination() {
     current_edit_mode = EDIT_MODE_DESTINATION;
-    edit_new_object   = false;
 
-    var object_latlng = L.latLng(map.selected_destination.geometry.coordinates[1], map.selected_destination.geometry.coordinates[0]);
+    var object_latlng = L.latLng(map.selected_destination.destination_lat, map.selected_destination.destination_lng);
 
     /* Set map location to the object's location */
     map._first_location_fix = false;
     map.set_view(object_latlng, map.get_zoom());
 
     /* fill fields */
-    $("#dest_name").val(map.selected_destination.properties.name);
-    $("#dest_loc").val(map.selected_destination.location);
-    $("#dest_desc").val(map.selected_destination.properties.description);
+    $("#dest_name").val(map.selected_destination.destination_name);
+    $("#dest_loc").val(map.selected_destination.destination_location);
+    $("#dest_desc").val(map.selected_destination.description);
+    $(".latitude").val(map.selected_destination.destination_lat);
+    $(".longitude").val(map.selected_destination.destination_lng);
 
-    show_map_edit_buttons(true);
+    show_map_edit_buttons(false);
 }
 
 function edit_current_route() {
     current_edit_mode = EDIT_MODE_ROUTE;
-    edit_new_object   = false;
 
     var grade_system = map.get_grade_systems();
     var route_difficulty = TH.util.grades.convert_common_to(grade_system[map.selected_route.properties.route_type], map.selected_route.properties.route_grade);
@@ -1608,6 +1613,8 @@ function edit_current_route() {
     $("#difficulty_grade").val(grade_system[map.selected_route.properties.route_type]);
     $("#route_pitches").val(map.selected_route.properties.pitches);
     $("#route_description").html(map.selected_route.properties.description);
+    $(".latitude").val(map.selected_route.geometry.coordinates[1]);
+    $(".longitude").val(map.selected_route.geometry.coordinates[0]);
 
     /* Reset checks */
     $("#aid").prop("checked", false);
@@ -1633,7 +1640,7 @@ function edit_current_route() {
     } else if (map.selected_route.properties.route_type == 'Alpine') {
     }
 
-    show_map_edit_buttons(true);
+    show_map_edit_buttons(false);
 }
 
 function edit_route_tick(tick_id, send_type, comment, date, is_public) {
@@ -1762,7 +1769,7 @@ function get_edit_destination_data() {
         };
     } else {
         destination_data = {
-            'destination_id':   map.selected_destination.properties.route_id,
+            'destination_id':   map.selected_destination.destination_id,
             'dest_name':        dest_name,
             'dest_loc':         dest_loc,
             'dest_desc':        dest_desc,
@@ -2257,9 +2264,11 @@ function save_map_edit() {
         /* Just transitioned from the target/map screen */
         var map_center = map.get_center();
 
-        $("#target_overlay").css('visibility','hidden')
-        $(".latitude").val(map_center.lat);
-        $(".longitude").val(map_center.lng);
+        if (edit_new_object) {
+            $("#target_overlay").css('visibility','hidden')
+            $(".latitude").val(map_center.lat);
+            $(".longitude").val(map_center.lng);
+        }
 
         if (current_edit_mode == EDIT_MODE_ROUTE) {
             show_edit_route_screen();
@@ -2478,23 +2487,34 @@ function show_map_edit_buttons(is_new) {
 
     $("#button_group_right_secondary").css('visibility','visible');
     $("#button_group_left_secondary").css('visibility','visible');
-    button4_click();
 
-    $("#target_overlay").css('visibility','visible');
-    var target_top = (($(window).height() - 80 + status_bar_height) / 2) - 20 + "px";
-    var target_left = (($(window).width() / 2) - 20) + "px";
-    $("#target_overlay").css({'top':  target_top});
-    $("#target_overlay").css({'left':  target_left});
+    if (edit_new_object === true) {
+        if (current_mode == MODE_AREA) {
+            current_edit_mode = EDIT_MODE_ROUTE;
+        } else if (current_mode == MODE_DESTINATION) {
+            current_edit_mode = EDIT_MODE_AREA;
+        } else if (current_mode == MODE_NONE) {
+            current_edit_mode = EDIT_MODE_DESTINATION;
+        }
+    }
 
-    if (current_mode == MODE_AREA) {
-        current_edit_mode = EDIT_MODE_ROUTE;
+    if (current_mode == EDIT_MODE_ROUTE) {
         show_help_comment("Drag the map to position the target over the new route's location.");
-    } else if (current_mode == MODE_DESTINATION) {
-        current_edit_mode = EDIT_MODE_AREA;
+    } else if (current_mode == EDIT_MODE_AREA) {
         show_help_comment("Drag the map to position the target over the new area's location.");
-    } else if (current_mode == MODE_NONE) {
-        current_edit_mode = EDIT_MODE_DESTINATION;
+    } else if (current_mode == EDIT_MODE_DESTINATION) {
         show_help_comment("Drag the map to position the target over the new destination's location.");
+    }
+
+    if (edit_new_object) {
+        button4_click();
+        $("#target_overlay").css('visibility','visible');
+        var target_top = (($(window).height() - 80 + status_bar_height) / 2) - 20 + "px";
+        var target_left = (($(window).width() / 2) - 20) + "px";
+        $("#target_overlay").css({'top':  target_top});
+        $("#target_overlay").css({'left':  target_left});
+    } else {
+        save_map_edit();
     }
 }
 
