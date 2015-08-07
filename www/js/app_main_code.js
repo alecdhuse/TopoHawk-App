@@ -1552,6 +1552,43 @@ function download_selected_destination() {
     });
 }
 
+function edit_current_area() {
+    current_edit_mode = EDIT_MODE_AREA;
+    edit_new_object   = false;
+
+    var object_latlng = L.latLng(map.selected_area.geometry.coordinates[1], map.selected_area.geometry.coordinates[0]);
+
+    /* Set map location to the object's location */
+    map._first_location_fix = false;
+    map.set_view(object_latlng, map.get_zoom());
+
+    /* fill fields */
+    $("#area_name_txt").val(map.selected_area.properties.name);
+    $("#area_desc").val(map.selected_area.properties.description);
+    $("#area_destination").val(map.selected_area.properties.destination_id);
+    $("#noUiSlider_area").val([map.selected_area.properties.min_zoom, map.selected_area.properties.max_zoom]);
+
+    show_map_edit_buttons(true);
+}
+
+function edit_current_destination() {
+    current_edit_mode = EDIT_MODE_DESTINATION;
+    edit_new_object   = false;
+
+    var object_latlng = L.latLng(map.selected_destination.geometry.coordinates[1], map.selected_destination.geometry.coordinates[0]);
+
+    /* Set map location to the object's location */
+    map._first_location_fix = false;
+    map.set_view(object_latlng, map.get_zoom());
+
+    /* fill fields */
+    $("#dest_name").val(map.selected_destination.properties.name);
+    $("#dest_loc").val(map.selected_destination.location);
+    $("#dest_desc").val(map.selected_destination.properties.description);
+
+    show_map_edit_buttons(true);
+}
+
 function edit_current_route() {
     current_edit_mode = EDIT_MODE_ROUTE;
     edit_new_object   = false;
