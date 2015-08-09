@@ -41,6 +41,7 @@ function PT(canvas_id) {
     this.route_marker_text    = [];
     this.selected_route_id    = 0;
     this.show_high_res_photos = true;
+    this.tool                 = {};
     this.use_offline_images   = true;
 
     /* Overridable Functions */
@@ -102,9 +103,15 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
         this._get_photo_info(photo_id);
     }
 
-    /* Bind Scroll Events */
+    /* Bind Events */
     var pt_obj = this;
     var j_canvas_id = "#" + canvas_id;
+
+    this.tool = new Tool();
+    this.tool.onMouseDown = function(event) {
+        pt_obj.hide_popups();
+    };
+
     $(j_canvas_id).bind('mousewheel DOMMouseScroll', function(event){
         paper = pt_obj.paper_scope;
 
@@ -511,14 +518,21 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     this.route_marker_text.push(marker_point_text);
 
     marker_point_text.onClick = function(event) {
+        var popup_x, popup_y;
+
         if (event.event.clientY && event.event.clientX) {
-            photo_topo_obj.show_route_popup(event.event.clientX, event.event.clientY, this, route);
+            popup_x = event.event.clientX;
+            popup_y = event.event.clientY;
         } else if (event.point) {
             /* Touch Event uses different variable for location */
-            photo_topo_obj.show_route_popup(event.point.x, (event.point.y + 25), this, route);
+            popup_x = event.point.x;
+            popup_y = event.point.y + 25;
         } else {
-            photo_topo_obj.show_route_popup((marker_x - text_position_offset), (first_point.y + y_offset), this, route);
+            popup_x = marker_x - text_position_offset;
+            popup_y = first_point.y + y_offset;
         }
+
+        photo_topo_obj.show_route_popup(popup_x, popup_y, this, route);
 
         /* Reset all path colors */
         for (var i=0; i<photo_topo_obj.paths.length; i++) {
@@ -673,10 +687,14 @@ PT.prototype.set_locked = function(is_locked) {
 
 PT.prototype.show_route_popup = function(x, y, point_text, route) {
     var top  = y - 10;
-    var left = x + 25;
+    var left = x + 20;
     var difficulty = TH.util.grades.convert_common_to(this.grade_system[route.properties.route_type], route.properties.route_grade);
 
     var lable_text = "<b>" + route.properties.name + "</b><br/>" + difficulty + " " + route.properties.route_type + "<br/>" + TH.util.get_star_html(route.properties.rating, true, this._offline_operation);
+
+    if ((left + $("#route_popup").width()) > $(window).width()) {
+        left = x - 35 - $("#route_popup").width();
+    }
 
     $("#route_popup").html(lable_text);
     $("#route_popup").css('visibility', 'visible');
