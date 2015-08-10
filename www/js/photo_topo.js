@@ -688,15 +688,17 @@ PT.prototype.set_locked = function(is_locked) {
 PT.prototype.show_route_popup = function(x, y, point_text, route) {
     var top  = y - 10;
     var left = x + 20;
-    var difficulty = TH.util.grades.convert_common_to(this.grade_system[route.properties.route_type], route.properties.route_grade);
-
-    var lable_text = "<b>" + route.properties.name + "</b><br/>" + difficulty + " " + route.properties.route_type + "<br/>" + TH.util.get_star_html(route.properties.rating, true, this._offline_operation);
-
-    if ((left + $("#route_popup").width()) > $(window).width()) {
-        left = x - 35 - $("#route_popup").width();
-    }
+    var difficulty  = TH.util.grades.convert_common_to(this.grade_system[route.properties.route_type], route.properties.route_grade);
+    var lable_text  = "<b>" + route.properties.name + "</b><br/>" + difficulty + " " + route.properties.route_type + "<br/>" + TH.util.get_star_html(route.properties.rating, true, this._offline_operation);
 
     $("#route_popup").html(lable_text);
+
+    var popup_width = ($("#route_popup").width() < 40) ? 50 : $("#route_popup").width();
+
+    if ((left + popup_width) > $(window).width()) {
+        left = x - 35 - popup_width;
+    }
+
     $("#route_popup").css('visibility', 'visible');
     $("#route_popup").css('top', top);
     $("#route_popup").css('left', left);
