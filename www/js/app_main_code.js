@@ -2236,8 +2236,14 @@ function proccess_destination_callback(destination_callback_change_obj) {
 }
 
 function remove_offline_destination(destination_id) {
-    TH.util.offline.remove_offline_destination(destination_id);
-    button_menu_offline_content();
+    var user_response = confirm("Remove this destination from local storage?");
+
+    if (user_response == true) {
+        TH.util.offline.remove_offline_destination(destination_id);
+        button_menu_offline_content();
+    } else {
+        /* User Canceled */
+    }
 }
 
 function resize_window() {
