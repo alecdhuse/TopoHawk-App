@@ -657,6 +657,14 @@ hr {
     width: 250px;
 }
 
+.svg_black {
+  fill: #000;
+}
+
+.svg_blue {
+  fill: #00bbe0;
+}
+
 #target_overlay {
     position: absolute;
     visibility: hidden;

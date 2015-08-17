@@ -1204,7 +1204,11 @@ function create_offline_destinations_list() {
                 list_html += "<div class='destination_list_offline'>";
                 list_html += "<div class='destination_list_name_offline'>" + offline_destinations[i].destination_name + "</div>";
                 list_html += "<div class='offline_destinations_options_div'>"
-                list_html += "<div class='offline_destinations_options_left_div' onclick='refresh_offline_destination(" + offline_destinations[i].destination_id + ")'><img src='images/refresh.svg'/></div>";
+                list_html += "<div class='offline_destinations_options_left_div' onclick='refresh_offline_destination(" + offline_destinations[i].destination_id + ")'>"
+                list_html += "<svg x='0px' y='0px' width='12' height='12' class='svg_black' id='refresh_dest_icon_" + offline_destinations[i].destination_id + "'>";
+                list_html += "<path d='m 5.9999766,2.1599514 c 1.2678028,0 2.3938577,0.5987183 3.1041045,1.5252998 l -1.3532065,1.3546113 4.2409324,0 0,-4.24539598 -1.341704,1.34311358 C 9.5353797,0.83080776 7.8662377,0 5.9999766,0 2.9741264,0 0.46563513,2.1834507 0,5.0398625 l 2.2323883,0 C 2.6642218,3.3836237 4.187263,2.1599514 5.9999766,2.1599514 Z' />";
+                list_html += "<path d='m 5.9999766,9.8400504 c -1.2411506,0 -2.3464382,-0.5737547 -3.0587034,-1.4671635 l 1.4293695,-1.4127476 -4.36745708,0 0,4.3166867 1.38523288,-1.3691338 c 1.1144554,1.2807768 2.7668668,2.0923098 4.6115581,2.0923098 3.0258988,0 5.5342924,-2.183451 6.0000254,-5.0398627 l -2.2323884,0 C 9.3356828,8.616378 7.8125686,9.8400504 5.9999766,9.8400504 Z' />";
+                list_html += "</svg></div>";
                 list_html += "<div class='destination_list_name_offline_delete' onclick='remove_offline_destination(" + offline_destinations[i].destination_id + ")'>✖</div>";
                 list_html += "</div>";
                 list_html += "</div>";
@@ -2239,18 +2243,38 @@ function proccess_destination_callback(destination_callback_change_obj) {
 }
 
 function refresh_offline_destination(destination_id) {
-    /* TODO: Indicate refresh is happening */
-    
-    TH.util.offline.add_offline_destination(destination_id, function() {
-        /* Change Downloaded Image */
-        $(".download_icon").attr("id","destination_downloaded");
+    /* Indicate refresh is happening */
+    rotate_svg(("refresh_dest_icon_" + destination_id), 2, 1, "indefinite");
+    $("#refresh_dest_icon_" + destination_id).removeClass("svg_black");
+    $("#refresh_dest_icon_" + destination_id).addClass("svg_blue");
 
-        /* Set download as completed */
-        var local_store_item = "offline_destination_id" + map.selected_destination.destination_id;
-        localStorage.setItem(local_store_item, "downloaded");
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1.1/get_destination_data.php',
+       dataType: 'json',
+       data: {
+           'destination_id': destination_id,
+           'user_id':        this.user_id
+       },
+       success: function(response) {
+           TH.util.offline.add_offline_destination(response.result, function() {
+               /* Reset refresh indicator */
+               /* TODO: END rotation */
+               $("#refresh_dest_icon_" + destination_id).removeClass("svg_blue");
+               $("#refresh_dest_icon_" + destination_id).addClass("svg_black");
 
-        show_help_comment("Download of " + map.selected_destination.destination_name + " complete.");
-        setTimeout(function() { hide_help_comment(); }, 2000);
+               /* Set download as completed */
+               var local_store_item = "offline_destination_id" + map.selected_destination.destination_id;
+               localStorage.setItem(local_store_item, "downloaded");
+
+               show_help_comment("Download of " + response.result.destination_name + " complete.");
+               setTimeout(function() { hide_help_comment(); }, 2000);
+           });
+       },
+       error: function (req, status, error) {
+           show_help_comment("Error refreshing offline content for " + map.selected_destination.destination_name + ".");
+           setTimeout(function() { hide_help_comment(); }, 2000);
+       }
     });
 }
 
@@ -2280,6 +2304,26 @@ function resize_window() {
     var load_center_left = ($(window).width() / 2.0) - 75;
     $(".loading_screen_center").css({"margin-top": load_center_top});
     $(".loading_screen_center").css({"margin-left": load_center_left});
+}
+
+function rotate_svg(svg_id, duration, direction, repeat_count) {
+    var my_element = document.getElementById(svg_id);
+    var a = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+
+    var bb = my_element.getBBox();
+    var cx = bb.x + bb.width/2;
+    var cy = bb.y + bb.height/2;
+
+    a.setAttributeNS(null, "attributeName", "transform");
+    a.setAttributeNS(null, "attributeType", "XML");
+    a.setAttributeNS(null, "type", "rotate");
+    a.setAttributeNS(null, "dur", duration + "s");
+    a.setAttributeNS(null, "repeatCount", "indefinite");
+    a.setAttributeNS(null, "from", "0 " + cx + " " + cy);
+    a.setAttributeNS(null, "to", 360 * direction + " " + cx + " " + cy);
+
+    my_element.appendChild(a);
+    a.beginElement();
 }
 
 function save_map_edit() {
