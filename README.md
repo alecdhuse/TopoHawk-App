@@ -16,13 +16,15 @@ TopoHawk Mobile makes use of several open source projects and image sets.  We wo
 * nouislider - jQuery Range Slider
 * Maki Icon Set - Map Icon Set
 * ms-Dropdown - JQuery Combobox with Images
-* Arrow Icon - Designed by Mateo Zlatar from thenounproject.com
-* Book Icon - Designed by Nherwin Ardoña from thenounproject.com
+* Check-Mark Icon - Designed by P.J. Onori from thenounproject.com
+* Download Icon - Designed by Edward Boatman from thenounproject.com
 * Edit Icon - Designed by Stanislav Levin from thenounproject.com
 * List Icon - Designed by Michael Zenaty from thenounproject.com
-* Feedback Icon - Designed by David Ly from thenounproject.com
 * Funnel Icon - Designed by Volodin Anton from thenounproject.com
 * Map Icon - Designed by Stefan Zoll from thenounproject.com
+* Mountain Icon - Designed by Misirlou from thenounproject.com
 * Photos Icon - Designed by John Caserta from thenounproject.com
+* Refresh Icon - Designed by Alexey Sohrin from thenounproject.com
 * Star Icon - Designed by Dmitry Baranovskiy from thenounproject.com
-* Up Arrow Icon - Designed by Jamison Wieser from thenounproject.com
+* Target Icon - Designed by Laurent Patain from thenounproject.com
+* 
