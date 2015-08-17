@@ -27,4 +27,4 @@ TopoHawk Mobile makes use of several open source projects and image sets.  We wo
 * Refresh Icon - Designed by Alexey Sohrin from thenounproject.com
 * Star Icon - Designed by Dmitry Baranovskiy from thenounproject.com
 * Target Icon - Designed by Laurent Patain from thenounproject.com
-* 
+
