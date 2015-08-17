@@ -1203,7 +1203,10 @@ function create_offline_destinations_list() {
             for (var i=0; i<offline_destinations.length; i++) {
                 list_html += "<div class='destination_list_offline'>";
                 list_html += "<div class='destination_list_name_offline'>" + offline_destinations[i].destination_name + "</div>";
+                list_html += "<div class='offline_destinations_options_div'>"
+                list_html += "<div class='offline_destinations_options_left_div' onclick='refresh_offline_destination(" + offline_destinations[i].destination_id + ")'><img src='images/refresh.svg'/></div>";
                 list_html += "<div class='destination_list_name_offline_delete' onclick='remove_offline_destination(" + offline_destinations[i].destination_id + ")'>✖</div>";
+                list_html += "</div>";
                 list_html += "</div>";
             }
         } else {
@@ -2233,6 +2236,22 @@ function proccess_destination_callback(destination_callback_change_obj) {
     /* Hide any loading screens */
     $("#search_loading_screen").css('visibility','hidden');
     $("#stream_loading_screen").css('visibility','hidden');
+}
+
+function refresh_offline_destination(destination_id) {
+    /* TODO: Indicate refresh is happening */
+    
+    TH.util.offline.add_offline_destination(destination_id, function() {
+        /* Change Downloaded Image */
+        $(".download_icon").attr("id","destination_downloaded");
+
+        /* Set download as completed */
+        var local_store_item = "offline_destination_id" + map.selected_destination.destination_id;
+        localStorage.setItem(local_store_item, "downloaded");
+
+        show_help_comment("Download of " + map.selected_destination.destination_name + " complete.");
+        setTimeout(function() { hide_help_comment(); }, 2000);
+    });
 }
 
 function remove_offline_destination(destination_id) {

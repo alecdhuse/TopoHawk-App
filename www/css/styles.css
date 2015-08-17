@@ -251,7 +251,8 @@ hr {
 
 .destination_list_name_offline_delete {
     float: right;
-    font-size: 20px;
+    font-size: 22px;
+    margin-left: 5px;
 }
 
 #destination_search_results {
@@ -450,6 +451,16 @@ hr {
 
 .noUi-vertical .noUi-handle_text:after{
 	top:17px
+}
+
+.offline_destinations_options_div {
+    float: right;
+}
+
+.offline_destinations_options_left_div {
+    float: left;
+    margin-right: 5px;
+    margin-top: 4px;
 }
 
 .page_header {
