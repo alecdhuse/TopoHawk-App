@@ -1559,6 +1559,9 @@
                 var tx    = db.db.transaction("destinations", "readwrite");
                 var store = tx.objectStore("destinations");
 
+                /* Add download timestamp */
+                destination_obj.timestamp = new Date().getTime();
+
                 store.put({
                     destination_id: destination_obj.destination_id,
                     timestamp: Math.floor(Date.now() / 1000),

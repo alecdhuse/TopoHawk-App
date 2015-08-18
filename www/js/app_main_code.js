@@ -1008,7 +1008,7 @@ function create_area_list() {
 
                 area_list_html += "<div class='destination_list_element' onclick='change_area(" + map.areas.features[i].properties.area_id + ", true)'>";
                 area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
-                area_list_html += "<div class='destination_list_location'>" + route_count + " routes/problems</div>";
+                area_list_html += "<div class='destination_list_small_text'>" + route_count + " routes/problems</div>";
                 area_list_html += "</div>";
             } else {
                 hidden_count++;
@@ -1096,7 +1096,7 @@ function create_destination_list() {
         if (show_destination === true) {
             destination_list_html += "<div class='destination_list_element' onclick='change_destination(" + destination_id + ")'>";
             destination_list_html += "<div class='destination_list_name'>" + map.destinations.features[i].properties.name + "</div>";
-            destination_list_html += "<div class='destination_list_location'>" + map.destinations.features[i].properties.location + "</div>";
+            destination_list_html += "<div class='destination_list_small_text'>" + map.destinations.features[i].properties.location + "</div>";
             destination_list_html += "</div>";
         } else {
             hidden_count++;
@@ -1115,7 +1115,7 @@ function create_destination_list() {
 function create_destination_title() {
     /* Change title info */
     var title_html = "<div>" + map.selected_destination.destination_name;
-    title_html += "<div class='destination_list_location'>" + map.selected_destination.destination_location + "</div>";
+    title_html += "<div class='destination_list_small_text'>" + map.selected_destination.destination_location + "</div>";
 
     var offline_status = TH.util.storage.get_destination_status(map.selected_destination.destination_id);
 
@@ -1198,20 +1198,31 @@ function create_home_screen() {
 function create_offline_destinations_list() {
     TH.util.storage.get_all_destinations( function (offline_destinations) {
         var list_html = "<div>";
+        var destination_timestamp = "Unkown";
 
         if (offline_destinations.length > 0) {
             for (var i=0; i<offline_destinations.length; i++) {
+                if (offline_destinations[i].timestamp) {
+                    ts_array = new Date(offline_destinations[i].timestamp).toString().split(" ");
+                    destination_timestamp = "Updated: " + ts_array[1] + " " + ts_array[2] + " " + ts_array[3] + " " + ts_array[4];
+                } else {
+                    destination_timestamp = "Unkown";
+                }
+
                 list_html += "<div class='destination_list_offline'>";
+                list_html += "<div class='destination_list_cell'>";
                 list_html += "<div class='destination_list_name_offline'>" + offline_destinations[i].destination_name + "</div>";
-                list_html += "<div class='offline_destinations_options_div'>"
-                list_html += "<div class='offline_destinations_options_left_div svg_black' id='refresh_dest_div_" + offline_destinations[i].destination_id + "' onclick='refresh_offline_destination(" + offline_destinations[i].destination_id + ")'>"
+                list_html += "<div class='destination_list_name_offline_delete' onclick='remove_offline_destination(" + offline_destinations[i].destination_id + ")'>✖</div>";
+                list_html += "</div>";
+                list_html += "<div class='destination_list_cell'>";
+                list_html += "<div class='destination_list_small_text'>";
+                list_html += "<div style='width:250px;' class='svg_black' id='refresh_dest_div_" + offline_destinations[i].destination_id + "' onclick='refresh_offline_destination(" + offline_destinations[i].destination_id + ")'>"
                 list_html += "<svg x='0px' y='0px' width='12' height='12' id='refresh_dest_icon_" + offline_destinations[i].destination_id + "'>";
                 list_html += "<path d='m 5.9999766,2.1599514 c 1.2678028,0 2.3938577,0.5987183 3.1041045,1.5252998 l -1.3532065,1.3546113 4.2409324,0 0,-4.24539598 -1.341704,1.34311358 C 9.5353797,0.83080776 7.8662377,0 5.9999766,0 2.9741264,0 0.46563513,2.1834507 0,5.0398625 l 2.2323883,0 C 2.6642218,3.3836237 4.187263,2.1599514 5.9999766,2.1599514 Z' />";
                 list_html += "<path d='m 5.9999766,9.8400504 c -1.2411506,0 -2.3464382,-0.5737547 -3.0587034,-1.4671635 l 1.4293695,-1.4127476 -4.36745708,0 0,4.3166867 1.38523288,-1.3691338 c 1.1144554,1.2807768 2.7668668,2.0923098 4.6115581,2.0923098 3.0258988,0 5.5342924,-2.183451 6.0000254,-5.0398627 l -2.2323884,0 C 9.3356828,8.616378 7.8125686,9.8400504 5.9999766,9.8400504 Z' />";
-                list_html += "</svg></div>";
-                list_html += "<div class='destination_list_name_offline_delete' onclick='remove_offline_destination(" + offline_destinations[i].destination_id + ")'>✖</div>";
-                list_html += "</div>";
-                list_html += "</div>";
+                list_html += "</svg>";
+                list_html += "<span style='margin-left:5px;'>" + destination_timestamp + "</span></div></div>";
+                list_html += "</div></div>";
             }
         } else {
             list_html += "No offline destinations saved.";
@@ -1342,7 +1353,7 @@ function create_route_list(area_id) {
                 route_list_html += "<div class='destination_list_name'>" + current_route.properties.name + " ";
                 route_list_html += "<span>" + TH.util.get_star_html(current_route.properties.rating, true, true).substr(5) + "</span>";
                 route_list_html += "</div>";
-                route_list_html += "<div class='destination_list_location'>";
+                route_list_html += "<div class='destination_list_small_text'>";
                 route_list_html += "<span class='route_list_rating'>" + route_grade + "</span> ";
                 route_list_html += "<span class='route_list_type'>" + current_route.properties.route_type + "</span> ";
 
@@ -1382,7 +1393,7 @@ function create_search_result_html(search_results) {
         }
 
         seach_results_html += "<div class='destination_list_name'>" + search_results[i].title + "</div>";
-        seach_results_html += "<div class='destination_list_location'>" + search_results[i].location + "</div>";
+        seach_results_html += "<div class='destination_list_small_text'>" + search_results[i].location + "</div>";
 
         seach_results_html += "";
         seach_results_html += "</div>";
@@ -2269,6 +2280,7 @@ function refresh_offline_destination(destination_id) {
 
                show_help_comment("Download of " + response.result.destination_name + " complete.");
                setTimeout(function() { hide_help_comment(); }, 2000);
+               button_menu_offline_content();
            });
        },
        error: function (req, status, error) {

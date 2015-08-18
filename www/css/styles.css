@@ -225,11 +225,16 @@ hr {
   animation-iteration-count: infinite;
 }
 
+.destination_list_cell {
+    height: 20px;
+    width: 100%;
+}
+
 .destination_list_element {
     margin-top: 5px;
 }
 
-.destination_list_location {
+.destination_list_small_text {
     font-size: 10px;
     font-weight: normal;
 }
@@ -451,16 +456,6 @@ hr {
 
 .noUi-vertical .noUi-handle_text:after{
 	top:17px
-}
-
-.offline_destinations_options_div {
-    float: right;
-}
-
-.offline_destinations_options_left_div {
-    float: left;
-    margin-right: 5px;
-    margin-top: 4px;
 }
 
 .page_header {
