@@ -2278,6 +2278,10 @@ function on_keyboard_hide() {
     $("#spray_send_div").css('bottom','0px');
 }
 
+function on_keyboard_show() {
+
+}
+
 function on_load() {
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
         document.addEventListener("deviceready", onDeviceReady, false);
@@ -3073,7 +3077,7 @@ function onDeviceReady() {
     document.addEventListener("backbutton", button_back_click, false);
     document.addEventListener("menubutton", button_menu_click, false);
     document.addEventListener('hidekeyboard', on_keyboard_hide, false);
-    /* document.addEventListener('showkeyboard', onKeyboardShow, false); */
+    document.addEventListener('showkeyboard', on_keyboard_show, false);
 
     if (navigator.splashscreen) {
         navigator.splashscreen.hide();
