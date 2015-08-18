@@ -498,23 +498,24 @@
                 </div>
 
                 <div id="screen_spray" class="screen">
-                    <div class="screen_inner" id='stream_inner'>
-                        <div class="page_header">This feature is still under development.</div><br />
+                    <div class="screen_inner" id='spray_screen_inner'>
 
                         <div class="card">
                             <p>Spray is a way to comunicate with other TopoHawk users at a crag.</p>
-                            <p>Messages posted here are only visable for a few hours.</p>
+                            <p>Messages posted here are only visable for a short period of time.</p>
                         </div>
 
                         <div class="card" id="spray_login">
                             <p style="text-align:center">Please login to use this feature</p>
                         </div>
+
+                        <div id="spray_text"></div>
                     </div>
 
                     <div id="spray_send_div">
-                        <textarea id="spray_send_textarea"></textarea>
-                        <div id="spray_send_button">
-                            <div id="spray_send_button_outer">
+                        <textarea id="spray_send_textarea" autocomplete="off"></textarea>
+                        <div id="spray_send_button" onclick="send_spray()">
+                            <div id="spray_send_button_outer" class="spray_button_enabled">
                                 <div id="spray_send_button_inner">Send</div>
                             </div>
                         </div>
