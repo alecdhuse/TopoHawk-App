@@ -652,6 +652,40 @@ hr {
     width: 250px;
 }
 
+#spray_send_button_inner {
+    color: white;
+    margin: auto;
+    padding-top: 22px;
+}
+
+#spray_send_button {
+    float: right;
+    height: 64px;
+    margin: 4px;
+    width: 20%;
+}
+
+#spray_send_button_outer {
+    background-color: #00bbe0;
+    border-radius: 12px;
+    height: 100%;
+    text-align: center;
+}
+
+#spray_send_div {
+    bottom: 0px;
+    height: 130px;
+    margin-top: -150px;
+    position: fixed;
+    width: 100%;
+}
+
+#spray_send_textarea {
+    height: 70px;
+    margin-left: 4px;
+    width: 75%;
+}
+
 .svg_black {
   fill: #000;
 }

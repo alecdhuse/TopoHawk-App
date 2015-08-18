@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "com.topohawk.m"
-        version   = "1.0.4">
+        version   = "1.0.5">
 
     <name>TopoHawk</name>
 
@@ -88,7 +88,7 @@
     <access origin="http://topohawk.com" />
     <access origin="http://foldingmap.co" />
     <access origin="http://tiles.mapbox.com" subdomains="true"/>
-    <access origin="https://tiles.mapbox.com" subdomains="true"/>    
+    <access origin="https://tiles.mapbox.com" subdomains="true"/>
     <access origin="http://*.tiles.mapbox.com" subdomains="true"/>
     <access origin="https://*.tiles.mapbox.com" subdomains="true"/>
 </widget>
