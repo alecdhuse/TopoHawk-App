@@ -690,6 +690,7 @@ hr {
 }
 
 #spray_send_div {
+    background-color: white;
     bottom: 0px;
     height: 130px;
     margin-top: -150px;

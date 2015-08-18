@@ -729,7 +729,7 @@ function button_menu_spray() {
     $("#screen_spray").css('visibility','visible');
     $("#breadcrumbs_div_2").html("• Spray");
     $("#spray_login").hide();
-    
+
     if (map.selected_destination && map.selected_destination.destination_id > 0) {
         if (api_key_th.length > 0) {
             $("#spray_send_button_outer").addClass("spray_button_enabled");
@@ -2274,6 +2274,10 @@ function on_destinations_info_loaded() {
      get_local_destinations();
 }
 
+function on_keyboard_hide() {
+    $("#spray_send_div").css('bottom','0px');
+}
+
 function on_load() {
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
         document.addEventListener("deviceready", onDeviceReady, false);
@@ -2507,7 +2511,13 @@ function select_area_edit_description() {
     }, 200);
 }
 
+function select_spray_textarea() {
+    $("#spray_send_div").css('bottom','290px');
+}
+
 function send_spray() {
+    $("#spray_send_div").css('bottom','0px');
+
     if (map.selected_destination && map.selected_destination.destination_id > 0) {
         var spray_text = $("#spray_send_textarea").val();
         var destination_id = map.selected_destination.destination_id;
@@ -3062,6 +3072,8 @@ function onDeviceReady() {
 
     document.addEventListener("backbutton", button_back_click, false);
     document.addEventListener("menubutton", button_menu_click, false);
+    document.addEventListener('hidekeyboard', on_keyboard_hide, false);
+    /* document.addEventListener('showkeyboard', onKeyboardShow, false); */
 
     if (navigator.splashscreen) {
         navigator.splashscreen.hide();
