@@ -691,9 +691,19 @@ hr {
 
 #spray_send_div {
     background-color: white;
+    border-top-width: 1px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-top-style: solid;
+    border-right-style: solid;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-top-color: #AAA;    
     bottom: 0px;
     height: 130px;
     margin-top: -150px;
+    padding-top: 2px;
     position: fixed;
     width: 100%;
 }

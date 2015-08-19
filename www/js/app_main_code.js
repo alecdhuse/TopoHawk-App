@@ -15,6 +15,7 @@ var destination_callback = false;
 var edit_new_object      = true;
 var edit_step            = 0;
 var home_image           = "";
+var keyboard_height      = 260;
 var local_destinations   = [];
 var map_finished         = false;
 var map_height_adjust    = 0;
@@ -32,7 +33,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.0.5";
+var version              = "1.0.6";
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -729,6 +730,7 @@ function button_menu_spray() {
     $("#screen_spray").css('visibility','visible');
     $("#breadcrumbs_div_2").html("• Spray");
     $("#spray_login").hide();
+    $("#spray_send_div").css('bottom','0px');
 
     if (map.selected_destination && map.selected_destination.destination_id > 0) {
         if (api_key_th.length > 0) {
@@ -2241,7 +2243,7 @@ function load_tick_history_card() {
             var opt1 = {
                   animationStartWithDataset : 1,
                   animationStartWithData : 1,
-                  animationSteps : 200,
+                  animationSteps : 0,
                   canvasBorders : false,
                   canvasBordersWidth : 0,
                   canvasBordersColor : "white",
@@ -2516,7 +2518,7 @@ function select_area_edit_description() {
 }
 
 function select_spray_textarea() {
-    $("#spray_send_div").css('bottom','290px');
+    $("#spray_send_div").css('bottom', (keyboard_height + 'px'));
 }
 
 function send_spray() {
@@ -3076,8 +3078,8 @@ function onDeviceReady() {
 
     document.addEventListener("backbutton", button_back_click, false);
     document.addEventListener("menubutton", button_menu_click, false);
-    document.addEventListener('hidekeyboard', on_keyboard_hide, false);
-    document.addEventListener('showkeyboard', on_keyboard_show, false);
+    document.addEventListener("hidekeyboard", on_keyboard_hide, false);
+    document.addEventListener("showkeyboard", on_keyboard_show, false);
 
     if (navigator.splashscreen) {
         navigator.splashscreen.hide();
