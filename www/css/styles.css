@@ -190,6 +190,12 @@ hr {
     width: 100%;
 }
 
+.centered_button_div {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50px;
+}
+
 .comments {
     font-size: 12px;
     margin-left: 4px;
@@ -699,7 +705,7 @@ hr {
     border-right-style: solid;
     border-bottom-style: solid;
     border-left-style: solid;
-    border-top-color: #AAA;    
+    border-top-color: #AAA;
     bottom: 0px;
     height: 130px;
     margin-top: -150px;
@@ -716,12 +722,26 @@ hr {
     width: 75%;
 }
 
+.svg_all_blue {
+  fill: #00bbe0;
+  stroke: #00bbe0;
+}
+
+.svg_all_white {
+  fill: #fff;
+  stroke: #fff;
+}
+
 .svg_black {
   fill: #000;
 }
 
 .svg_blue {
   fill: #00bbe0;
+}
+
+.svg_white {
+  fill: #fff;
 }
 
 #target_overlay {

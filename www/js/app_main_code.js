@@ -563,13 +563,16 @@ function button1_click() {
         }
     }
 
-    $("#button1_img").attr("src", "images/button-info-selected.svg");
+    $("#button_1_div").removeClass("svg_all_white");
+    $("#button_1_div").addClass("svg_all_blue");
     $("#screen_info").css('visibility', 'visible');
 }
 
 function button2_click() {
     buttons_reset();
-    $("#button2_img").attr("src", "images/button-destinations-selected.svg");
+
+    $("#button_2_div").removeClass("svg_all_white");
+    $("#button_2_div").addClass("svg_all_blue");
     $("#screen_destinations").css('visibility','visible');
 
     if (current_mode == MODE_NONE) {
@@ -586,7 +589,8 @@ function button2_click() {
 
 function button3_click() {
     buttons_reset();
-    $("#button3_img").attr("src", "images/button-photos-selected.svg");
+    $("#button_3_div").removeClass("svg_all_white");
+    $("#button_3_div").addClass("svg_all_blue");
 
     if (current_mode > MODE_NONE) {
         get_photo_ids();
@@ -612,7 +616,8 @@ function button3_click() {
 
 function button4_click() {
     buttons_reset();
-    $("#button4_img").attr("src", "images/button-map-selected.svg");
+    $("#button_4_div").removeClass("svg_all_white");
+    $("#button_4_div").addClass("svg_all_blue");
     $("#screen_map").css('visibility','visible');
     $(".leaflet-control-attribution").css('visibility','visible');
     $("#breadcrumbs_div_1").html("Map");
@@ -820,10 +825,14 @@ function buttons_reset() {
      photo_topo.hide_popups();
      hide_help_comment();
 
-     $("#button1_img").attr("src", "images/button-info.svg");
-     $("#button2_img").attr("src", "images/button-destinations.svg");
-     $("#button3_img").attr("src", "images/button-photos.svg");
-     $("#button4_img").attr("src", "images/button-map.svg");
+     $("#button_1_div").removeClass("svg_all_blue");
+     $("#button_1_div").addClass("svg_all_white");
+     $("#button_2_div").removeClass("svg_all_blue");
+     $("#button_2_div").addClass("svg_all_white");
+     $("#button_3_div").removeClass("svg_all_blue");
+     $("#button_3_div").addClass("svg_all_white");
+     $("#button_4_div").removeClass("svg_all_blue");
+     $("#button_4_div").addClass("svg_all_white");
 
      $(".captcha_question_div").css('visibility','hidden');
      $(".leaflet-control-attribution").css('visibility','hidden');
