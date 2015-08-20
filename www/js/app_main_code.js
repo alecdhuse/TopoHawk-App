@@ -15,7 +15,7 @@ var destination_callback = false;
 var edit_new_object      = true;
 var edit_step            = 0;
 var home_image           = "";
-var keyboard_height      = 260;
+var keyboard_height      = 230;
 var local_destinations   = [];
 var map_finished         = false;
 var map_height_adjust    = 0;
@@ -33,7 +33,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.0.6";
+var version              = "1.0.7";
 var welcome_html         = "";
 
 var destination_callback_change   = {
