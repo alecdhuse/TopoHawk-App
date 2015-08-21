@@ -2034,6 +2034,7 @@ function get_photo_ids() {
            url:      'https://topohawk.com/api/v1/get_photos.php',
            dataType: 'json',
            data:     data,
+           timeout:  4000,
            success:  function(response) {
                 if (response.result_code > 0) {
                     photos_loaded = true;
@@ -2041,6 +2042,8 @@ function get_photo_ids() {
                 } else {
                     create_photo_canvas([0]);
                     TH.util.logging.log("Error " + response.result);
+                    show_help_comment("Error: " + response.result);
+                    setTimeout(function() { hide_help_comment(); }, 2000);
                 }
            },
            error: function (req, status, error) {
@@ -2068,12 +2071,16 @@ function get_photo_ids() {
                    }
                } else {
                    TH.util.logging.log("Error retrieving photo_ids.");
+                   show_help_comment("Error retrieving photos.");
+                   setTimeout(function() { hide_help_comment(); }, 2000);
                }
            }
         });
     } else {
         if (photos_loaded === false) {
             TH.util.logging.log("Function get_photo_ids has incorrect parameters.");
+            show_help_comment("Error getting photos.");
+            setTimeout(function() { hide_help_comment(); }, 2000);
         }
     }
 }
