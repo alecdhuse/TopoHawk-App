@@ -2161,6 +2161,102 @@
         }
     };
 
+    TH.util.storage.get_photo_by_area = function (area_id, callback, db) {
+        var photo_array = [];
+
+        if (typeof db !== 'undefined') {
+            if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM photos WHERE area_id =?",
+                    [area_id],
+                    function(tx, response) {
+                        if (response.rows.length > 0) {
+                            for (var i=0; i<response.rows.length; i++) {
+                                photo_array.push(response.rows.item(i).photo_id);
+                            }
+                        }
+
+                        callback(photo_array);
+                    },
+                    function(e) {
+                        callback(photo_array);
+                    });
+                });
+            } else {
+                callback(photo_array);
+            }
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.get_photo_by_area(area_id, callback, db_init);
+            });
+        }
+    }
+
+    TH.util.storage.get_photo_by_destination = function (destination_id, callback, db) {
+        var photo_array = [];
+
+        if (typeof db !== 'undefined') {
+            if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM photos WHERE destination_id =?",
+                    [destination_id],
+                    function(tx, response) {
+                        if (response.rows.length > 0) {
+                            for (var i=0; i<response.rows.length; i++) {
+                                photo_array.push(response.rows.item(i).photo_id);
+                            }
+                        }
+
+                        callback(photo_array);
+                    },
+                    function(e) {
+                        callback(photo_array);
+                    });
+                });
+            } else {
+                callback(photo_array);
+            }
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.get_photo_by_destination(destination_id, callback, db_init);
+            });
+        }
+    }
+
+    TH.util.storage.get_photo_by_route = function (route_id, callback, db) {
+        var photo_array = [];
+
+        if (typeof db !== 'undefined') {
+            if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM photos WHERE route_id =?",
+                    [route_id],
+                    function(tx, response) {
+                        if (response.rows.length > 0) {
+                            for (var i=0; i<response.rows.length; i++) {
+                                photo_array.push(response.rows.item(i).photo_id);
+                            }
+                        }
+
+                        callback(photo_array);
+                    },
+                    function(e) {
+                        callback(photo_array);
+                    });
+                });
+            } else {
+                callback(photo_array);
+            }
+        } else {
+            /* DB is not given, get it */
+            TH.util.storage.init(function(db_init) {
+                TH.util.storage.get_photo_by_route(route_id, callback, db_init);
+            });
+        }
+    }
+
     TH.util.storage.get_tile = function (x, y, z, callback, db) {
         if (typeof db !== 'undefined') {
             if (db.db_type == "indexedDB") {

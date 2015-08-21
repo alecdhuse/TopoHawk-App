@@ -2044,7 +2044,31 @@ function get_photo_ids() {
                 }
            },
            error: function (req, status, error) {
-               TH.util.logging.log("Error retrieving photo_ids.");
+               if (current_mode == MODE_DESTINATION) {
+                   TH.util.storage.get_photo_by_destination(map.selected_destination.destination_id, function(photo_array) {
+                       photos_loaded = true;
+                       create_photo_canvas(photo_array);
+                   });
+               } else if (current_mode == MODE_AREA) {
+                   TH.util.storage.get_photo_by_area(map.selected_area.properties.area_id, function(photo_array) {
+                       photos_loaded = true;
+                       create_photo_canvas(photo_array);
+                   });
+               } else if (current_mode == MODE_ROUTE) {
+                   if (map.selected_route.hasOwnProperty('properties')) {
+                       TH.util.storage.get_photo_by_route(map.selected_route.properties.route_id, function(photo_array) {
+                           photos_loaded = true;
+                           create_photo_canvas(photo_array);
+                       });
+                   } else {
+                       TH.util.storage.get_photo_by_area(map.selected_area.properties.area_id, function(photo_array) {
+                           photos_loaded = true;
+                           create_photo_canvas(photo_array);
+                       });
+                   }
+               } else {
+                   TH.util.logging.log("Error retrieving photo_ids.");
+               }
            }
         });
     } else {
@@ -3014,10 +3038,11 @@ document.onreadystatechange = function(e) {
             status_bar_height = 20;
             map_height_adjust = -15;
             keyboard_height   = 0;
-            
+
             $("#menu_popup").css({"top" : "50px"});
             $(".screen").css({"padding-top" : "20px"});
             $("#screen_map").css({"margin-top" : "15px"});
+            $(".search_text").css({"height" : "3em"});
             $("#top_bar_div").css({"padding-top" : "20px"});
         }
     }
