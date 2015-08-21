@@ -1558,8 +1558,8 @@
         }
     }
 
-    TH.util.storage.add_destination = function (destination_obj, db) {        
-        destination_obj['timestamp'] = Math.floor(Date.now() / 1000);
+    TH.util.storage.add_destination = function (destination_obj, db) {
+        destination_obj['timestamp'] = Date.now();
 
         if (typeof db !== 'undefined') {
             if (db.db_type == "indexedDB") {

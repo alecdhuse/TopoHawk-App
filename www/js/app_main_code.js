@@ -33,7 +33,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.0.7";
+var version              = "1.0.8";
 var welcome_html         = "";
 
 var destination_callback_change   = {
