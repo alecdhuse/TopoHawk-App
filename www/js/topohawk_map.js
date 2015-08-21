@@ -1558,7 +1558,9 @@
         }
     }
 
-    TH.util.storage.add_destination = function (destination_obj, db) {
+    TH.util.storage.add_destination = function (destination_obj, db) {        
+        destination_obj['timestamp'] = Math.floor(Date.now() / 1000);
+
         if (typeof db !== 'undefined') {
             if (db.db_type == "indexedDB") {
                 var tx    = db.db.transaction("destinations", "readwrite");
