@@ -671,6 +671,8 @@ function button_menu_click() {
         $("#menu_popup").css('left', left);
         $("#menu_popup").css('visibility','visible');
     }
+
+    photo_topo.hide_popups();
 }
 
 function button_menu_about() {
@@ -3011,7 +3013,8 @@ document.onreadystatechange = function(e) {
             /* Change Header size for status bar */
             status_bar_height = 20;
             map_height_adjust = -15;
-
+            keyboard_height   = 0;
+            
             $("#menu_popup").css({"top" : "50px"});
             $(".screen").css({"padding-top" : "20px"});
             $("#screen_map").css({"margin-top" : "15px"});

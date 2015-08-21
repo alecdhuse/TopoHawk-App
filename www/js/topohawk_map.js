@@ -1045,7 +1045,12 @@
                         }
                     }
 
-                    map_obj._gps_orientation = (map_obj._gps_orientation - 180);
+                    if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false) {
+                        map_obj._gps_orientation = (map_obj._gps_orientation);
+                    } else {
+                        map_obj._gps_orientation = (map_obj._gps_orientation - 180);
+                    }
+
                     map_obj._draw_location_marker(map_obj);
                 });
 
