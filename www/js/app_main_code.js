@@ -33,7 +33,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.0.8";
+var version              = "1.0.9";
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -51,13 +51,14 @@ var photo_uploader      = {
 
 /* Map Setup */
 var map = TH.map('screen_map', {
-    cluster:        true,
-    mobile:         true,
-    offline:        true,
-    show_location:  true,
-    lat:            40.6,
-    lng:            -98.0,
-    zoom:           3
+    cluster:         true,
+    mobile:          true,
+    offline:         true,
+    show_location:   true,
+    show_numberings: true,
+    lat:             40.6,
+    lng:             -98.0,
+    zoom:            3
 });
 
 map.on_area_click               = function (area_obj)        { map_area_clicked(area_obj); };
@@ -1477,7 +1478,13 @@ function create_route_list(area_id) {
                 route_grade = TH.util.grades.convert_common_to(grade_system[current_route.properties.route_type], current_route.properties.route_grade);
 
                 route_list_html += "<div class='destination_list_element' onclick='change_route(" + current_route.properties.route_id + ", true, true)'>";
-                route_list_html += "<div class='destination_list_name'>" + current_route.properties.name + " ";
+
+                if (current_route.properties.display_order > 0) {
+                    route_list_html += "<div class='destination_list_name'>" + current_route.properties.display_order + ". " + current_route.properties.name + " ";
+                } else {
+                    route_list_html += "<div class='destination_list_name'>" + current_route.properties.name + " ";
+                }
+
                 route_list_html += "<span>" + TH.util.get_star_html(current_route.properties.rating, true, true).substr(5) + "</span>";
                 route_list_html += "</div>";
                 route_list_html += "<div class='destination_list_small_text'>";
@@ -2428,7 +2435,7 @@ function proccess_destination_callback(destination_callback_change_obj) {
 
 function refresh_offline_destination(destination_id) {
     /* Indicate refresh is happening */
-    rotate_svg(("refresh_dest_icon_" + destination_id), 2, 1, "indefinite");
+    rotate_svg(("refresh_dest_icon_" + destination_id), 3, "infinite");
     $("#refresh_dest_div_" + destination_id).removeClass("svg_black");
     $("#refresh_dest_div_" + destination_id).addClass("svg_blue");
 
@@ -2491,36 +2498,14 @@ function resize_window() {
     $(".loading_screen_center").css({"margin-left": load_center_left});
 }
 
-function rotate_svg(svg_id, duration, direction, repeat_count) {
-    var my_element = document.getElementById(svg_id);
-    var a = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
-
-    var bb = my_element.getBBox();
-    var cx = bb.x + bb.width/2;
-    var cy = bb.y + bb.height/2;
-
-    a.setAttributeNS(null, "attributeName", "transform");
-    a.setAttributeNS(null, "attributeType", "XML");
-    a.setAttributeNS(null, "type", "rotate");
-    a.setAttributeNS(null, "dur", duration + "s");
-    a.setAttributeNS(null, "repeatCount", "indefinite");
-    a.setAttributeNS(null, "from", "0 " + cx + " " + cy);
-    a.setAttributeNS(null, "to", 360 * direction + " " + cx + " " + cy);
-
-    my_element.appendChild(a);
-    a.beginElement();
+function rotate_svg(svg_id, duration, repeat_count) {
+    $("#" + svg_id).css("animation-name", "cw");
+    $("#" + svg_id).css("animation-duration", duration + "s");
+    $("#" + svg_id).css("animation-iteration-count", repeat_count);
 }
 
 function stop_rotate_svg(svg_id) {
-    var div_id = "#" + svg_id.replace("svg", "div");
-    var svg_html = "";
-
-    svg_html += "<svg x='0px' y='0px' width='12' height='12' id='" + svg_id + "'>";
-    svg_html += "<path d='m 5.9999766,2.1599514 c 1.2678028,0 2.3938577,0.5987183 3.1041045,1.5252998 l -1.3532065,1.3546113 4.2409324,0 0,-4.24539598 -1.341704,1.34311358 C 9.5353797,0.83080776 7.8662377,0 5.9999766,0 2.9741264,0 0.46563513,2.1834507 0,5.0398625 l 2.2323883,0 C 2.6642218,3.3836237 4.187263,2.1599514 5.9999766,2.1599514 Z' />";
-    svg_html += "<path d='m 5.9999766,9.8400504 c -1.2411506,0 -2.3464382,-0.5737547 -3.0587034,-1.4671635 l 1.4293695,-1.4127476 -4.36745708,0 0,4.3166867 1.38523288,-1.3691338 c 1.1144554,1.2807768 2.7668668,2.0923098 4.6115581,2.0923098 3.0258988,0 5.5342924,-2.183451 6.0000254,-5.0398627 l -2.2323884,0 C 9.3356828,8.616378 7.8125686,9.8400504 5.9999766,9.8400504 Z' />";
-    svg_html += "</svg>";
-
-    $(div_id).html(svg_html);
+    $("#" + svg_id).css("animation-iteration-count", "1");
 }
 
 function save_map_edit() {

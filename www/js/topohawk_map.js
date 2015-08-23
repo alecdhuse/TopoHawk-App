@@ -908,7 +908,7 @@
                                 fail_callback(status);
                             }
                         },
-                        db
+                        map_obj.local_db
                     );
                }
             });
@@ -1619,6 +1619,8 @@
                             TH.util.logging.log("Photo downloaded: " + photo_obj.photo_id);
                         };
                     } else if (db.db_type == "SQLite") {
+                        photo_obj.photo_file = response;
+
                         db.db.transaction(function(tx){
                             tx.executeSql("INSERT OR REPLACE into photos values (?, ?, ?, ?, ?);",
                                 [photo_obj.photo_id, photo_obj.dest_id, photo_obj.area_id, photo_obj.route_id, JSON.stringify(photo_obj)],
@@ -1844,6 +1846,21 @@
                         callback(null);
                     }
                 };
+            } else if (db.db_type == "SQLite") {
+                db.db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM destinations WHERE destination_id =?;",
+                    [destination_id],
+                    function(tx, response) {
+                        if (response.rows.length > 0) {
+                            callback(JSON.parse(response.rows.item(0).destination_json));
+                        } else {
+                            callback(null);
+                        }
+                    },
+                    function(e) {
+                        callback(destinations);
+                    });
+                });
             } else {
                 callback(null);
             }

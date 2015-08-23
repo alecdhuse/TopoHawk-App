@@ -5,6 +5,11 @@
   to { stroke-dashoffset: 400; }
 }
 
+@keyframes cw {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 @keyframes show {
   from { stroke-dashoffset: 500; }
   to { stroke-dashoffset: 400; }
