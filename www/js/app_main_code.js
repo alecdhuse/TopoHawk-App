@@ -677,6 +677,7 @@ function button_menu_click() {
 
 function button_menu_about() {
     buttons_reset();
+    $("#app_version").html("v" + version);
     $("#menu_popup").css('visibility','hidden');
     $("#screen_about").css('visibility','visible');
     $("#breadcrumbs_div_2").html("• About");

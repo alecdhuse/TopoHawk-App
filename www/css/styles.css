@@ -40,6 +40,10 @@ hr {
     font-weight:bold;
 }
 
+#app_version {
+    font-size: 10px;
+}
+
 #arrow_left {
     float: left;
 }
