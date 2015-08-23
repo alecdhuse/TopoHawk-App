@@ -888,6 +888,7 @@
                type:     'POST',
                url:      'https://topohawk.com/api/v1.1/get_destination_data.php',
                dataType: 'json',
+               timeout:  6000,
                data: {
                    'destination_id': destination_id,
                    'user_id':        this._user_id
@@ -896,25 +897,19 @@
                    map_obj._update_destination_data(response.result, auto_zoom);
                },
                error: function (req, status, error) {
-                    if (status  == "timeout" || status == "error") {
-                        /* Check local cache if there is no connection */
-                        if (TH.util.storage.get_destination_status(destination_id) != "none") {
-                            TH.util.storage.get_destination(
-                                destination_id,
-                                function (destination_obj) {
-                                    map_obj._update_destination_data(destination_obj, auto_zoom);
-                                },
-                                db);
-                        } else {
-                            TH.util.logging.log('No connection and destination was not found in offline cache: ' + error);
-
-                            if (typeof fail_callback !== 'undefined' && fail_callback !== null) {
+                    /* Check local cache if there is no connection */
+                    TH.util.storage.get_destination(
+                        destination_id,
+                        function (destination_obj) {
+                            if (destination_obj !== null) {
+                                map_obj._update_destination_data(destination_obj, auto_zoom);
+                            } else {
+                                TH.util.logging.log('Error getting destination data: ' + error);
                                 fail_callback(status);
                             }
-                        }
-                    } else {
-                        TH.util.logging.log('Error getting destination data: ' + error);
-                    }
+                        },
+                        db
+                    );
                }
             });
         },
@@ -1845,6 +1840,8 @@
 
                     if (cursor) {
                         callback(JSON.parse(cursor.value.json));
+                    } else {
+                        callback(null);
                     }
                 };
             } else {

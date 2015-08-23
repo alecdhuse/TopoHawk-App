@@ -2085,7 +2085,7 @@ function get_photo_ids() {
     }
 }
 
-function get_route_ticks(user_id, route_id, callback) {
+function get_route_ticks(user_id, route_id, callback, fail_callback) {
     data = {
         key:        api_key_th,
         route_id:   route_id,
@@ -2097,6 +2097,7 @@ function get_route_ticks(user_id, route_id, callback) {
        url:      'https://topohawk.com/api/v1/get_route_ticks.php',
        dataType: 'json',
        data:     data,
+       timeout:  4000,
        success:  function(response) {
             if (response.result_code > 0) {
                 callback(response.result);
@@ -2106,6 +2107,10 @@ function get_route_ticks(user_id, route_id, callback) {
        },
        error: function (req, status, error) {
            TH.util.logging.log("Error retrieving route ticks.");
+
+           if (typeof(fail_callback) !== "undefined") {
+               fail_callback(status);
+           }
        }
     });
 }
@@ -2302,6 +2307,8 @@ function load_tick_history_card() {
             $("#tick_history_card").height(70);
             $("#tick_history_graph_div").html("<div class='card_title' style='margin-top:10px;'>No route ticks saved.</div>");
         }
+    }, function(status) {
+        $("#tick_history_graph_div").html("<div class='card_title' style='margin-top:10px;'>Failed to retrieve your route ticks.</div>");
     });
 }
 
