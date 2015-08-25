@@ -627,7 +627,7 @@
                 }
             }
 
-            if (vis_markers == 1) {
+            if (vis_markers == 1 && this.destinations['features'].length > 1) {
                 if (last_dest.properties.destination_id != this.selected_destination.destination_id) {
                     this._get_destination_data(last_dest.properties.destination_id, null, false);
                     this.selected_destination = last_dest;
