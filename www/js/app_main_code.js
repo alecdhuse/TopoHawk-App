@@ -3113,15 +3113,15 @@ document.onreadystatechange = function(e) {
 };
 
 function onDeviceReady() {
-    map.enable_device_location(true);
-    settings_load();
-    get_user_info();
-    TH.util.storage.check_offline_statuses();
-
     document.addEventListener("backbutton", button_back_click, false);
     document.addEventListener("menubutton", button_menu_click, false);
     document.addEventListener("hidekeyboard", on_keyboard_hide, false);
     document.addEventListener("showkeyboard", on_keyboard_show, false);
+
+    map.enable_device_location(true);
+    settings_load();
+    get_user_info();
+    TH.util.storage.check_offline_statuses();
 
     if (navigator.splashscreen) {
         navigator.splashscreen.hide();
