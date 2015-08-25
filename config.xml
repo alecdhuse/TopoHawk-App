@@ -58,6 +58,18 @@
         <splash src="platform/android/res/splash-720-960.png" density="port-xhdpi"/>
     </platform>
 
+<<<<<<< HEAD
+=======
+    <platform name="ios">
+        <splash src="platform/ios/res/splash-320-480.png"   width="320"  height="480" />
+        <splash src="platform/ios/res/splash-640-960.png"   width="640"  height="960" />
+        <splash src="platform/ios/res/splash-640-1136.png"  width="640"  height="1136" />
+        <splash src="platform/ios/res/splash-750-1334.png"  width="750"  height="1334" />
+        <splash src="platform/ios/res/splash-768-1024.png"  width="768"  height="1024" />
+        <splash src="platform/ios/res/splash-1242-2208.png" width="1242" height="2208" />
+    </platform>
+
+>>>>>>> parent of 04bb5c1... Try a different way of using iOS splash screens
     <icon src="platform/android/res/icon-36-ldpi.png"   gap:platform="android"   gap:qualifier="ldpi" />
     <icon src="platform/android/res/icon-48-mdpi.png"   gap:platform="android"   gap:qualifier="mdpi" />
     <icon src="platform/android/res/icon-72-hdpi.png"   gap:platform="android"   gap:qualifier="hdpi" />
@@ -72,24 +84,24 @@
         <splash src="www/res/screen/ios/splash-1242-2208.png"               width="1242" height="2208"/>
     </platform>
 
-    <gap:splash src="www/res/screen/ios/screen-iphone-portrait.png"         gap:platform="ios" width="320"  height="480" />
-    <gap:splash src="www/res/screen/ios/screen-iphone-portrait-2x.png"      gap:platform="ios" width="640"  height="960" />
-    <gap:splash src="www/res/screen/ios/screen-iphone-portrait-568h-2x.png" gap:platform="ios" width="640"  height="1136" />
-    <gap:splash src="www/res/screen/ios/splash-750-1334.png"                gap:platform="ios" width="750"  height="1334" />
-    <gap:splash src="www/res/screen/ios/screen-ipad-portrait.png"           gap:platform="ios" width="768"  height="1024" />
-    <gap:splash src="www/res/screen/ios/splash-1242-2208.png"               gap:platform="ios" width="1242" height="2208" />
+    <gap:splash src="images/screen-iphone-portrait.png"         gap:platform="ios" width="320"  height="480" />
+    <gap:splash src="images/screen-iphone-portrait-2x.png"      gap:platform="ios" width="640"  height="960" />
+    <gap:splash src="images/screen-iphone-portrait-568h-2x.png" gap:platform="ios" width="640"  height="1136" />
+    <gap:splash src="images/splash-750-1334.png"                gap:platform="ios" width="750"  height="1334" />
+    <gap:splash src="images/screen-ipad-portrait.png"           gap:platform="ios" width="768"  height="1024" />
+    <gap:splash src="images/splash-1242-2208.png"               gap:platform="ios" width="1242" height="2208" />
 
-    <icon src="www/res/icon/ios/icon-29.png"        gap:platform="ios" width="29"  height="29" />
-    <icon src="www/res/icon/ios/icon-small@2x.png"  gap:platform="ios" width="58"  height="58" />
-    <icon src="www/res/icon/ios/icon-40.png"        gap:platform="ios" width="40"  height="40" />
-    <icon src="www/res/icon/ios/icon-60.png"        gap:platform="ios" width="60"  height="60" />
-    <icon src="www/res/icon/ios/icon-72.png"        gap:platform="ios" width="72"  height="72" />
-    <icon src="www/res/icon/ios/icon-76.png"        gap:platform="ios" width="76"  height="76" />
-    <icon src="www/res/icon/ios/icon-40@2x.png"     gap:platform="ios" width="80"  height="80" />
-    <icon src="www/res/icon/ios/icon-60@2x.png"     gap:platform="ios" width="120" height="120" />
-    <icon src="www/res/icon/ios/icon-52@2x.png"     gap:platform="ios" width="152" height="152" />
-    <icon src="www/res/icon/ios/icon-180.png"       gap:platform="ios" width="180" height="180" />
-    <icon src="www/res/icon/ios/icon-192.png"       gap:platform="ios" width="192" height="192" />
+    <icon src="images/icon-29.png"        gap:platform="ios" width="29"  height="29" />
+    <icon src="images/icon-small@2x.png"  gap:platform="ios" width="58"  height="58" />
+    <icon src="images/icon-40.png"        gap:platform="ios" width="40"  height="40" />
+    <icon src="images/icon-60.png"        gap:platform="ios" width="60"  height="60" />
+    <icon src="images/icon-72.png"        gap:platform="ios" width="72"  height="72" />
+    <icon src="images/icon-76.png"        gap:platform="ios" width="76"  height="76" />
+    <icon src="images/icon-40@2x.png"     gap:platform="ios" width="80"  height="80" />
+    <icon src="images/icon-60@2x.png"     gap:platform="ios" width="120" height="120" />
+    <icon src="images/icon-52@2x.png"     gap:platform="ios" width="152" height="152" />
+    <icon src="images/icon-180.png"       gap:platform="ios" width="180" height="180" />
+    <icon src="images/icon-192.png"       gap:platform="ios" width="192" height="192" />
 
     <access origin="*" />
     <access origin="https://topohawk.com" />
