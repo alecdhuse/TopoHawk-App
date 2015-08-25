@@ -127,7 +127,8 @@ hr {
     border: 1px solid #222;
     border-radius: 10px;
     height: 108px;
-    margin: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 #captcha_answer {
