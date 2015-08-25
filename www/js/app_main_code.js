@@ -3047,6 +3047,11 @@ document.onreadystatechange = function(e) {
         }
     }
 
+    /* Adjust for very small screens */
+    if (screen.width <= 320) {
+        $("#captcha_question_text").css({"font-size" : "small"});
+    }
+
     /* Various key bindings */
     $("#destination_search_filter").keyup(function() { filter_list() });
 
