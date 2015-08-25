@@ -63,6 +63,7 @@
         <splash src="platform/ios/res/splash-640-960.png"   width="640"  height="960" />
         <splash src="platform/ios/res/splash-640-1136.png"  width="640"  height="1136" />
         <splash src="platform/ios/res/splash-750-1334.png"  width="750"  height="1334" />
+        <splash src="platform/ios/res/splash-768-1024.png"  width="768"  height="1024" />
         <splash src="platform/ios/res/splash-1242-2208.png" width="1242" height="2208" />
     </platform>
 
