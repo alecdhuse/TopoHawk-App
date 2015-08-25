@@ -44,6 +44,10 @@
     <gap:plugin name="org.apache.cordova.splashscreen" />
     <gap:plugin name="org.apache.cordova.statusbar" />
 
+    <gap:config-file platform="ios" parent="NSLocationAlwaysUsageDescription" overwrite="true">
+            <string>TopoHawk Moble</string>
+    </gap:config-file>
+
     <icon src="icon.png" />
     <gap:splash src="splash.png" />
 
