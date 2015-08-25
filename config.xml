@@ -67,6 +67,13 @@
         <splash src="platform/ios/res/splash-1242-2208.png" width="1242" height="2208" />
     </platform>
 
+    <gap:splash src="platform/ios/res/splash-320-480.png"   gap:platform="ios" width="320"  height="480" />
+    <gap:splash src="platform/ios/res/splash-640-960.png"   gap:platform="ios" width="640"  height="960" />
+    <gap:splash src="platform/ios/res/splash-640-1136.png"  gap:platform="ios" width="640"  height="1136" />
+    <gap:splash src="platform/ios/res/splash-750-1334.png"  gap:platform="ios" width="750"  height="1334" />
+    <gap:splash src="platform/ios/res/splash-768-1024.png"  gap:platform="ios" width="768"  height="1024" />
+    <gap:splash src="platform/ios/res/splash-1242-2208.png" gap:platform="ios" width="1242" height="2208" />
+
     <icon src="platform/android/res/icon-36-ldpi.png"   gap:platform="android"   gap:qualifier="ldpi" />
     <icon src="platform/android/res/icon-48-mdpi.png"   gap:platform="android"   gap:qualifier="mdpi" />
     <icon src="platform/android/res/icon-72-hdpi.png"   gap:platform="android"   gap:qualifier="hdpi" />
