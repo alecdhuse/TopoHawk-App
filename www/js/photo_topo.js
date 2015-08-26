@@ -468,7 +468,11 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
         }
     }
 
-    /* Create Route Markers */
+    /* Create Route Marker */
+    this.draw_route_marker_graphic(marker_x, marker_y, path, route);
+};
+
+PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, route) {
     var route_label_outer = new Path.Circle(new Point(marker_x, marker_y), 11);
     route_label_outer.fillColor = 'black';
 
@@ -483,7 +487,7 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
         /* The route desplay order is setm so display its numberical order */
         var marker_text = route.properties.display_order;
         var font_size   = 14;
-        var y_offset    = 25;
+        var y_offset    = 5;
 
         if (route.properties.display_order > 9) {
             var text_position_offset = 8;
@@ -507,7 +511,7 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     }
 
     var marker_point_text = new PointText({
-        point: [marker_x - text_position_offset, first_point.y + y_offset],
+        point: [marker_x - text_position_offset, marker_y + y_offset],
         content: marker_text,
         fillColor: 'white',
         fontFamily: 'Courier New',
@@ -559,7 +563,7 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
             path.strokeColor = photo_topo_obj.path_color;
         }
     };
-};
+}
 
 PT.prototype.hide_popups = function() {
     $("#route_popup").css('visibility', 'hidden');
