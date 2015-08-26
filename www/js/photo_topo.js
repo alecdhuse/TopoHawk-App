@@ -2,47 +2,48 @@ function PT(canvas_id) {
     this._canvas_center;
     this._canvas_center_1st;
     this._canvas_id;
-    this._destination_loaded  = false;
-    this._locked              = false;
-    this._mouse_dragging      = false;
-    this._mouse_drag_start_x  = 0;
-    this._mouse_drag_start_y  = 0;
-    this._offline_operation   = false;
-    this._paths_drawn         = false;
-    this._photo_loaded        = false;
+    this._destination_loaded   = false;
+    this._locked               = false;
+    this._mouse_dragging       = false;
+    this._mouse_drag_start_x   = 0;
+    this._mouse_drag_start_y   = 0;
+    this._offline_operation    = false;
+    this._paths_drawn          = false;
+    this._photo_loaded         = false;
 
-    this.canvas               = '';
+    this.canvas                = '';
     this.destination;
-    this.last_segment_index   = 0;
-    this.line_started         = false;
+    this.last_segment_index    = 0;
+    this.line_started          = false;
     this.loading_path;
-    this.new_path_points      = []
+    this.new_path_points       = []
     this.paper_scope;
-    this.path_color           = 'rgba(23,  157, 150, 0.7)';
-    this.path_color_selected  = 'rgba(255,   0,   0, 0.3)';
-    this.paths                = [];
-    this.paths_json           = [];
-    this.photo_area           = 0;
-    this.photo_destination    = 0;
-    this.photo_id             = 0;
-    this.photo_left_margin    = 0;
-    this.photo_json           = {};
-    this.photo_top_margin     = 0;
-    this.photo_url            = '';
-    this.photo_user_id        = -1;
+    this.path_color            = 'rgba(23,  157, 150, 0.7)';
+    this.path_color_selected   = 'rgba(255,   0,   0, 0.3)';
+    this.paths                 = [];
+    this.paths_json            = [];
+    this.photo_area            = 0;
+    this.photo_destination     = 0;
+    this.photo_id              = 0;
+    this.photo_left_margin     = 0;
+    this.photo_json            = {};
+    this.photo_top_margin      = 0;
+    this.photo_url             = '';
+    this.photo_user_id         = -1;
     this.photo_raster;
-    this.photo_scale          = 1;
-    this.photo_height_scaled  = 0;
-    this.photo_width_scaled   = 0;
-    this.pt_canvas_size       = [];
-    this.route_markers        = [];
-    this.route_markers_outer  = [];
-    this.route_marker_points  = [];
-    this.route_marker_text    = [];
-    this.selected_route_id    = 0;
-    this.show_high_res_photos = true;
-    this.tool                 = {};
-    this.use_offline_images   = true;
+    this.photo_scale           = 1;
+    this.photo_height_scaled   = 0;
+    this.photo_width_scaled    = 0;
+    this.pt_canvas_size        = [];
+    this.route_markers         = [];
+    this.route_markers_to_make = [];
+    this.route_markers_outer   = [];
+    this.route_marker_points   = [];
+    this.route_marker_text     = [];
+    this.selected_route_id     = 0;
+    this.show_high_res_photos  = true;
+    this.tool                  = {};
+    this.use_offline_images    = true;
 
     /* Overridable Functions */
     this.photo_topo_loaded          = function() {};
@@ -324,25 +325,26 @@ PT.prototype.change_photo = function(photo_id) {
             paper.view.center = this._canvas_center_1st;
         }
 
-        this._paths_drawn        = false;
-        this._photo_loaded       = false;
-        this.last_segment_index  = 0;
-        this.line_started        = false;
-        this.new_path_points     = []
-        this.paths               = [];
-        this.paths_json          = [];
-        this.photo_area          = 0;
-        this.photo_destination   = 0;
-        this.photo_left_margin   = 0;
-        this.photo_top_margin    = 0;
-        this.photo_url           = '';
-        this.photo_scale         = 1;
-        this.photo_height_scaled = 0;
-        this.photo_width_scaled  = 0;
-        this.route_markers       = [];
-        this.route_markers_outer = [];
-        this.route_marker_points = [];
-        this.route_marker_text   = [];
+        this._paths_drawn           = false;
+        this._photo_loaded          = false;
+        this.last_segment_index     = 0;
+        this.line_started           = false;
+        this.new_path_points        = []
+        this.paths                  = [];
+        this.paths_json             = [];
+        this.photo_area             = 0;
+        this.photo_destination      = 0;
+        this.photo_left_margin      = 0;
+        this.photo_top_margin       = 0;
+        this.photo_url              = '';
+        this.photo_scale            = 1;
+        this.photo_height_scaled    = 0;
+        this.photo_width_scaled     = 0;
+        this.route_markers          = [];
+        this.route_markers_to_make  = [];
+        this.route_markers_outer    = [];
+        this.route_marker_points    = [];
+        this.route_marker_text      = [];
 
         this._get_photo_info(photo_id);
     }
@@ -404,6 +406,13 @@ PT.prototype.draw_path = function(path, route_object, left_margin, top_margin, p
         this.new_path_points.push([x, y]);
     }
 
+    this.route_markers_to_make.push({
+        x:      first_point.x,
+        y:      first_point.y,
+        path:   new_path,
+        route:  route_object
+    });
+
     this.draw_route_marker(first_point, new_path, route_object);
     this.paths.push(new_path);
 };
@@ -420,9 +429,6 @@ PT.prototype.get_height_from_width = function(given_width) {
 }
 
 PT.prototype.draw_route_marker = function(first_point, path, route) {
-    paper = this.paper_scope;
-
-    var photo_topo_obj = this;
     var marker_x = first_point.x;
     var marker_y = first_point.y;
     var y_adjust = 20;
@@ -472,7 +478,18 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     this.draw_route_marker_graphic(marker_x, marker_y, path, route);
 };
 
+PT.prototype.draw_route_markers = function() {
+    var x_sorted_markers = this.route_markers_to_make.sort(function(a, b) {
+        return ((a.x < b.x) ? -1 : ((a.x > b.x) ? 1 : 0));
+    });
+
+    var tab = "tab";
+};
+
 PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, route) {
+    paper = this.paper_scope;
+    var photo_topo_obj = this;
+
     var route_label_outer = new Path.Circle(new Point(marker_x, marker_y), 11);
     route_label_outer.fillColor = 'black';
 
@@ -665,6 +682,9 @@ PT.prototype.resize = function(canvas_size) {
                             this.draw_path(this.paths_json[i], route_object, left_margin, top_margin, this.photo_height_scaled, this.photo_width_scaled);
                         }
                     }
+
+                    /* Draw all route markers */
+                    this.draw_route_markers();
 
                     this.paper_scope.view.update();
                     this.photo_topo_loaded();
