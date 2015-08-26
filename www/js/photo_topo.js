@@ -364,7 +364,7 @@ PT.prototype.create_new_line = function(event, route) {
 
         this.line_started = true;
         this.last_segment_index = 0;
-        this.draw_route_marker(event.point, path, route);
+        //this.draw_route_marker(event.point, path, route);
     } else {
         this.last_segment_index = this.last_segment_index + 1;
         this.paths[this.paths.length-1].add(event.point);
@@ -475,13 +475,44 @@ PT.prototype.draw_route_marker = function(first_point, path, route) {
     }
 
     /* Create Route Marker */
-    this.draw_route_marker_graphic(marker_x, marker_y, path, route);
+    //this.draw_route_marker_graphic(marker_x, marker_y, path, route);
+};
+
+PT.prototype.route_marker_overlaps = function(index, all_markers, margin) {
+    var does_overlap = false;
+
+    for (var i=0; i<all_markers.length; i++) {
+        if (i !== index) {
+            if (Math.abs(all_markers[index].x - all_markers[i].x) <= margin &&
+                Math.abs(all_markers[index].y - all_markers[i].y) <= margin) {
+                    does_overlap = true;
+                    break;
+            }
+        }
+    }
+
+    return does_overlap;
 };
 
 PT.prototype.draw_route_markers = function() {
-    var x_sorted_markers = this.route_markers_to_make.sort(function(a, b) {
+    var overlapping_markers = [];
+
+    for (var i=0; i<this.route_markers_to_make.length; i++) {
+        if (this.route_marker_overlaps(i, this.route_markers_to_make, 18)) {
+            overlapping_markers.push(this.route_markers_to_make[i]);
+        } else {
+            /* Draw marker */
+            this.draw_route_marker_graphic(this.route_markers_to_make[i].x, this.route_markers_to_make[i].y, this.route_markers_to_make[i].path, this.route_markers_to_make[i].route);
+        }
+    }
+
+    var x_sorted_markers = overlapping_markers.sort(function(a, b) {
         return ((a.x < b.x) ? -1 : ((a.x > b.x) ? 1 : 0));
     });
+
+    for (var i=0; i<x_sorted_markers.length; i++) {
+        this.draw_route_marker_graphic(x_sorted_markers[i].x, x_sorted_markers[i].y, x_sorted_markers[i].path, x_sorted_markers[i].route);
+    }
 
     var tab = "tab";
 };
