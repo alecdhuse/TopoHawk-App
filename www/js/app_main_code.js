@@ -1594,7 +1594,7 @@ function do_login() {
 
     $.ajax({
        type:     'POST',
-       url:      'https://topohawk.com/api/v1/login.php',
+       url:      'https://topohawk.com/api/v1.1/login.php',
        dataType: 'json',
        data:     login_data,
        success:  function(response) {
