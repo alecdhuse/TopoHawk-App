@@ -561,6 +561,9 @@ function button1_click() {
             create_destination_info();
         } else if (current_mode == MODE_AREA) {
             create_area_info();
+        } else if (current_mode == MODE_ROUTE) {
+            $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
+            $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);            
         }
     }
 
@@ -583,6 +586,9 @@ function button2_click() {
         $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
         $("#breadcrumbs_div_2").html("");
     } else if (current_mode == MODE_AREA) {
+        $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
+        $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
+    } else if (current_mode == MODE_ROUTE) {
         $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
         $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
     }
