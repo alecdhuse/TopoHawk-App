@@ -413,7 +413,6 @@ PT.prototype.draw_path = function(path, route_object, left_margin, top_margin, p
         route:  route_object
     });
 
-    this.draw_route_marker(first_point, new_path, route_object);
     this.paths.push(new_path);
 };
 
@@ -427,56 +426,6 @@ PT.prototype.get_height_from_width = function(given_width) {
         return 0;
     }
 }
-
-PT.prototype.draw_route_marker = function(first_point, path, route) {
-    var marker_x = first_point.x;
-    var marker_y = first_point.y;
-    var y_adjust = 20;
-
-    /* Check to see if marker wil lbe off the screen, and adjust if nessessary */
-    if (first_point.y > ($('#' + this._canvas_id).height() - 20)) {
-        y_adjust = 5;
-    }
-
-    marker_y = first_point.y + y_adjust;
-
-    /* Make sure route markers do not overlap */
-    for (var i=0; i<this.route_marker_points.length; i++) {
-        if ((marker_x - 12) < this.route_marker_points[i][0] && (marker_x + 12) > this.route_marker_points[i][0]) {
-            /* X Overlap */
-            var marker_x_test = marker_x - 10;
-            var best_marker_x = marker_x + 13;
-            var alt_marker_x  = marker_x;
-
-            while (marker_x_test < marker_x + 12) {
-                if ((marker_x_test - 13) < this.route_marker_points[i][0] && (marker_x_test + 13) > this.route_marker_points[i][0]) {
-                    /* Still Overlapping, but maybe this placment is better  */
-                    if (Math.abs(marker_x_test - marker_x) < Math.abs(alt_marker_x - marker_x)) {
-                        alt_marker_x = marker_x_test;
-                    }
-                } else {
-                    if (Math.abs(marker_x_test - marker_x) < Math.abs(best_marker_x - marker_x)) {
-                        best_marker_x = marker_x_test;
-                    }
-                }
-
-                marker_x_test += 4;
-            }
-
-            marker_x = best_marker_x;
-        } else if ((marker_y - 11) < this.route_marker_points[i][1] && (marker_y + 11) > this.route_marker_points[i][1]) {
-            /* Y Overlap */
-        }
-
-        /* Couldn't find non-overlapping, use best X placement */
-        if (Math.abs(best_marker_x - marker_x) < Math.abs(alt_marker_x - marker_x)) {
-            marker_x = alt_marker_x;
-        }
-    }
-
-    /* Create Route Marker */
-    //this.draw_route_marker_graphic(marker_x, marker_y, path, route);
-};
 
 PT.prototype.route_marker_overlaps = function(index, all_markers, margin) {
     var does_overlap = false;
@@ -494,32 +443,68 @@ PT.prototype.route_marker_overlaps = function(index, all_markers, margin) {
     return does_overlap;
 };
 
-PT.prototype.draw_route_markers = function() {
-    var overlapping_markers = [];
+PT.prototype.draw_route_markers = function(markers_to_make) {
+    if (markers_to_make.length > 0) {
+        var overlapping_markers = [];
 
-    for (var i=0; i<this.route_markers_to_make.length; i++) {
-        if (this.route_marker_overlaps(i, this.route_markers_to_make, 18)) {
-            overlapping_markers.push(this.route_markers_to_make[i]);
-        } else {
-            /* Draw marker */
-            this.draw_route_marker_graphic(this.route_markers_to_make[i].x, this.route_markers_to_make[i].y, this.route_markers_to_make[i].path, this.route_markers_to_make[i].route);
+        /* Make sure all markers on on the canvas */
+        for (var i=0; i<markers_to_make.length; i++) {
+            if (markers_to_make[i].x < 9) {
+                markers_to_make[i].x = 9;
+            }
+
+            /* todo: check bottom, top, right */
         }
+
+        for (var i=0; i<markers_to_make.length; i++) {
+            if (this.route_marker_overlaps(i, markers_to_make, 18)) {
+                overlapping_markers.push(markers_to_make[i]);
+            } else {
+                /* Draw marker */
+                this.draw_route_marker_graphic(markers_to_make[i].x, markers_to_make[i].y, markers_to_make[i].path, markers_to_make[i].route);
+            }
+        }
+
+        if (overlapping_markers.length > 1) {
+            for (var i=1; i<overlapping_markers.length; i++) {
+                var y_overlap = Math.abs(overlapping_markers[0].y - overlapping_markers[i].y);
+                var x_overlap = Math.abs(overlapping_markers[0].x - overlapping_markers[i].x);
+
+                if (y_overlap < 10) {
+                    if (overlapping_markers[0].y < overlapping_markers[i].y) {
+                        overlapping_markers[0].y -= (10 - y_overlap);
+                        overlapping_markers[i].y += (10 - y_overlap);
+                    } else {
+                        overlapping_markers[0].y += (10 - y_overlap);
+                        overlapping_markers[i].y -= (10 - y_overlap);
+                    }
+                }
+
+                if (x_overlap < 10) {
+                    if (overlapping_markers[0].x < overlapping_markers[i].x) {
+                        overlapping_markers[0].x -= (10 - x_overlap);
+                        overlapping_markers[i].x += (10 - x_overlap);
+                    } else {
+                        overlapping_markers[0].x += (10 - x_overlap);
+                        overlapping_markers[i].x -= (10 - x_overlap);
+                    }
+                }
+            }
+        }
+
+        if (overlapping_markers.length > 0) {
+            this.draw_route_marker_graphic(overlapping_markers[0].x, overlapping_markers[0].y, overlapping_markers[0].path,overlapping_markers[0].route);
+            overlapping_markers.splice(0, 1);
+        }
+
+        this.draw_route_markers(overlapping_markers);
     }
-
-    var x_sorted_markers = overlapping_markers.sort(function(a, b) {
-        return ((a.x < b.x) ? -1 : ((a.x > b.x) ? 1 : 0));
-    });
-
-    for (var i=0; i<x_sorted_markers.length; i++) {
-        this.draw_route_marker_graphic(x_sorted_markers[i].x, x_sorted_markers[i].y, x_sorted_markers[i].path, x_sorted_markers[i].route);
-    }
-
-    var tab = "tab";
 };
 
 PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, route) {
     paper = this.paper_scope;
     var photo_topo_obj = this;
+    var y_adjust = 1;
 
     var route_label_outer = new Path.Circle(new Point(marker_x, marker_y), 11);
     route_label_outer.fillColor = 'black';
@@ -715,7 +700,7 @@ PT.prototype.resize = function(canvas_size) {
                     }
 
                     /* Draw all route markers */
-                    this.draw_route_markers();
+                    this.draw_route_markers(this.route_markers_to_make);
 
                     this.paper_scope.view.update();
                     this.photo_topo_loaded();
