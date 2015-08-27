@@ -2471,6 +2471,13 @@
 
             request.onerror = function(event) {
                 TH.util.logging.log("error: " + event.target.errorCode);
+
+                var db_obj = {
+                    db_type: "none",
+                    db:      null
+                }
+
+                callback(db_obj);
             };
         }
     };
