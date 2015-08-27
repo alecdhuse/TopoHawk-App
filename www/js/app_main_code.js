@@ -1329,6 +1329,7 @@ function create_home_screen() {
     $("#screen_info_title").css({"background-image": background_url});
 
     /* Adjust for large screens */
+    /*
     var card_max_width = parseInt($(".card").css("max-width").slice(0,-2));
 
     if (card_max_width < screen.width) {
@@ -1340,6 +1341,7 @@ function create_home_screen() {
     if (screen.height > 799) {
         $("#screen_info_title").css("height", "280px");
     }
+    */
 }
 
 function create_offline_destinations_list() {
