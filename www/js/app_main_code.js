@@ -563,7 +563,7 @@ function button1_click() {
             create_area_info();
         } else if (current_mode == MODE_ROUTE) {
             $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
-            $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);            
+            $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
         }
     }
 
@@ -1327,6 +1327,19 @@ function create_home_screen() {
     $("#screen_info_title").css({"margin": "0px"});
     $("#screen_info_title").css({"height": "180px"});
     $("#screen_info_title").css({"background-image": background_url});
+
+    /* Adjust for large screens */
+    var card_max_width = parseInt($(".card").css("max-width").slice(0,-2));
+
+    if (card_max_width < screen.width) {
+        var margin = (screen.width - card_max_width) / 2.0;
+        var margin_css = margin + "px";
+        $(".card").css("margin-left", margin_css);
+    }
+
+    if (screen.height > 799) {
+        $("#screen_info_title").css("height", "280px");
+    }
 }
 
 function create_offline_destinations_list() {
@@ -2502,6 +2515,16 @@ function resize_window() {
     var load_center_left = ($(window).width() / 2.0) - 75;
     $(".loading_screen_center").css({"margin-top": load_center_top});
     $(".loading_screen_center").css({"margin-left": load_center_left});
+
+     var card_max_width = parseInt($(".card").css("max-width").slice(0,-2));
+     if (card_max_width < screen.width) {
+             /* Adjust for large screens */
+             var margin = (screen.width - card_max_width) / 2.0;
+             var margin_css = margin + "px";
+             $(".card").css("margin-left", margin_css);
+    } else if (card_max_width > screen.width) {
+        $(".card").css("margin-left", "0px");
+    }
 }
 
 function rotate_svg(svg_id, duration, repeat_count) {
