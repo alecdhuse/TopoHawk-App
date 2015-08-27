@@ -1042,6 +1042,8 @@
 
                     if (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false) {
                         map_obj._gps_orientation = (map_obj._gps_orientation);
+                    } else if (navigator.userAgent.match(/(Android)/g) ? true : false) {
+                        map_obj._gps_orientation = (map_obj._gps_orientation);
                     } else {
                         map_obj._gps_orientation = (map_obj._gps_orientation - 180);
                     }

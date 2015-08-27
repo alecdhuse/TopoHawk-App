@@ -2515,16 +2515,6 @@ function resize_window() {
     var load_center_left = ($(window).width() / 2.0) - 75;
     $(".loading_screen_center").css({"margin-top": load_center_top});
     $(".loading_screen_center").css({"margin-left": load_center_left});
-
-     var card_max_width = parseInt($(".card").css("max-width").slice(0,-2));
-     if (card_max_width < screen.width) {
-             /* Adjust for large screens */
-             var margin = (screen.width - card_max_width) / 2.0;
-             var margin_css = margin + "px";
-             $(".card").css("margin-left", margin_css);
-    } else if (card_max_width > screen.width) {
-        $(".card").css("margin-left", "0px");
-    }
 }
 
 function rotate_svg(svg_id, duration, repeat_count) {
@@ -3077,7 +3067,7 @@ document.onreadystatechange = function(e) {
     }
 
     /* Adjust for very small screens */
-    if (screen.width <= 320) {
+    if (window.innerWidth <= 320) {
         $("#captcha_question_text").css({"font-size" : "small"});
     }
 
