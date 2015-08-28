@@ -185,8 +185,16 @@ hr {
     padding: 4px;
 }
 
-.card_timestamp {
+.card_bottom {
     font-size: 10px;
+    height: 12px;
+    margin-top: 4px;
+    width: 100%;
+}
+
+.card_timestamp {
+    float: left;
+    width: 49%;
 }
 
 .card_title {
@@ -677,6 +685,13 @@ hr {
 .spray_child {
     border: 1px solid #EDEDED;
     margin-top: 4px;
+}
+
+.spray_reply_link {
+    color: #00bbe0;
+    float: right;
+    text-align: right;
+    width: 49%;
 }
 
 #spray_send_button_inner {

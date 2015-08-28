@@ -26,6 +26,7 @@ var photo_topo           = new PT();
 var photo_topo_init      = false;
 var photos_loaded        = false;
 var route_sort_by        = "topo";
+var selected_spray_id    = 0;
 var status_bar_height    = 0;
 var stream_increment     = 10;
 var stream_offset        = 0;
@@ -788,6 +789,9 @@ function button_menu_spray() {
             $("#spray_send_button_inner").removeClass("spray_button_disabled");
         } else {
             $("#spray_login").show();
+            $("#spray_send_button_outer").removeClass("spray_button_enabled");
+            $("#spray_send_button_outer").addClass("spray_button_disabled");
+            $("#spray_send_button_inner").addClass("spray_button_disabled");
         }
 
         api_get_spray(map.selected_destination.destination_id,
@@ -798,16 +802,21 @@ function button_menu_spray() {
                     for (var i=0; i<results.length; i++) {
                         spray_screen_html += "<div class='card'>";
                         spray_screen_html += results[i].comment;
+                        spray_screen_html += "<div class='card_bottom'>";
                         spray_screen_html += "<div class='card_timestamp'>";
                         spray_screen_html += results[i]['timestamp'];
+                        spray_screen_html += "</div>";
+                        spray_screen_html += "<div class='spray_reply_link' onclick='reply_to_spray(" + results[i]['spray_id'] + ")'>Reply</div>";
                         spray_screen_html += "</div>";
                         spray_screen_html += "";
 
                         for (var j=0; j<results[i]['children'].length; j++) {
                             spray_screen_html += "<div class='spray_child'>";
                             spray_screen_html += results[i]['children'][j].comment;
+                            spray_screen_html += "<div class='card_bottom'>";
                             spray_screen_html += "<div class='card_timestamp'>";
                             spray_screen_html += results[i]['children'][j]['timestamp'];
+                            spray_screen_html += "</div>";
                             spray_screen_html += "</div>";
                             spray_screen_html += "";
                             spray_screen_html += "</div>";
@@ -2525,6 +2534,11 @@ function remove_offline_destination(destination_id) {
     }
 }
 
+function reply_to_spray(spray_id) {
+    selected_spray_id = spray_id;
+    $("#spray_send_textarea").focus();
+}
+
 function resize_window() {
     var max_crumb_width = ($(window).width() - 45)
     $("#breadcrumbs_div").css({"max-width": max_crumb_width});
@@ -2635,7 +2649,7 @@ function send_spray() {
     if (map.selected_destination && map.selected_destination.destination_id > 0) {
         var spray_text = $("#spray_send_textarea").val();
         var destination_id = map.selected_destination.destination_id;
-        var parent_id = 0;
+        var parent_id = selected_spray_id;
 
         if (api_key_th.length > 0) {
             api_add_spray(
@@ -2660,6 +2674,8 @@ function send_spray() {
             setTimeout(function() { hide_help_comment(); }, 2000);
         }
     }
+
+    selected_spray_id = 0;
 }
 
 function set_area_slider_val(min, max) {
