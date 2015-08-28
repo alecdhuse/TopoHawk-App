@@ -33,7 +33,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.0.10";
+var version              = "1.1.0";
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -1361,19 +1361,6 @@ function create_home_screen() {
     $("#screen_info_title").css({"margin": "0px"});
     $("#screen_info_title").css({"height": "180px"});
     $("#screen_info_title").css({"background-image": background_url});
-
-    /* Adjust for large screens */
-    var card_max_width = parseInt($(".card").css("max-width").slice(0,-2));
-
-    if (card_max_width < window.innerWidth) {
-        var margin = (window.innerWidth - card_max_width) / 2.0;
-        var margin_css = margin + "px";
-        $(".card").css("margin-left", margin_css);
-    }
-
-    if (window.innerHeight > 799) {
-        $("#screen_info_title").css("height", "280px");
-    }
 }
 
 function create_offline_destinations_list() {

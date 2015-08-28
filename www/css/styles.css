@@ -176,7 +176,8 @@ hr {
     border: 1px solid rgb(237, 237, 237);
     box-shadow: 2px 2px 5px rgba(0,0,0,.4);
     margin-bottom: 8px;
-    margin-right: 4px;
+    margin-left: auto;
+    margin-right: auto;
     max-width: 490px;
     min-width: 250px;
     padding-bottom: 4px;
@@ -619,9 +620,10 @@ hr {
 .screen_inner {
     height: 100%;
     margin-left: 8px;
-    margin-right: 10px;
+    margin-right: 0px;
     margin-top: 8px;
     margin-bottom: 200px;
+    padding-right: 10px;
     overflow-x: hidden;
     overflow-y: auto;
 }
