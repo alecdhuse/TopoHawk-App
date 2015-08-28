@@ -345,6 +345,11 @@ hr {
 
 }
 
+.info_heading {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
 .loading_animation {
     margin: auto;
     width: 40px;

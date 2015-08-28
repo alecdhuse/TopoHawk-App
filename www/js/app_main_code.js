@@ -810,7 +810,7 @@ function button_menu_spray() {
                         if (api_key_th.length > 0) {
                             spray_screen_html += "<div class='spray_reply_link' onclick='reply_to_spray(" + results[i]['spray_id'] + ")'>Reply</div>";
                         }
-                        
+
                         spray_screen_html += "</div>";
                         spray_screen_html += "";
 
@@ -968,8 +968,10 @@ function change_area(area_id, change_map_view) {
 
     if (api_key_th.length > 0) {
         /* Show the add new route option */
-        area_inner_html += "<div style='margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
-        area_inner_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
+        info_html += "<br />";
+        area_inner_html += "<div class='info_heading'>Edit Tools:</div>";
+        area_inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
+        area_inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
     }
 
     $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
@@ -1066,8 +1068,10 @@ function change_route(route_id, screen_switch, change_map_view) {
 
     /* Add photo link */
     if (api_key_th.length > 0) {
-        inner_html += "<br /><a nohref onclick='show_upload_photo()'>Upload Photo</a>";
-        inner_html += "<br /><a nohref onclick='edit_current_route()'>Edit Route</a>";
+        inner_html += "<br />";
+        inner_html += "<div class='info_heading'>Edit Tools:</div>";
+        inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
+        inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_route()'>Edit Route</a></div>";
     }
 
     /* Set inner screen html */
@@ -1154,8 +1158,10 @@ function create_area_info() {
     var info_html = "<div>" + description + "</div>";
 
     if (api_key_th.length > 0) {
-        info_html += "<div style='margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
-        info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
+        info_html += "<br />";
+        info_html += "<div class='info_heading'>Edit Tools:</div>";
+        info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
+        info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
     }
 
     $("#screen_info_inner").html(info_html);
@@ -1231,7 +1237,7 @@ function create_destination_info() {
 
     if (camping.length > 0) {
         info_html += "<br /><div>";
-        info_html += "<div style='font-weight:bold;margin-bottom:5px;'><img src='images/campsite-12.svg' align='top' height='20; width='20'> Camping:</div>";
+        info_html += "<div class='info_heading'><img src='images/campsite-12.svg' align='top' height='20; width='20'> Camping:</div>";
 
         for (var j=0; j<camping.length; j++) {
             info_html += "<div style='margin-left:12px;'><div class='amenity_name'>" + camping[j].properties.name + "</div>";
@@ -1243,8 +1249,10 @@ function create_destination_info() {
 
     /* Add Area Option */
     if (api_key_th.length > 0) {
-        info_html += "<div style='margin-top:6px;'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
-        info_html += "<div style='margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
+        info_html += "<br />";
+        info_html += "<div class='info_heading'>Edit Tools:</div>";
+        info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
+        info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
     }
 
     $("#screen_info_inner").html(info_html);
