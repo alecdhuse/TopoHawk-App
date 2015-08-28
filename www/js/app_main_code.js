@@ -806,7 +806,11 @@ function button_menu_spray() {
                         spray_screen_html += "<div class='card_timestamp'>";
                         spray_screen_html += results[i]['timestamp'];
                         spray_screen_html += "</div>";
-                        spray_screen_html += "<div class='spray_reply_link' onclick='reply_to_spray(" + results[i]['spray_id'] + ")'>Reply</div>";
+
+                        if (api_key_th.length > 0) {
+                            spray_screen_html += "<div class='spray_reply_link' onclick='reply_to_spray(" + results[i]['spray_id'] + ")'>Reply</div>";
+                        }
+                        
                         spray_screen_html += "</div>";
                         spray_screen_html += "";
 
