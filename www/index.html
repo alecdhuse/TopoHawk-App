@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        
+
         <link rel="stylesheet" type="text/css" href="css/dd.css">
         <link rel="stylesheet" type="text/css" href="css/jquery.nouislider.min.css" />
         <link rel="stylesheet" type="text/css" href="css/jquery-ui-1.8.2.custom.min.css" />
@@ -313,6 +313,19 @@
                 </div>
 
                 <div id="screen_info" class="screen">
+                    <div id="star_rating_outer_div">
+                        <div id="star_rating_text_div">Rate route quality:</div>
+                        <div id="star_rating_stars_div">
+                            <img id="rate_route_start_1" src="images/star-empty.svg" width="30" onclick="select_route_stars(1)" />
+                            <img id="rate_route_start_2" src="images/star-empty.svg" width="30" onclick="select_route_stars(2)" />
+                            <img id="rate_route_start_3" src="images/star-empty.svg" width="30" onclick="select_route_stars(3)" />
+                            <img id="rate_route_start_4" src="images/star-empty.svg" width="30" onclick="select_route_stars(4)" />
+                        </div>
+                        <div id="star_rating_buttons_div">
+                            <div class="star_rating_button" id="star_rating_button_cancel" onclick="hide_rate_route_popup()">Cancel</div>
+                            <div class="star_rating_button" id="star_rating_button_submit" onclick="submit_current_route_rating()">Submit</div>
+                        </div>
+                    </div>
                     <div id="screen_info_title"></div>
                     <div class="screen_inner" id="screen_info_inner">
                         <div id="welcome_logo">

@@ -257,6 +257,40 @@ function api_add_route(data, show_ui_messages) {
     });
 }
 
+function api_add_route_rating(data, show_ui_messages) {
+    var ui_message = "";
+
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1.1/rate_route.php',
+       dataType: 'json',
+       data:     data,
+       timeout:  6000,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                ui_message = "Route rating saved.";
+            } else {
+                ui_message = "Error saving route rating: " + response.result;
+            }
+
+            if (show_ui_messages) {
+                show_help_comment(ui_message);
+                setTimeout(function() { hide_help_comment(); }, 2000);
+            }
+       },
+       error: function (req, status, error) {
+           if (show_ui_messages) {
+               show_help_comment("No connection, route rating saved localy.");
+               setTimeout(function() { hide_help_comment(); }, 2000);
+           }
+
+           /* No Connection, save change localy, and try to submit later */
+           map.util.storage.add_change("add_rating", data, map.local_db);
+           TH.util.logging.log("Error saving route rating, saved to local changes.");
+       }
+    });
+}
+
 function api_add_route_tick(data, show_ui_messages) {
     var ui_message = "";
 
@@ -982,7 +1016,7 @@ function change_route(route_id, screen_switch, change_map_view) {
     }
 
     title_html += "</span><br/>";
-    title_html += "<span>" + TH.util.get_star_html(map.selected_route.properties.rating, true, true).substr(5) + "</span>";
+    title_html += "<span id='route_star_rating' onclick='show_rate_route_popup()'>" + TH.util.get_star_html(map.selected_route.properties.rating, true, true).substr(5) + "</span>";
     title_html += "<span style='float:right;margin-top:-30px;'><img src='images/tick_route.svg' onclick='add_tick()' /></span>";
 
     $("#screen_info_title").html(title_html);
@@ -2214,6 +2248,10 @@ function hide_image_upload_info() {
     return false;
 }
 
+function hide_rate_route_popup() {
+    $("#star_rating_outer_div").css('visibility','hidden');
+}
+
 function load_tick_history_card() {
     get_route_ticks(user_id, -1, function(results) {
         if (results.length > 0) {
@@ -2571,6 +2609,35 @@ function select_area_edit_description() {
     }, 200);
 }
 
+function select_route_stars(route_rating) {
+    if (route_rating == 0) {
+        $("#rate_route_start_1").attr("src", "images/star-empty.svg");
+    } else if (route_rating == 1) {
+        $("#rate_route_start_1").attr("src", "images/star-full.svg");
+        $("#rate_route_start_2").attr("src", "images/star-empty.svg");
+        $("#rate_route_start_3").attr("src", "images/star-empty.svg");
+        $("#rate_route_start_4").attr("src", "images/star-empty.svg");
+    } else if (route_rating == 2) {
+        $("#rate_route_start_1").attr("src", "images/star-full.svg");
+        $("#rate_route_start_2").attr("src", "images/star-full.svg");
+        $("#rate_route_start_3").attr("src", "images/star-empty.svg");
+        $("#rate_route_start_4").attr("src", "images/star-empty.svg");
+    } else if (route_rating == 3) {
+        $("#rate_route_start_1").attr("src", "images/star-full.svg");
+        $("#rate_route_start_2").attr("src", "images/star-full.svg");
+        $("#rate_route_start_3").attr("src", "images/star-full.svg");
+        $("#rate_route_start_4").attr("src", "images/star-empty.svg");
+    } else if (route_rating == 4) {
+        $("#rate_route_start_1").attr("src", "images/star-full.svg");
+        $("#rate_route_start_2").attr("src", "images/star-full.svg");
+        $("#rate_route_start_3").attr("src", "images/star-full.svg");
+        $("#rate_route_start_4").attr("src", "images/star-full.svg");
+    }
+
+    map.selected_route.properties.rating = route_rating;
+    $("#route_star_rating").html(TH.util.get_star_html(route_rating, true, true).substr(5));
+}
+
 function select_spray_textarea() {
     $("#spray_send_div").css('bottom', (keyboard_height + 'px'));
 }
@@ -2866,6 +2933,13 @@ function show_photo_stream() {
     });
 }
 
+function show_rate_route_popup() {
+    if (api_key_th.length > 0) {
+        select_route_stars(0);
+        $("#star_rating_outer_div").css('visibility','visible');
+    }
+}
+
 function show_signup() {
     buttons_reset();
     $("#breadcrumbs_div_2").html("• Sign Up");
@@ -2925,6 +2999,18 @@ function sort_routes(sort_by) {
 
     route_sort_by = sort_by;
     create_route_list(map.selected_area.properties.area_id);
+}
+
+function submit_current_route_rating() {
+    var rate_route_data = {
+            route_id:   map.selected_route.properties.route_id,
+            rating:     map.selected_route.properties.rating,
+            key:        api_key_th,
+            user_id:    user_id
+    };
+
+    hide_rate_route_popup();
+    api_add_route_rating(rate_route_data, true);
 }
 
 function update_current_route_tick() {
@@ -2991,6 +3077,8 @@ function upload_changes(changes_array) {
                 api_edit_area(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_destination") {
                 api_edit_destination(changes_array[i].change_json, false);
+            } else if (changes_array[i].change_type == "add_rating") {
+                api_add_route_rating(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_route") {
                 api_edit_route(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_tick") {
