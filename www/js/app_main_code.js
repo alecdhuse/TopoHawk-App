@@ -974,6 +974,8 @@ function change_area(area_id, change_map_view) {
         area_inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
     }
 
+    area_inner_html += "<div style='height:400px;'></div>";
+
     $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
     $("#screen_info_title").html(map.selected_area.properties.name);
     $("#screen_info_inner").html(area_inner_html);
@@ -1074,6 +1076,8 @@ function change_route(route_id, screen_switch, change_map_view) {
         inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_route()'>Edit Route</a></div>";
     }
 
+    inner_html += "<div style='height:400px;'></div>";
+
     /* Set inner screen html */
     $("#screen_info_inner").html(inner_html);
 
@@ -1164,6 +1168,7 @@ function create_area_info() {
         info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
     }
 
+    info_html += "<div style='height:400px;'></div>";
     $("#screen_info_inner").html(info_html);
 }
 
@@ -1254,6 +1259,8 @@ function create_destination_info() {
         info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
         info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
     }
+
+    info_html += "<div style='height:400px;'></div>";
 
     $("#screen_info_inner").html(info_html);
 }
