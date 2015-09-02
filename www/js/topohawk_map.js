@@ -885,8 +885,8 @@
             var offline_destination_found = false;
 
             $.ajax({
-               type:     'POST',
-               url:      'https://topohawk.com/api/v1.1/get_destination_data.php',
+               type:     'GET',
+               url:      'https://topohawk.com/api/v1.2/get_destination_data.php',
                dataType: 'json',
                timeout:  6000,
                data: {

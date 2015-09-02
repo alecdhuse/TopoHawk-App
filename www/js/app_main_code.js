@@ -114,16 +114,14 @@ function api_add_area(data, show_ui_messages) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment("No connection, change saved localy.");
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment("No connection, change saved localy.", 2000);
             }
 
             /* No Connection, save change localy, and try to submit later */
@@ -157,16 +155,14 @@ function api_add_destination(data, show_ui_messages) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment("No connection, change saved localy.");
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment("No connection, change saved localy.", 2000);
             }
 
             /* No Connection, save change localy, and try to submit later */
@@ -239,16 +235,14 @@ function api_add_route(data, show_ui_messages) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment("No connection, change saved localy.");
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment("No connection, change saved localy.", 2000);
             }
 
             /* No Connection, save change localy, and try to submit later */
@@ -275,14 +269,12 @@ function api_add_route_rating(data, show_ui_messages) {
             }
 
             if (show_ui_messages) {
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
-               show_help_comment("No connection, route rating saved localy.");
-               setTimeout(function() { hide_help_comment(); }, 2000);
+               show_help_comment("No connection, route rating saved localy.", 2000);
            }
 
            /* No Connection, save change localy, and try to submit later */
@@ -313,16 +305,14 @@ function api_add_route_tick(data, show_ui_messages) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
                /* Hide loading screen */
                $("#search_loading_screen").css('visibility','hidden');
-               show_help_comment("No connection, change saved localy.");
-               setTimeout(function() { hide_help_comment(); }, 2000);
+               show_help_comment("No connection, change saved localy.", 2000);
            }
 
            /* No Connection, save change localy, and try to submit later */
@@ -377,16 +367,14 @@ function api_edit_area(data, show_ui_messages) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
                /* Hide loading screen */
                $("#search_loading_screen").css('visibility','hidden');
-               show_help_comment("No connection, change saved localy.");
-               setTimeout(function() { hide_help_comment(); }, 2000);
+               show_help_comment("No connection, change saved localy.", 2000);
            }
 
            /* No Connection, save change localy, and try to submit later */
@@ -417,16 +405,14 @@ function api_edit_destination(data, show_ui_messages) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
                /* Hide loading screen */
                $("#search_loading_screen").css('visibility','hidden');
-               show_help_comment("No connection, change saved localy.");
-               setTimeout(function() { hide_help_comment(); }, 2000);
+               show_help_comment("No connection, change saved localy.", 2000);
            }
 
            /* No Connection, save change localy, and try to submit later */
@@ -457,16 +443,14 @@ function api_edit_route(data, show_ui_messages) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
                /* Hide loading screen */
                $("#search_loading_screen").css('visibility','hidden');
-               show_help_comment("No connection, change saved localy.");
-               setTimeout(function() { hide_help_comment(); }, 2000);
+               show_help_comment("No connection, change saved localy.", 2000);
            }
 
            /* No Connection, save change localy, and try to submit later */
@@ -498,16 +482,14 @@ function api_edit_route_tick(data, show_ui_messages) {
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
-                show_help_comment(ui_message);
-                setTimeout(function() { hide_help_comment(); }, 2000);
+                show_help_comment(ui_message, 2000);
             }
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
                /* Hide loading screen */
                $("#search_loading_screen").css('visibility','hidden');
-               show_help_comment("No connection, change saved localy.");
-               setTimeout(function() { hide_help_comment(); }, 2000);
+               show_help_comment("No connection, change saved localy.", 2000);
            }
 
            /* No Connection, save change localy, and try to submit later */
@@ -1758,8 +1740,7 @@ function download_selected_destination() {
     $(".download_icon").attr("id","destination_downloading");
 
     /* Show help popup */
-    show_help_comment("Downloading Destination");
-    setTimeout(function() { hide_help_comment(); }, 2000);
+    show_help_comment("Downloading Destination", 2000);
 
     /* TODO: Set as animation if switching between destinations */
 
@@ -1771,8 +1752,7 @@ function download_selected_destination() {
         var local_store_item = "offline_destination_id" + map.selected_destination.destination_id;
         localStorage.setItem(local_store_item, "downloaded");
 
-        show_help_comment("Download of " + map.selected_destination.destination_name + " complete.");
-        setTimeout(function() { hide_help_comment(); }, 2000);
+        show_help_comment("Download of " + map.selected_destination.destination_name + " complete.", 2000);
     });
 }
 
@@ -2118,8 +2098,7 @@ function get_photo_ids() {
                 } else {
                     create_photo_canvas([0]);
                     TH.util.logging.log("Error " + response.result);
-                    show_help_comment("Error: " + response.result);
-                    setTimeout(function() { hide_help_comment(); }, 2000);
+                    show_help_comment("Error: " + response.result, 2000);
                 }
            },
            error: function (req, status, error) {
@@ -2147,16 +2126,14 @@ function get_photo_ids() {
                    }
                } else {
                    TH.util.logging.log("Error retrieving photo_ids.");
-                   show_help_comment("Error retrieving photos.");
-                   setTimeout(function() { hide_help_comment(); }, 2000);
+                   show_help_comment("Error retrieving photos.", 2000);
                }
            }
         });
     } else {
         if (photos_loaded === false) {
             TH.util.logging.log("Function get_photo_ids has incorrect parameters.");
-            show_help_comment("Error getting photos.");
-            setTimeout(function() { hide_help_comment(); }, 2000);
+            show_help_comment("Error getting photos.", 2000);
         }
     }
 }
@@ -2530,14 +2507,12 @@ function refresh_offline_destination(destination_id) {
                var local_store_item = "offline_destination_id" + map.selected_destination.destination_id;
                localStorage.setItem(local_store_item, "downloaded");
 
-               show_help_comment("Download of " + response.result.destination_name + " complete.");
-               setTimeout(function() { hide_help_comment(); }, 2000);
+               show_help_comment("Download of " + response.result.destination_name + " complete.", 2000);
                button_menu_offline_content();
            });
        },
        error: function (req, status, error) {
-           show_help_comment("Error refreshing offline content for " + map.selected_destination.destination_name + ".");
-           setTimeout(function() { hide_help_comment(); }, 2000);
+           show_help_comment("Error refreshing offline content for " + map.selected_destination.destination_name + ".", 2000);
        }
     });
 }
@@ -2680,17 +2655,14 @@ function send_spray() {
                         $("#spray_send_textarea").val("");
                         button_menu_spray();
                     } else {
-                        show_help_comment(result.result);
-                        setTimeout(function() { hide_help_comment(); }, 2000);
+                        show_help_comment(result.result, 2000);
                     }
                 }, function (req, status, error) {
-                    show_help_comment("Error sending your spray.");
-                    setTimeout(function() { hide_help_comment(); }, 2000);
+                    show_help_comment("Error sending your spray.", 2000);
                 }
             );
         } else {
-            show_help_comment("Please login to send spray.<br />");
-            setTimeout(function() { hide_help_comment(); }, 2000);
+            show_help_comment("Please login to send spray.<br />", 2000);
         }
     }
 
@@ -2818,12 +2790,16 @@ function settings_update_use_metric() {
     setting_save();
 }
 
-function show_help_comment(comment_text) {
+function show_help_comment(comment_text, timeout) {
     var comment_top = (($(window).height() - 105 + status_bar_height)) + "px";
 
     $("#help_comment").css({'top': comment_top});
     $("#help_comment_inner").html(comment_text);
     $("#help_comment").css('visibility','visible');
+
+    if (typeof(timeout) !== "undefined") {
+        setTimeout(function() { hide_help_comment(); }, timeout);
+    }
 }
 
 function show_login() {
@@ -2959,6 +2935,8 @@ function show_rate_route_popup() {
     if (api_key_th.length > 0) {
         select_route_stars(0);
         $("#star_rating_outer_div").css('visibility','visible');
+    } else {
+        show_help_comment("Please login to rate routes.", 2000);
     }
 }
 
