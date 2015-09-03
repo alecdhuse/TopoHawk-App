@@ -92,6 +92,7 @@ function add_tick() {
 
 function api_add_area(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
         type:       'POST',
@@ -124,8 +125,11 @@ function api_add_area(data, show_ui_messages) {
                 show_help_comment("No connection, change saved localy.", 2000);
             }
 
+            button1_click();
+            show_main_buttons();
+
             /* No Connection, save change localy, and try to submit later */
-            map.util.storage.add_change("add_area", area_data, map.local_db);
+            map_obj.util.storage.add_change("add_area", area_data, map.local_db);
             TH.util.logging.log("Error adding area, saved to local changes.");
         }
     });
@@ -133,6 +137,7 @@ function api_add_area(data, show_ui_messages) {
 
 function api_add_destination(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
         type:       'POST',
@@ -165,8 +170,11 @@ function api_add_destination(data, show_ui_messages) {
                 show_help_comment("No connection, change saved localy.", 2000);
             }
 
+            button1_click();
+            show_main_buttons();
+
             /* No Connection, save change localy, and try to submit later */
-            map.util.storage.add_change("add_destination", destination_data, map.local_db);
+            map_obj.util.storage.add_change("add_destination", destination_data, map.local_db);
             TH.util.logging.log("Error adding estination, saved to local changes.");
         }
     });
@@ -174,6 +182,7 @@ function api_add_destination(data, show_ui_messages) {
 
 function api_add_photo(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
         type:       'POST',
@@ -201,7 +210,7 @@ function api_add_photo(data, show_ui_messages) {
             }
 
             /* No Connection, save change localy, and try to submit later */
-            map.util.storage.add_change("add_photo", post_data, map.local_db);
+            map_obj.util.storage.add_change("add_photo", post_data, map.local_db);
             TH.util.logging.log("Error uploading photo, saved to local changes.");
         }
     });
@@ -209,6 +218,7 @@ function api_add_photo(data, show_ui_messages) {
 
 function api_add_route(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
          dataType:  'json',
@@ -241,8 +251,11 @@ function api_add_route(data, show_ui_messages) {
                 show_help_comment("No connection, change saved localy.", 2000);
             }
 
+            button1_click();
+            show_main_buttons();
+
             /* No Connection, save change localy, and try to submit later */
-            map.util.storage.add_change("add_route", route_data, map.local_db);
+            map_obj.util.storage.add_change("add_route", route_data, map.local_db);
             TH.util.logging.log("Error adding route, saved to local changes.");
         }
     });
@@ -250,6 +263,7 @@ function api_add_route(data, show_ui_messages) {
 
 function api_add_route_rating(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
        type:     'POST',
@@ -274,7 +288,7 @@ function api_add_route_rating(data, show_ui_messages) {
            }
 
            /* No Connection, save change localy, and try to submit later */
-           map.util.storage.add_change("add_rating", data, map.local_db);
+           map_obj.util.storage.add_change("add_rating", data, map.local_db);
            TH.util.logging.log("Error saving route rating, saved to local changes.");
        }
     });
@@ -282,6 +296,7 @@ function api_add_route_rating(data, show_ui_messages) {
 
 function api_add_route_tick(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
        type:     'POST',
@@ -312,7 +327,7 @@ function api_add_route_tick(data, show_ui_messages) {
            }
 
            /* No Connection, save change localy, and try to submit later */
-           map.util.storage.add_change("add_tick", data, map.local_db);
+           map_obj.util.storage.add_change("add_tick", data, map.local_db);
            TH.util.logging.log("Error saving tick, saved to local changes.");
        }
     });
@@ -344,6 +359,7 @@ function api_add_spray(destination_id, parent_id, spray_text, callback, error_ca
 
 function api_edit_area(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
        type:     'POST',
@@ -373,8 +389,11 @@ function api_edit_area(data, show_ui_messages) {
                show_help_comment("No connection, change saved localy.", 2000);
            }
 
+           button1_click();
+           show_main_buttons();
+
            /* No Connection, save change localy, and try to submit later */
-           map.util.storage.add_change("edit_area", data, map.local_db);
+           map_obj.util.storage.add_change("edit_area", data, map.local_db);
            TH.util.logging.log("Error updating area, saved to local changes.");
        }
     });
@@ -382,6 +401,7 @@ function api_edit_area(data, show_ui_messages) {
 
 function api_edit_destination(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
        type:     'POST',
@@ -411,8 +431,11 @@ function api_edit_destination(data, show_ui_messages) {
                show_help_comment("No connection, change saved localy.", 2000);
            }
 
+           button1_click();
+           show_main_buttons();
+
            /* No Connection, save change localy, and try to submit later */
-           map.util.storage.add_change("edit_destination", data, map.local_db);
+           map_obj.util.storage.add_change("edit_destination", data, map.local_db);
            TH.util.logging.log("Error updating destination, saved to local changes.");
        }
     });
@@ -420,6 +443,7 @@ function api_edit_destination(data, show_ui_messages) {
 
 function api_edit_route(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
        type:     'POST',
@@ -449,8 +473,11 @@ function api_edit_route(data, show_ui_messages) {
                show_help_comment("No connection, change saved localy.", 2000);
            }
 
+           button1_click();
+           show_main_buttons();
+
            /* No Connection, save change localy, and try to submit later */
-           map.util.storage.add_change("edit_route", data, map.local_db);
+           map_obj.util.storage.add_change("edit_route", data, map.local_db);
            TH.util.logging.log("Error updating route, saved to local changes.");
        }
     });
@@ -458,6 +485,7 @@ function api_edit_route(data, show_ui_messages) {
 
 function api_edit_route_tick(data, show_ui_messages) {
     var ui_message = "";
+    var map_obj = map;
 
     $.ajax({
        type:     'POST',
@@ -489,7 +517,7 @@ function api_edit_route_tick(data, show_ui_messages) {
            }
 
            /* No Connection, save change localy, and try to submit later */
-           map.util.storage.add_change("edit_tick", data, map.local_db);
+           map_obj.util.storage.add_change("edit_tick", data, map.local_db);
            TH.util.logging.log("Error updating tick, saved to local changes.");
        }
     });
