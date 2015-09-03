@@ -179,7 +179,7 @@ function api_add_photo(data, show_ui_messages) {
         type:       'POST',
         dataType:   'json',
         url:        'https://topohawk.com/api/v1/add_photo.php',
-        data:       post_data,
+        data:       data,
         timeout:    6000,
         success: function(response) {
             if (response.result_code > 0) {
@@ -950,7 +950,7 @@ function change_area(area_id, change_map_view) {
 
     if (api_key_th.length > 0) {
         /* Show the add new route option */
-        info_html += "<br />";
+        area_inner_html += "<br />";
         area_inner_html += "<div class='info_heading'>Edit Tools:</div>";
         area_inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
         area_inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
@@ -2966,6 +2966,7 @@ function show_upload_photo() {
         photo_uploader.init = true;
     }
 
+    photo_uploader.obj.hide_photo_help();
     $('#upload_photo_message').hide();
     $('#upload_photo_preview').show();
     $('#upload_photo_info').hide();
