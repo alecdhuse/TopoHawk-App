@@ -108,15 +108,15 @@ function api_add_area(data, show_ui_messages) {
                 ui_message = response.result;
             }
 
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
-
-            TH.util.logging.log(ui_message);
-            button1_click();
-            show_main_buttons();
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
@@ -153,15 +153,15 @@ function api_add_destination(data, show_ui_messages) {
                 ui_message = response.result;
             }
 
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
-
-            TH.util.logging.log(ui_message);
-            button1_click();
-            show_main_buttons();
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
@@ -197,13 +197,14 @@ function api_add_photo(data, show_ui_messages) {
                 ui_message = "Photo Upload Failed: " + response.result;
             }
 
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
             if (show_ui_messages) {
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
-
-            button1_click();
-            show_main_buttons();
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
@@ -240,15 +241,15 @@ function api_add_route(data, show_ui_messages) {
                 ui_message = response.result;
             }
 
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
-
-            TH.util.logging.log(ui_message);
-            button1_click();
-            show_main_buttons();
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
@@ -381,15 +382,15 @@ function api_edit_area(data, show_ui_messages) {
                 ui_message = "Error updating area: " + response.result;
             }
 
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
-
-            TH.util.logging.log(ui_message);
-            button1_click();
-            show_main_buttons();
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
@@ -425,15 +426,15 @@ function api_edit_destination(data, show_ui_messages) {
                 ui_message = "Error updating destination: " + response.result;
             }
 
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
-
-            TH.util.logging.log(ui_message);
-            button1_click();
-            show_main_buttons();
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
@@ -469,15 +470,15 @@ function api_edit_route(data, show_ui_messages) {
                 ui_message = "Error updating route: " + response.result;
             }
 
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
-
-            TH.util.logging.log(ui_message);
-            button1_click();
-            show_main_buttons();
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
@@ -2634,12 +2635,22 @@ function save_map_edit() {
         /* Show loading screen */
         $("#search_loading_screen").css('visibility','visible');
 
-        if (current_edit_mode == EDIT_MODE_ROUTE) {
-            api_edit_route(get_edit_route_data(), true);
-        } else if (current_edit_mode == EDIT_MODE_AREA) {
-            api_add_area(get_edit_area_data(), true);
-        } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
-            api_add_destination(get_edit_destination_data(), true);
+        if (edit_new_object) {
+            if (current_edit_mode == EDIT_MODE_ROUTE) {
+                api_add_route(get_edit_route_data(), true);
+            } else if (current_edit_mode == EDIT_MODE_AREA) {
+                api_add_area(get_edit_area_data(), true);
+            } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
+                api_add_destination(get_edit_destination_data(), true);
+            }
+        } else {
+            if (current_edit_mode == EDIT_MODE_ROUTE) {
+                api_edit_route(get_edit_route_data(), true);
+            } else if (current_edit_mode == EDIT_MODE_AREA) {
+                api_edit_area(get_edit_area_data(), true);
+            } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
+                api_edit_destination(get_edit_destination_data(), true);
+            }
         }
     } else if (edit_step == 10) {
         /* Photo Add/Edit */
