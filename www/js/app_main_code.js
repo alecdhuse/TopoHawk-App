@@ -96,8 +96,8 @@ function api_add_area(data, show_ui_messages) {
     $.ajax({
         type:       'POST',
         dataType:   'json',
-        url:        'https://topohawk.com/api/v1.1/add_area.php',
-        data:       area_data,
+        url:        'https://topohawk.com/api/v1.2/add_area.php',
+        data:       data,
         timeout:    6000,
         success:    function(response) {
             if (response.result_code > 0) {
@@ -137,7 +137,7 @@ function api_add_destination(data, show_ui_messages) {
     $.ajax({
         type:       'POST',
         dataType:   'json',
-        url:        'https://topohawk.com/api/v1.1/add_destination.php',
+        url:        'https://topohawk.com/api/v1.2/add_destination.php',
         data:       data,
         timeout:    6000,
         success:    function(response) {
@@ -188,7 +188,7 @@ function api_add_photo(data, show_ui_messages) {
                 ui_message = "Photo Upload Failed: " + response.result;
             }
 
-            if (show_ui_messages) {                
+            if (show_ui_messages) {
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
@@ -213,7 +213,7 @@ function api_add_route(data, show_ui_messages) {
     $.ajax({
          dataType:  'json',
          type:      'POST',
-         url:       'https://topohawk.com/api/v1.1/add_route.php',
+         url:       'https://topohawk.com/api/v1.2/add_route.php',
          data:      data,
          timeout:   6000,
          success:   function(response) {
@@ -347,7 +347,7 @@ function api_edit_area(data, show_ui_messages) {
 
     $.ajax({
        type:     'POST',
-       url:      'https://topohawk.com/api/v1.1/update_area.php',
+       url:      'https://topohawk.com/api/v1.2/update_area.php',
        dataType: 'json',
        data:     data,
        timeout:  6000,
@@ -385,7 +385,7 @@ function api_edit_destination(data, show_ui_messages) {
 
     $.ajax({
        type:     'POST',
-       url:      'https://topohawk.com/api/v1/update_destination.php',
+       url:      'https://topohawk.com/api/v1.2/update_destination.php',
        dataType: 'json',
        data:     data,
        timeout:  6000,
@@ -423,7 +423,7 @@ function api_edit_route(data, show_ui_messages) {
 
     $.ajax({
        type:     'POST',
-       url:      'https://topohawk.com/api/v1.1/update_route.php',
+       url:      'https://topohawk.com/api/v1.2/update_route.php',
        dataType: 'json',
        data:     data,
        timeout:  6000,
