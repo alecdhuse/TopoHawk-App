@@ -299,11 +299,11 @@
 
                             map_obj.user_info_loaded();
                         } else {
-                            TH.util.logging.log("Error retrieving user info.");
+                            TH.util.logging.log("Error retrieving user info. " + response.result);
                         }
                    },
                    error: function (req, status, error) {
-                       TH.util.logging.log("Error retrieving user info.");
+                       TH.util.logging.log("Error retrieving user info." + response.result);
                    }
                 });
             }

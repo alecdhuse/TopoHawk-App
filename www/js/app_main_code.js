@@ -103,20 +103,20 @@ function api_add_area(data, show_ui_messages) {
         success:    function(response) {
             if (response.result_code > 0) {
                 map.set_destination(map.selected_destination.destination_id);
-                button1_click();
-                show_main_buttons();
-                show_ui_messages = "Area Added";
+                ui_message = "Area Added";
             } else {
-                show_ui_messages = response.result;
+                ui_message = response.result;
             }
-
-            TH.util.logging.log(ui_message);
 
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
+
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
@@ -148,20 +148,20 @@ function api_add_destination(data, show_ui_messages) {
         success:    function(response) {
             if (response.result_code > 0) {
                 /* TODO update destination lists */
-                button1_click();
-                show_main_buttons();
-                show_ui_messages = "Destination Added";
+                ui_message = "Destination Added";
             } else {
-                show_ui_messages = response.result;
+                ui_message = response.result;
             }
-
-            TH.util.logging.log(ui_message);
 
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
+
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
@@ -201,6 +201,9 @@ function api_add_photo(data, show_ui_messages) {
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
+
+            button1_click();
+            show_main_buttons();
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
@@ -208,6 +211,9 @@ function api_add_photo(data, show_ui_messages) {
                 $("#search_loading_screen").css('visibility','hidden');
                 $('#upload_photo_message').html('Photo Upload Failed.');
             }
+
+            button1_click();
+            show_main_buttons();
 
             /* No Connection, save change localy, and try to submit later */
             map_obj.util.storage.add_change("add_photo", post_data, map.local_db);
@@ -229,20 +235,20 @@ function api_add_route(data, show_ui_messages) {
          success:   function(response) {
             if (response.result_code > 0) {
                 map.set_destination(map.selected_destination.destination_id);
-                button1_click();
-                show_main_buttons();
                 ui_message = "Route Added";
             } else {
                 ui_message = response.result;
             }
-
-            TH.util.logging.log(ui_message);
 
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
+
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
         },
         error: function (req, status, error) {
             if (show_ui_messages) {
@@ -308,7 +314,6 @@ function api_add_route_tick(data, show_ui_messages) {
             if (response.result_code > 0) {
                 ui_message = "Route tick saved.";
                 get_route_ticks_html(0, 0, "#user_route_ticks");
-                button1_click();
             } else {
                 ui_message = "Error saving route tick: " + response.result;
             }
@@ -318,6 +323,8 @@ function api_add_route_tick(data, show_ui_messages) {
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
+
+            button1_click();
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
@@ -374,13 +381,15 @@ function api_edit_area(data, show_ui_messages) {
                 ui_message = "Error updating area: " + response.result;
             }
 
-            TH.util.logging.log(ui_message);
-
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
+
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
@@ -416,13 +425,15 @@ function api_edit_destination(data, show_ui_messages) {
                 ui_message = "Error updating destination: " + response.result;
             }
 
-            TH.util.logging.log(ui_message);
-
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
+
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
@@ -458,13 +469,15 @@ function api_edit_route(data, show_ui_messages) {
                 ui_message = "Error updating route: " + response.result;
             }
 
-            TH.util.logging.log(ui_message);
-
             if (show_ui_messages) {
                 /* Hide loading screen */
                 $("#search_loading_screen").css('visibility','hidden');
                 show_help_comment(ui_message, 2000);
             }
+
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
        },
        error: function (req, status, error) {
            if (show_ui_messages) {
@@ -2763,7 +2776,7 @@ function settings_load() {
         }
 
         if (localStorage.getItem("user_id") !== null ) {
-            user_id = localStorage.getItem("user_id");
+            user_id = parseInt(localStorage.getItem("user_id"));
         } else {
             user_id = -1;
         }
