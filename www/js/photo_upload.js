@@ -43,23 +43,13 @@ UPLOAD_PREVIEW.prototype.init = function(object_id, height, width) {
     paper.install(window);
 
     this.canvas = document.getElementById(this._canvas_id);
-    this._object_id  = object_id;
+    this._object_id   = object_id;
     this._paper_scope = new paper.PaperScope();
 
     this._paper_scope.setup(this.canvas);
     paper = this._paper_scope;
 
-    /* Write Help Text */
-    var text = new paper.PointText(this._paper_scope.view.center);
-    text.content = "Click to select a photo";
-    text.style = {
-        fontFamily: 'Lucida Grande',
-        fontWeight: 'bold',
-        fontSize: 20,
-        fillColor: 'white',
-        justification: 'center'
-    };
-    this._paper_scope.view.draw();
+    this.write_help_text();
 
     /* Add listeners */
     this.canvas.addEventListener("click", function(event) {
@@ -96,7 +86,7 @@ UPLOAD_PREVIEW.prototype.init = function(object_id, height, width) {
 UPLOAD_PREVIEW.prototype._build_objects = function(parent_object) {
     var canvas_html = "<canvas id='upload_photo_canvas' width='" + this._canvas_width + "' height='" + this._canvas_height + "'></canvas>";
 
-    var html_code = "<div id='upload_photo_div'>" + canvas_html + "<div id='upload_photo_help'><div id='upload_photo_help_inner'></div></div></div><div id='upload_photo_footer'><div id='upload_photo_footer_left'><div id='upload_photo_tools'><div class='photo_upload_tool' id='rotate_ccw_div'></div><div class='photo_upload_tool' id='rotate_cw_div'></div><div class='photo_upload_tool' id='crop_photo_div'></div></div><div><input type='file' name='img' size='65' id='input_upload_image' /></div></div><div id='upload_photo_footer_right'></div></div>";
+    var html_code = "<div id='upload_photo_div'>" + canvas_html + "<div id='upload_photo_help'><div id='upload_photo_help_inner'></div></div></div><div id='upload_photo_footer'><div id='upload_photo_footer_left'><div id='upload_photo_tools'><div class='photo_upload_tool' id='rotate_ccw_div'></div><div class='photo_upload_tool' id='rotate_cw_div'></div><div class='photo_upload_tool' id='crop_photo_div'></div></div><div id='file_input_div'><input type='file' name='img' size='65' id='input_upload_image' /></div></div><div id='upload_photo_footer_right'></div></div>";
 
     var crop_svg_code = "<svg width='24' height='24' id='crop_photo_svg' class='upload_svg_icon_inactive' role='img' aria-label='Crop Photo'><title>Crop Photo</title><g transform='translate(0,-1028.3623)'><g transform='matrix(0.9610391,0,0,0.95932488,0.02098112,42.272408)'><path d='m 4.5000003,1038.1417 0,-9.7206 1.7253069,0 1.7253069,0 0,7.9952 0,7.9954 8.5002929,0 8.500292,0 0,1.7253 0,1.7253 -10.225599,0 -10.2255997,0 0,-9.7206 z' /><path transform='translate(0,1028.3623)' d='m 0.04524562,6.2919835 0,-1.7104718 1.71047178,0 1.7104717,0 0,1.7104718 0,1.7104717 -1.7104717,0 -1.71047178,0 0,-1.7104717 z' /><path transform='translate(0,1028.3623)' d='m 17.015808,11.524015 0,-3.5215598 -4.024639,0 -4.0246394,0 0,-1.7104717 0,-1.7104718 5.7351114,0 5.735111,0 0,5.2320312 0,5.2320311 -1.710472,0 -1.710472,0 0,-3.521559 z' /><path transform='translate(0,1028.3623)' d='m 17.015808,22.256386 0,-1.710471 1.710472,0 1.710472,0 0,1.710471 0,1.710472 -1.710472,0 -1.710472,0 0,-1.710472 z' /></g></g></svg>";
 
@@ -329,10 +319,7 @@ UPLOAD_PREVIEW.prototype._upload_photo_prep  = function() {
         $("#upload_photo_help").css('visibility','visible');
         $("#upload_photo_help_inner").html("Uploading Photo");
 
-        var changed_image = this._paper_scope.project.layers[0].rasterize();
-        var img_dataurl = changed_image.canvas.toDataURL("image/jpeg").replace(/ /g, '+');
-
-        this.upload_photo(img_dataurl);
+        this.upload_photo(this.get_photo_data_url());
     }
 };
 
@@ -373,7 +360,22 @@ UPLOAD_PREVIEW.prototype.draw  = function(up_obj, ev) {
     }
 };
 
-UPLOAD_PREVIEW.prototype.hide_photo_help  = function() {
+UPLOAD_PREVIEW.prototype.get_photo_data_url = function() {
+    var changed_image = this._paper_scope.project.layers[0].rasterize();
+    var img_dataurl = changed_image.canvas.toDataURL("image/jpeg").replace(/ /g, '+');
+
+    return img_dataurl;
+};
+
+UPLOAD_PREVIEW.prototype.hide_file_input = function() {
+    $("#file_input_div").css('visibility','hidden');
+};
+
+UPLOAD_PREVIEW.prototype.hide_ok_button = function() {
+    $("#upload_photo_footer_right").css('visibility','hidden');
+};
+
+UPLOAD_PREVIEW.prototype.hide_photo_help = function() {
     $("#upload_photo_help").css('visibility','hidden');
 };
 
@@ -511,4 +513,33 @@ UPLOAD_PREVIEW.prototype.notify_upload_complete  = function(successful) {
     } else {
         $("#upload_photo_help_inner").html("Error Uploading Photo");
     }
+}
+
+UPLOAD_PREVIEW.prototype.reset = function() {
+    this._paper_scope.project.clear();
+    this._paper_scope.view.zoom = 1;
+    this._image_selected = false;
+    this.write_help_text();
+}
+
+UPLOAD_PREVIEW.prototype.write_help_text = function() {
+    this._paper_scope;
+    var help_text = "Click to select a photo";
+
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+        help_text = "Tap to select a photo";
+    }
+
+    /* Write Help Text */
+    var text = new paper.PointText(this._paper_scope.view.center);
+    text.content = help_text;
+    text.style = {
+        fontFamily: 'Lucida Grande',
+        fontWeight: 'bold',
+        fontSize: 20,
+        fillColor: 'white',
+        justification: 'center'
+    };
+
+    this._paper_scope.view.draw();
 }

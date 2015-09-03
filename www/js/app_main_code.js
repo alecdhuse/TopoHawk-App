@@ -904,8 +904,18 @@ function buttons_reset() {
 }
 
 function cancel_map_edit() {
-    show_main_buttons();
-    button1_click();
+    if (edit_step !== 11) {
+        show_main_buttons();
+        button1_click();
+
+        if (edit_step == 10) {
+            /* Cancel Photo Add/Edit */
+            photo_uploader.obj.reset();
+        }
+    } else {
+        /* Go back to photo uploader */
+        show_upload_photo();
+    }
 }
 
 function cancel_tick() {
@@ -2594,6 +2604,15 @@ function save_map_edit() {
         } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
             api_add_destination(get_edit_destination_data(), true);
         }
+    } else if (edit_step == 10) {
+        /* Photo Add/Edit */
+        edit_step = 11;
+        $("#screen_add_photo").css('visibility','visible');
+        show_upload_photo_info(photo_uploader.obj.get_photo_data_url());
+    } else if (edit_step == 11) {
+        upload_photo();
+        show_main_buttons();
+        button1_click();
     }
 }
 
@@ -2825,6 +2844,15 @@ function show_edit_areas_screen() {
     }
 }
 
+function show_edit_buttons() {
+    $("#button_group_right_main").css('visibility','hidden');
+    $("#button_group_left_main").css('visibility','hidden');
+    $("#button_group_right_main").width(0);
+    $("#button_group_left_main").width(0)
+    $("#button_group_right_secondary").css('visibility','visible');
+    $("#button_group_left_secondary").css('visibility','visible');
+}
+
 function show_edit_destination_screen() {
     $("#screen_edit_destination").css('visibility','visible');
 }
@@ -2852,13 +2880,7 @@ function show_map_edit_buttons(is_new) {
     edit_step = 1;
     edit_new_object = is_new;
 
-    $("#button_group_right_main").css('visibility','hidden');
-    $("#button_group_left_main").css('visibility','hidden');
-    $("#button_group_right_main").width(0);
-    $("#button_group_left_main").width(0)
-
-    $("#button_group_right_secondary").css('visibility','visible');
-    $("#button_group_left_secondary").css('visibility','visible');
+    show_edit_buttons();
 
     if (edit_new_object === true) {
         if (current_mode == MODE_AREA) {
@@ -2952,7 +2974,10 @@ function show_signup() {
 
 function show_upload_photo() {
     var window_obj = this;
+    edit_step = 10;
+
     buttons_reset();
+    show_edit_buttons();
 
     /* Initiate Photo Uploader, if nessasary. */
     if (photo_uploader.init === false) {
@@ -2961,6 +2986,8 @@ function show_upload_photo() {
 
         photo_uploader.obj = new UPLOAD_PREVIEW();
         photo_uploader.obj.init('upload_photo_preview', max_uploader_height, max_uploader_width);
+        photo_uploader.obj.hide_ok_button();
+        photo_uploader.obj.hide_file_input();
         photo_uploader.obj.resize_canvas();
         photo_uploader.obj.upload_photo = function(img_dataurl) { window_obj.show_upload_photo_info(img_dataurl); };
         photo_uploader.init = true;
