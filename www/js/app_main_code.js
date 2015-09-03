@@ -3293,6 +3293,7 @@ document.onreadystatechange = function(e) {
         get_local_destinations();
     };
 
+    /* This cleans out indexedDB objects */
     //TH.util.storage.delete_indexedDB();
 };
 
