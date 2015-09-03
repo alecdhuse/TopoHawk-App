@@ -178,7 +178,7 @@ function api_add_photo(data, show_ui_messages) {
     $.ajax({
         type:       'POST',
         dataType:   'json',
-        url:        'https://topohawk.com/api/v1/add_photo.php',
+        url:        'https://topohawk.com/api/v1.2/add_photo.php',
         data:       data,
         timeout:    6000,
         success: function(response) {
@@ -188,13 +188,9 @@ function api_add_photo(data, show_ui_messages) {
                 ui_message = "Photo Upload Failed: " + response.result;
             }
 
-            if (show_ui_messages) {
-                $('#upload_photo_message').html('Photo Upload Failed: ' + response.result);
+            if (show_ui_messages) {                
                 $("#search_loading_screen").css('visibility','hidden');
-
-                setTimeout(function(){
-                    button1_click();
-                }, 1200);
+                show_help_comment(ui_message, 2000);
             }
         },
         error: function (req, status, error) {
@@ -913,7 +909,7 @@ function cancel_map_edit() {
             photo_uploader.obj.reset();
         }
     } else {
-        /* Go back to photo uploader */
+        /* Go back to photo */
         show_upload_photo();
     }
 }
@@ -2613,6 +2609,7 @@ function save_map_edit() {
         upload_photo();
         show_main_buttons();
         button1_click();
+        photo_uploader.obj.reset();
     }
 }
 
