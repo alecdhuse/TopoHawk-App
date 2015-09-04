@@ -49,6 +49,13 @@ hr {
     font-size: 10px;
 }
 
+.area_group_name {
+    font-size: large;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
 #arrow_left {
     float: left;
 }

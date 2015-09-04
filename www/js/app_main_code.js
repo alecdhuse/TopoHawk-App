@@ -1207,6 +1207,7 @@ function create_area_list() {
     var hidden_count   = 0;
     var search_string  = $("#destination_search_filter").val();
     var show_area      = false;
+    var last_group_id  = 0;
 
     if (map.areas.features.length > 0) {
         for (var i=0; i < map.areas.features.length; i++) {
@@ -1222,6 +1223,13 @@ function create_area_list() {
             }
 
             if (show_area === true) {
+                if (last_group_id !== map.areas.features[i].properties.group_id) {
+                    if (parseInt(map.areas.features[i].properties.group_id) > 0) {
+                            area_list_html += "<div class='area_group_name'>" + map.areas.features[i].properties.group_name + "</div>";
+                            last_group_id = map.areas.features[i].properties.group_id;
+                    }
+                }
+
                 if (route_count = map.areas.features[i].properties.stats !== null) {
                     route_count = map.areas.features[i].properties.stats.types.Total;
                 } else {
