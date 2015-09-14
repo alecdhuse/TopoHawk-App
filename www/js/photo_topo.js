@@ -41,6 +41,7 @@ function PT(canvas_id) {
     this.route_marker_points   = [];
     this.route_marker_text     = [];
     this.selected_route_id     = 0;
+    this.selected_path         = null;
     this.show_high_res_photos  = true;
     this.tool                  = {};
     this.use_offline_images    = true;
@@ -161,6 +162,32 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
     $(j_canvas_id).mouseup(function() {
         pt_obj._mouse_dragging = false;
     });
+};
+
+PT.prototype._click_route = function(route, path, event) {
+    var popup_x, popup_y;
+
+    if (event.event.clientY && event.event.clientX) {
+        popup_x = event.event.clientX;
+        popup_y = event.event.clientY;
+    } else if (event.point) {
+        /* Touch Event uses different variable for location */
+        popup_x = event.point.x;
+        popup_y = event.point.y + 25;
+    } else {
+        popup_x = marker_x - text_position_offset;
+        popup_y = first_point.y + y_offset;
+    }
+
+    this.selected_path = path;
+    this.show_route_popup(popup_x, popup_y, route);
+
+    /* Reset all path colors */
+    for (var i=0; i<this.paths.length; i++) {
+        this.paths[i].strokeColor = this.path_color;
+    }
+
+    path.strokeColor = this.path_color_selected;
 };
 
 PT.prototype._create_loading_path = function() {
@@ -554,29 +581,12 @@ PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, rout
 
     this.route_marker_text.push(marker_point_text);
 
+    route_label.onClick = function(event) {
+        photo_topo_obj._click_route(route, path, event);
+    }
+
     marker_point_text.onClick = function(event) {
-        var popup_x, popup_y;
-
-        if (event.event.clientY && event.event.clientX) {
-            popup_x = event.event.clientX;
-            popup_y = event.event.clientY;
-        } else if (event.point) {
-            /* Touch Event uses different variable for location */
-            popup_x = event.point.x;
-            popup_y = event.point.y + 25;
-        } else {
-            popup_x = marker_x - text_position_offset;
-            popup_y = first_point.y + y_offset;
-        }
-
-        photo_topo_obj.show_route_popup(popup_x, popup_y, this, route);
-
-        /* Reset all path colors */
-        for (var i=0; i<photo_topo_obj.paths.length; i++) {
-            photo_topo_obj.paths[i].strokeColor = photo_topo_obj.path_color;
-        }
-
-        path.strokeColor = photo_topo_obj.path_color_selected;
+        photo_topo_obj._click_route(route, path, event);
     };
 
     marker_point_text.onDoubleClick = function(event) {
@@ -584,18 +594,20 @@ PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, rout
     };
 
     marker_point_text.onMouseEnter = function(event) {
-        photo_topo_obj.show_route_popup(event.event.clientX, event.event.clientY, this, route);
+        photo_topo_obj.show_route_popup(event.event.clientX, event.event.clientY, route);
         path.strokeColor = photo_topo_obj.path_color_selected;
     };
 
     marker_point_text.onMouseLeave = function(event) {
-        /* Hide Route Info Popoup */
-        $("#route_popup").css('visibility', 'hidden');
+        if (photo_topo_obj.selected_path !== path) {
+            /* Hide Route Info Popoup */
+            $("#route_popup").css('visibility', 'hidden');
 
-        if (photo_topo_obj.selected_route_id != route.properties.route_id) {
-            path.strokeColor = photo_topo_obj.path_color;
-        }
-    };
+            if (photo_topo_obj.selected_route_id != route.properties.route_id) {
+                path.strokeColor = photo_topo_obj.path_color;
+            }
+        };
+    }
 }
 
 PT.prototype.hide_popups = function() {
@@ -725,7 +737,7 @@ PT.prototype.set_locked = function(is_locked) {
     this._locked = is_locked;
 }
 
-PT.prototype.show_route_popup = function(x, y, point_text, route) {
+PT.prototype.show_route_popup = function(x, y, route) {
     var top  = y - 10;
     var left = x + 20;
     var difficulty  = TH.util.grades.convert_common_to(this.grade_system[route.properties.route_type], route.properties.route_grade);
