@@ -34,7 +34,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.1.1";
+var version              = "1.1.2";
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -1000,8 +1000,14 @@ function change_area(area_id, change_map_view) {
         /* Show the add new route option */
         area_inner_html += "<br />";
         area_inner_html += "<div class='info_heading'>Edit Tools:</div>";
-        area_inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
-        area_inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
+
+        if (window.innerWidth < 501) {
+            area_inner_html += "<div class='edit_tools_link'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
+            area_inner_html += "<div class='edit_tools_link'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
+        } else {
+            area_inner_html += "<div class='edit_tools_link_large'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
+            area_inner_html += "<div class='edit_tools_link_large'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";            
+        }
     }
 
     area_inner_html += "<div style='height:400px;'></div>";
@@ -1102,8 +1108,14 @@ function change_route(route_id, screen_switch, change_map_view) {
     if (api_key_th.length > 0) {
         inner_html += "<br />";
         inner_html += "<div class='info_heading'>Edit Tools:</div>";
-        inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
-        inner_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_route()'>Edit Route</a></div>";
+
+        if (window.innerWidth < 501) {
+            inner_html += "<div class='edit_tools_link' onclick='show_upload_photo()'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
+            inner_html += "<div class='edit_tools_link' onclick='edit_current_route()'><a nohref onclick='edit_current_route()'>Edit Route</a></div>";
+        } else {
+            inner_html += "<div class='edit_tools_link_large' onclick='show_upload_photo()'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
+            inner_html += "<div class='edit_tools_link_large' onclick='edit_current_route()'><a nohref onclick='edit_current_route()'>Edit Route</a></div>";
+        }
     }
 
     inner_html += "<div style='height:400px;'></div>";
@@ -1194,8 +1206,14 @@ function create_area_info() {
     if (api_key_th.length > 0) {
         info_html += "<br />";
         info_html += "<div class='info_heading'>Edit Tools:</div>";
-        info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
-        info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
+
+        if (window.innerWidth < 501) {
+            info_html += "<div class='edit_tools_link'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
+            info_html += "<div class='edit_tools_link'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
+        } else {
+            info_html += "<div class='edit_tools_link_large'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
+            info_html += "<div class='edit_tools_link_large'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
+        }
     }
 
     info_html += "<div style='height:400px;'></div>";
@@ -1294,8 +1312,14 @@ function create_destination_info() {
     if (api_key_th.length > 0) {
         info_html += "<br />";
         info_html += "<div class='info_heading'>Edit Tools:</div>";
-        info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
-        info_html += "<div style='margin-left:8px;margin-top:6px;'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
+
+        if (window.innerWidth < 501) {
+            info_html += "<div class='edit_tools_link'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
+            info_html += "<div class='edit_tools_link'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
+        } else {
+            info_html += "<div class='edit_tools_link_large'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
+            info_html += "<div class='edit_tools_link_large'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
+        }
     }
 
     info_html += "<div style='height:400px;'></div>";

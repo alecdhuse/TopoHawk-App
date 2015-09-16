@@ -319,6 +319,17 @@ hr {
     margin-bottom: 8px;
 }
 
+.edit_tools_link {
+    margin-left:8px;
+    margin-top:8px
+}
+
+.edit_tools_link_large {
+    font-size: large;
+    margin-left:8px;
+    margin-top:10px
+}
+
 .filter_check {
     width: 1.5em !important;
     height: 1.5em !important;
@@ -373,6 +384,7 @@ hr {
 .loading_screen_center {
     background-color: white;
     border-radius: 25px;
+    margin: auto;
     height: 150px;
     width: 150px;
 }
@@ -433,6 +445,7 @@ hr {
     border-radius: 5px;
     box-shadow: 0 1px 7px rgba(0,0,0,.4);
     height: 305px;
+    left: 100px;
     position: absolute;
     top: 30px;
     visibility: hidden;
