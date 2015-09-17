@@ -1006,7 +1006,7 @@ function change_area(area_id, change_map_view) {
             area_inner_html += "<div class='edit_tools_link'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
         } else {
             area_inner_html += "<div class='edit_tools_link_large'><a nohref onclick='edit_current_area()'>Edit Area</a></div>";
-            area_inner_html += "<div class='edit_tools_link_large'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";            
+            area_inner_html += "<div class='edit_tools_link_large'><a nohref onclick='show_map_edit_buttons(true)'>Add Route</a></div>";
         }
     }
 
@@ -1110,10 +1110,16 @@ function change_route(route_id, screen_switch, change_map_view) {
         inner_html += "<div class='info_heading'>Edit Tools:</div>";
 
         if (window.innerWidth < 501) {
-            inner_html += "<div class='edit_tools_link' onclick='show_upload_photo()'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
+            if (!navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
+                inner_html += "<div class='edit_tools_link' onclick='show_upload_photo()'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
+            }
+
             inner_html += "<div class='edit_tools_link' onclick='edit_current_route()'><a nohref onclick='edit_current_route()'>Edit Route</a></div>";
         } else {
-            inner_html += "<div class='edit_tools_link_large' onclick='show_upload_photo()'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
+            if (!navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
+                inner_html += "<div class='edit_tools_link_large' onclick='show_upload_photo()'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
+            }
+            
             inner_html += "<div class='edit_tools_link_large' onclick='edit_current_route()'><a nohref onclick='edit_current_route()'>Edit Route</a></div>";
         }
     }

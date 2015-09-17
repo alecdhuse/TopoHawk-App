@@ -345,7 +345,7 @@ UPLOAD_PREVIEW.prototype.draw  = function(up_obj, ev) {
     var f = document.getElementById("input_upload_image").files[0];
 
     if (window.FileReader) {
-        var reader  = new FileReader();
+        var reader = new FileReader();
 
         reader.onloadend = function () {
             var src = reader.result;
