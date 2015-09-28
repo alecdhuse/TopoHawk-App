@@ -6,14 +6,14 @@
         id        = "com.topohawk.m"
         version   = "1.1.2">
 
-    <name>TopoHawk</name>
+    <name>Topo Hawk</name>
 
     <description>
         Community made climbing guides, now on your mobile device.
     </description>
 
     <author href="http://topohawk.com" email="helpdesk@topohawk.com">
-        TopoHawk Team
+        Topo Hawk Team
     </author>
 
     <preference name="orientation"                value="portrait" />
