@@ -34,7 +34,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.1.2";
+var version              = "1.1.3";
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -594,7 +594,7 @@ function bread_crumb_logo_click() {
     current_mode             = MODE_NONE;
     photos_loaded            = false;
 
-    $("#breadcrumbs_div_1").html("TopoHawk");
+    $("#breadcrumbs_div_1").html("Topo Hawk");
     $("#breadcrumbs_div_2").html("");
     $("#screen_info_title").html("");
 
@@ -671,7 +671,7 @@ function button3_click() {
     } else {
         show_photo_stream();
         $("#screen_stream").css('visibility','visible');
-        $("#breadcrumbs_div_1").html("TopoHawk");
+        $("#breadcrumbs_div_1").html("Topo Hawk");
         $("#breadcrumbs_div_2").html("• Photo Stream");
     }
 }
@@ -1436,11 +1436,11 @@ function create_home_screen() {
     html += "</div>";
 
     /* Search Card */
-    html += "<div id='search_card' class='card' style='height:100px;padding-top:6px;'>";
-    html += "<div class='card_title'>Search</div>";
+    html += "<div id='search_card' class='card' style='height:105px;padding-top:6px;'>";
+    html += "<div class='card_title'>Search Everything</div>";
     html += "<div style='margin-top:8px;padding-left:6px;padding-right:12px;'>";
     html += "<input type='text' id='search_card_input' style='border-color:#ccc;border-style:solid;border-width:1px;font-size:large;width:100%;'><br />";
-    html += "<div style='margin:auto;width:100px;'><input type='submit' value='Search' onclick='click_search_card_submit()' style='height:25px;margin-top:10px;width:100px;'></div>";
+    html += "<div style='margin:auto;width:100px;'><input type='submit' value='Search' onclick='click_search_card_submit()' style='background-color: #00bbe0;border: 2px solid #D4D4D4;border-radius: 8px;color: white;font-size: large;height: 2em;margin-top: 10px;width: 100%;'></div>";
     html += "</div></div>";
 
     if (api_key_th.length > 0) {
@@ -1786,8 +1786,8 @@ function do_search() {
     };
 
     $.ajax({
-       type:     'POST',
-       url:      'https://topohawk.com/api/v1/search.php',
+       type:     'GET',
+       url:      'https://topohawk.com/api/v1.2/search.php',
        dataType: 'json',
        data:     search_data,
        success:  function(response) {
