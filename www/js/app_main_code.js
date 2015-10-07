@@ -1273,16 +1273,45 @@ function create_area_list() {
                 area_list_html += "<div class='destination_list_small_text'>";
 
                 area_list_html += "<span>";
-                area_list_html += "<span class='area_stats_route_count' style='background-color:#7a7aff;'>" + area_stats.types['Sport'] + "</span>";
-                area_list_html += "<span class='area_stats_route_count' style='background-color:#fd7b7d;'>" + area_stats.types['Trad'] + "</span>";
-                area_list_html += "<span class='area_stats_route_count' style='background-color:#bd7abd;'>" + area_stats.types['Mixed'] + "</span>";
-                area_list_html += "<span class='area_stats_route_count' style='background-color:#ffd700;'>" + area_stats.types['Top Rope'] + "</span>";
-                area_list_html += "<span class='area_stats_route_count' style='background-color:#7af77a;'>" + area_stats.types['Boulder'] + "</span>";
-                area_list_html += "<span class='area_stats_route_count' style='background-color:#d3d3d3;'>" + area_stats.types['Aid'] + "</span>";
+
+                if (area_stats.types['Sport'] > 9) {
+                    area_list_html += "<span class='area_stats_route_count' style='background-color:#7a7aff;'>" + area_stats.types['Sport'] + "</span>";
+                } else {
+                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#7a7aff;'>" + area_stats.types['Sport'] + "</span>";
+                }
+
+                if (area_stats.types['Trad'] > 9) {
+                    area_list_html += "<span class='area_stats_route_count' style='background-color:#fd7b7d;'>" + area_stats.types['Trad'] + "</span>";
+                } else {
+                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#fd7b7d;'>" + area_stats.types['Trad'] + "</span>";
+                }
+
+                if (area_stats.types['Mixed'] > 9) {
+                    area_list_html += "<span class='area_stats_route_count' style='background-color:#bd7abd;'>" + area_stats.types['Mixed'] + "</span>";
+                } else {
+                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#bd7abd;'>" + area_stats.types['Mixed'] + "</span>";
+                }
+
+                if (area_stats.types['Top Rope'] > 9) {
+                    area_list_html += "<span class='area_stats_route_count' style='background-color:#ffd700;'>" + area_stats.types['Top Rope'] + "</span>";
+                } else {
+                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#ffd700;'>" + area_stats.types['Top Rope'] + "</span>";
+                }
+
+                if (area_stats.types['Boulder'] > 9) {
+                    area_list_html += "<span class='area_stats_route_count' style='background-color:#7af77a;'>" + area_stats.types['Boulder'] + "</span>";
+                } else {
+                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#7af77a;'>" + area_stats.types['Boulder'] + "</span>";
+                }
+
+                if (area_stats.types['Aid'] > 9) {
+                    area_list_html += "<span class='area_stats_route_count' style='background-color:#d3d3d3;'>" + area_stats.types['Aid'] + "</span>";
+                } else {
+                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#d3d3d3;'>" + area_stats.types['Aid'] + "</span>";
+                }
+
                 area_list_html += "</span>";
-
                 area_list_html += "<div>" + route_count + " routes/problems</div>";
-
                 area_list_html += "</div></div>";
             } else {
                 hidden_count++;

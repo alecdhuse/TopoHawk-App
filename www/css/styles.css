@@ -56,13 +56,23 @@ hr {
     margin-top: 8px;
 }
 
-.area_stats_route_count {
+.area_stats_route_count_small {
     border-radius: 8px;
     color: white;
     font-weight: bold;
     margin-right: 4px;
     padding-left: 8px;
     padding-right: 8px;
+    text-align: center;
+}
+
+.area_stats_route_count {
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    margin-right: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
     text-align: center;
 }
 
