@@ -1234,6 +1234,7 @@ function create_area_info() {
 
 function create_area_list() {
     var area_list_html = "";
+    var area_stats     = {};
     var hidden_count   = 0;
     var search_string  = $("#destination_search_filter").val();
     var show_area      = false;
@@ -1241,6 +1242,7 @@ function create_area_list() {
 
     if (map.areas.features.length > 0) {
         for (var i=0; i < map.areas.features.length; i++) {
+            area_stats = map.areas.features[i].properties.stats;
 
             if (search_string.length === 0) {
                 show_area = true;
@@ -1268,8 +1270,20 @@ function create_area_list() {
 
                 area_list_html += "<div class='destination_list_element' onclick='change_area(" + map.areas.features[i].properties.area_id + ", true)'>";
                 area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
-                area_list_html += "<div class='destination_list_small_text'>" + route_count + " routes/problems</div>";
-                area_list_html += "</div>";
+                area_list_html += "<div class='destination_list_small_text'>";
+
+                area_list_html += "<span>";
+                area_list_html += "<span class='area_stats_route_count' style='background-color:#7a7aff;'>" + area_stats.types['Sport'] + "</span>";
+                area_list_html += "<span class='area_stats_route_count' style='background-color:#fd7b7d;'>" + area_stats.types['Trad'] + "</span>";
+                area_list_html += "<span class='area_stats_route_count' style='background-color:#bd7abd;'>" + area_stats.types['Mixed'] + "</span>";
+                area_list_html += "<span class='area_stats_route_count' style='background-color:#ffd700;'>" + area_stats.types['Top Rope'] + "</span>";
+                area_list_html += "<span class='area_stats_route_count' style='background-color:#7af77a;'>" + area_stats.types['Boulder'] + "</span>";
+                area_list_html += "<span class='area_stats_route_count' style='background-color:#d3d3d3;'>" + area_stats.types['Aid'] + "</span>";
+                area_list_html += "</span>";
+
+                area_list_html += "<div>" + route_count + " routes/problems</div>";
+
+                area_list_html += "</div></div>";
             } else {
                 hidden_count++;
             }

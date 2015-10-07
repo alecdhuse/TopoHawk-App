@@ -56,6 +56,16 @@ hr {
     margin-top: 8px;
 }
 
+.area_stats_route_count {
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    margin-right: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+    text-align: center;
+}
+
 #arrow_left {
     float: left;
 }
@@ -273,6 +283,7 @@ hr {
 .destination_list_small_text {
     font-size: 10px;
     font-weight: normal;
+    margin-top: 2px;
 }
 
 .destination_list_offline {
