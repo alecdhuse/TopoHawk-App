@@ -661,7 +661,10 @@
 
             if (this._first_location_fix === true) {
                 if (map_obj._gps_location.lat != 0 && map_obj._gps_location.lng != 0) {
-                    this.set_view(map_obj._gps_location);
+                    if (this.selected_destination.destination_id === 0) {
+                        this.set_view(map_obj._gps_location);
+                    }
+                    
                     this._first_location_fix = false;
                     this.on_first_gps_fix(map_obj._gps_location.lat, map_obj._gps_location.lng);
                 }
