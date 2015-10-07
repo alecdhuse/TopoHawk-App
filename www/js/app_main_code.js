@@ -1119,7 +1119,7 @@ function change_route(route_id, screen_switch, change_map_view) {
             if (!navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
                 inner_html += "<div class='edit_tools_link_large' onclick='show_upload_photo()'><a nohref onclick='show_upload_photo()'>Upload Photo</a></div>";
             }
-            
+
             inner_html += "<div class='edit_tools_link_large' onclick='edit_current_route()'><a nohref onclick='edit_current_route()'>Edit Route</a></div>";
         }
     }
@@ -1180,6 +1180,12 @@ function check_for_human() {
            TH.util.logging.log("Error performing human check: " + error);
        }
     });
+}
+
+function click_search_card_submit() {
+    $("#search_box").val($("#search_card_input").val());
+    button_menu_search();
+    do_search();
 }
 
 function click_stream_item(route_id, area_id, destination_id) {
@@ -1429,8 +1435,17 @@ function create_home_screen() {
 
     html += "</div>";
 
+    /* Search Card */
+    html += "<div id='search_card' class='card' style='height:100px;padding-top:6px;'>";
+    html += "<div class='card_title'>Search</div>";
+    html += "<div style='margin-top:8px;padding-left:6px;padding-right:12px;'>";
+    html += "<input type='text' id='search_card_input' style='border-color:#ccc;border-style:solid;border-width:1px;font-size:large;width:100%;'><br />";
+    html += "<div style='margin:auto;width:100px;'><input type='submit' value='Search' onclick='click_search_card_submit()' style='height:25px;margin-top:10px;width:100px;'></div>";
+    html += "</div></div>";
+
     if (api_key_th.length > 0) {
         /* User logged in */
+        /*
         html += "<div id='tick_history_card' class='card' style='height:100px;padding-top:6px;'>";
         html += "<div class='card_title'>Tick History</div>";
         html += "<div id='tick_history_graph_div'><br />";
@@ -1439,6 +1454,7 @@ function create_home_screen() {
         html += "</div></div></div>";
         html += "<div style='height:300px;'></div>";
         load_tick_history_card();
+        */
     } else {
         /* Not logged in */
         html += "<div id='welcome_account_links' class='card' style='height:34px;padding-top:6px;'>";
@@ -1448,6 +1464,9 @@ function create_home_screen() {
         html += "<div style='text-align:center;font-size:x-large;'><a nohref onclick='show_login()'>Login</a></div></div>";
         html += "</div>";
     }
+
+    /* Bottom Space */
+    html += "<div style='height:500px;width:100%;'></div>";
 
     $("#screen_info_title").html("");
     $("#screen_info_inner").html(html);

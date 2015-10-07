@@ -688,6 +688,10 @@ hr {
     padding-top: 8px;
 }
 
+.seach_result_div {
+    margin-top: 4px;
+}
+
 .search_text {
     border-color: #ccc;
     border-style: solid;
