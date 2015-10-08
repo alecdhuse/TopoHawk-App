@@ -20,6 +20,9 @@
         <meta property='og:url'   content='//m.topohawk.com/' />
         <meta property='og:title' content='Topo Hawk Mobile' />
         <meta property='og:description' content='Rock climbing topo maps and more.' />
+
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *">
+        <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
     </head>
 
     <body onload="on_load()">
@@ -359,18 +362,19 @@
                                 <td><input type='email' name='email' id='login_email' value='' class="big_textbox"></td>
                             </tr>
                             <tr>
-                                <td><label for="password">Password:</label></td>
+                                <td><label id="login_password_label" for="password">Password:</label></td>
                                 <td><input type="password" name="password" id="login_password" class="big_textbox"></td>
                             </tr>
                         </table>
                         <br />
-                        <input type="submit" name="submit" class="big_button" value="Login" onclick="do_login()">
+                        <input type="submit" name="submit" class="big_button" id="login_submit_button" value="Login" onclick="do_login()">
 
                         <div class='screen_message' id="login_message"></div>
                         <br />
                         <div style="text-align:center;">
-                            <p>Don't have an account?</p>
-                            <a nohref onclick="show_signup()">Sign Up</a>
+                            <a nohref id="login_signup_link" onclick="show_signup()" style="font-size:large;">Sign Up</a>
+                            <br /><br />
+                            <a nohref id="login_reset_link" onclick="reset_password()" style="font-size:large;">Reset Password</a>
                         </div>
                     </div>
                 </div>
@@ -585,6 +589,7 @@
                     <div class="screen_inner" id="screen_ticks_inner">
                         <div id="tick_help">
                             <p>Ticks are used to record climbs sent or projected by users.</p>
+                            <hr />
                             <p>Click the route tick to edit.</p>
                         </div>
                         <div id='user_route_ticks'></div>

@@ -25,6 +25,7 @@ var photo_index          = 0;
 var photo_topo           = new PT();
 var photo_topo_init      = false;
 var photos_loaded        = false;
+var reset_password_mode  = false;
 var route_sort_by        = "topo";
 var selected_spray_id    = 0;
 var status_bar_height    = 0;
@@ -549,7 +550,11 @@ function api_get_spray(destination_id, callback, error_callback) {
        data:     spray_data,
        timeout:  6000,
        success:  function(response) {
-           callback(response.result);
+           if (response.result_code > 0) {
+               callback(response.result);
+           } else {
+               error_callback(req, status, error);
+           }
        },
        error: function (req, status, error) {
            error_callback(req, status, error);
@@ -1482,7 +1487,7 @@ function create_home_screen() {
     html += "<div id='search_card' class='card' style='height:105px;padding-top:6px;'>";
     html += "<div class='card_title'>Search Everything</div>";
     html += "<div style='margin-top:8px;padding-left:6px;padding-right:12px;'>";
-    html += "<input type='text' id='search_card_input' style='border-color:#ccc;border-style:solid;border-width:1px;font-size:large;width:100%;'><br />";
+    html += "<input type='text' id='search_card_input' onclick='position_search_card()' style='border-color:#ccc;border-style:solid;border-width:1px;font-size:large;width:100%;'><br />";
     html += "<div style='margin:auto;width:100px;'><input type='submit' value='Search' onclick='click_search_card_submit()' style='background-color: #00bbe0;border: 2px solid #D4D4D4;border-radius: 8px;color: white;font-size: large;height: 2em;margin-top: 10px;width: 100%;'></div>";
     html += "</div></div>";
 
@@ -1509,7 +1514,7 @@ function create_home_screen() {
     }
 
     /* Bottom Space */
-    html += "<div style='height:500px;width:100%;'></div>";
+    html += "<div style='height:530px;width:100%;'></div>";
 
     $("#screen_info_title").html("");
     $("#screen_info_inner").html(html);
@@ -1784,37 +1789,63 @@ function do_checkin() {
 }
 
 function do_login() {
-    var login_data = {
-        email:    $('#login_email').val(),
-        password: $('#login_password').val(),
-        get_key: true
-    };
+    if (reset_password_mode === true) {
+        var user_email = $("#login_email").val();
 
-    $.ajax({
-       type:     'POST',
-       url:      'https://topohawk.com/api/v1.1/login.php',
-       dataType: 'json',
-       data:     login_data,
-       success:  function(response) {
-            if (response.result_code > 1) {
-                api_key_th = response.result.key;
-                user_id = response.result.user_id;
+        var data = {
+            "user_email": user_email
+        };
 
-                localStorage.setItem("key", api_key_th);
-                localStorage.setItem("user_id", user_id);
+        $.ajax({
+           type:     'POST',
+           url:      'https://topohawk.com/api/v1.2/reset_password.php',
+           dataType: 'json',
+           data:     data,
+           timeout:  6000,
+           success:  function(response) {
+               show_help_comment(response.result, 2000);
+           },
+           error: function (req, status, error) {
+               var ui_msg = "Error: " + error;
+               show_help_comment(ui_msg, 2000);
+           }
+        });
 
-                $('#login_message').html('Login Successful');
+        /* Change UI Back */
+        reset_login();
+    } else {
+        var login_data = {
+            email:    $('#login_email').val(),
+            password: $('#login_password').val(),
+            get_key: true
+        };
 
-                //Wait a bit
-                setTimeout(function() { button1_click(); }, 1000);
-            } else {
-                $('#login_message').html(response.result);
-            }
-       },
-       error: function (req, status, error) {
-           $('#login_message').html("Error logging in: " + error);
-       }
-    });
+        $.ajax({
+           type:     'POST',
+           url:      'https://topohawk.com/api/v1.1/login.php',
+           dataType: 'json',
+           data:     login_data,
+           success:  function(response) {
+                if (response.result_code > 1) {
+                    api_key_th = response.result.key;
+                    user_id = response.result.user_id;
+
+                    localStorage.setItem("key", api_key_th);
+                    localStorage.setItem("user_id", user_id);
+
+                    $('#login_message').html('Login Successful');
+
+                    //Wait a bit
+                    setTimeout(function() { button1_click(); }, 1000);
+                } else {
+                    $('#login_message').html(response.result);
+                }
+           },
+           error: function (req, status, error) {
+               $('#login_message').html("Error logging in: " + error);
+           }
+        });
+    }
 }
 
 function do_search() {
@@ -2608,6 +2639,14 @@ function photo_topo_label_double_click(route) {
     change_route(route.properties.route_id, true, true);
 }
 
+function position_search_card() {
+    var top_pos = $("#search_card").position().top - 185;
+
+    $("#screen_info_inner").animate({
+        scrollTop: top_pos
+    }, 200);
+}
+
 function proccess_destination_callback(destination_callback_change_obj) {
     /* Finishes the destination callback action after the new destination has been loaded */
     if (destination_callback_change_obj.route_id > 0) {
@@ -2679,6 +2718,32 @@ function remove_offline_destination(destination_id) {
 function reply_to_spray(spray_id) {
     selected_spray_id = spray_id;
     $("#spray_send_textarea").focus();
+}
+
+function reset_login() {
+    /* Change UI Back */
+    $("#login_submit_button").prop('value', 'Login');
+    $("#login_reset_link").html("Reset Password");
+
+    $("#login_signup_link").show();
+    $("#login_password_label").show();
+    $("#login_password").show();
+    reset_password_mode = false;
+}
+
+function reset_password() {
+    if (reset_password_mode === false) {
+        /* Change UI for password reset */
+        $("#login_submit_button").prop('value', 'Reset Password');
+        $("#login_reset_link").html("Back");
+
+        $("#login_signup_link").hide();
+        $("#login_password_label").hide();
+        $("#login_password").hide();
+        reset_password_mode = true;
+    } else {
+        reset_login();
+    }
 }
 
 function resize_window() {
