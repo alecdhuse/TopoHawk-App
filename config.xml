@@ -88,8 +88,8 @@
     <icon src="images/icon-180.png"       gap:platform="ios" width="180" height="180" />
     <icon src="images/icon-192.png"       gap:platform="ios" width="192" height="192" />
 
-    <allow-navigation href="http://*/*" />
-    <allow-intent href="https://*/*" /> 
+    <allow-navigation href="*" />
+    <allow-intent href="*" /> 
 
     <access origin="*" />
     <access origin="https://topohawk.com" />
