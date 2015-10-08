@@ -18,7 +18,7 @@
 
     <preference name="orientation"                value="portrait" />
     <preference name="target-device"              value="universal" />
-    <preference name="fullscreen"                 value="true" />
+    <preference name="fullscreen"                 value="false" />
     <preference name="webviewbounce"              value="false" />
     <preference name="prerendered-icon"           value="false" />
     <preference name="stay-in-webview"            value="false" />
@@ -89,7 +89,7 @@
     <icon src="images/icon-192.png"       gap:platform="ios" width="192" height="192" />
 
     <allow-navigation href="*" />
-    <allow-intent href="*" /> 
+    <allow-intent href="*" />
 
     <access origin="*" />
     <access origin="https://topohawk.com" />
