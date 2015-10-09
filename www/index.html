@@ -587,11 +587,17 @@
                 <div id="screen_ticks" class="screen">
                     <div class="screen_inner" id="screen_ticks_inner">
                         <div id="tick_help">
-                            <p>Ticks are used to record climbs sent or projected by users.</p>
-                            <hr />
-                            <p>Click the route tick to edit.</p>
+                            <div style="margin-top:6px;">Ticks are used to record climbs sent or projected by users.</div>
                         </div>
-                        <div id='user_route_ticks'></div>
+                        <div style="background-color:black;border-radius:8px;height:30px;margin-top:10px;">
+                            <div id="ticks_tab_button_graph" style="color:white;float:right;margin-top:4px;text-align:center;width:49%;"  onclick="show_ticks_graph()">Graph</div>
+                            <div id="ticks_tab_button_list"  style="color:#00BBE0;float:left;margin-top:4px;text-align:center;width:49%;" onclick="show_ticks_list()">List</div>
+                        </div>
+                        <div id="route_ticks_list_tab" style="">
+                            <p style="text-align:center">Click the route tick to edit.</p>
+                            <div id='user_route_ticks'></div>
+                        </div>
+                        <div id='tick_history_graph_div' style="visibility:hidden;"></div>
                     </div>
                 </div>
 

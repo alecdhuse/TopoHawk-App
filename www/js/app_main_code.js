@@ -1524,6 +1524,13 @@ function create_home_screen() {
     $("#screen_info_title").css({"margin": "0px"});
     $("#screen_info_title").css({"height": "180px"});
     $("#screen_info_title").css({"background-image": background_url});
+
+    /* Add Search Card Events */
+    $("#search_card_input").keypress(function(e) {
+        if(e.which == 13) {
+            click_search_card_submit();
+        }
+    });
 }
 
 function create_offline_destinations_list() {
@@ -2350,6 +2357,7 @@ function get_route_ticks(user_id, route_id, callback, fail_callback) {
 function get_route_ticks_html(user_id, route_id, html_element) {
     get_route_ticks(user_id, route_id, function (result) {
         var html = "";
+        load_tick_history_card();
 
         for (var i=0; i<result.length; i++) {
             var args = "edit_route_tick(" + result[i].tick_id + ", '" + result[i].send_type + "', '" + result[i].send_comment + "', '" + result[i].send_date + "', " + result[i].send_public + ")";
@@ -3184,6 +3192,22 @@ function show_signup() {
     if ($(".captcha_check_div").css('visibility') == 'hidden') {
         $(".captcha_question_div").css('visibility','visible');
     }
+}
+
+function show_ticks_graph() {
+    $("#ticks_tab_button_graph").css('color', '#00BBE0');
+    $("#ticks_tab_button_list").css('color', '#FFF');
+    $("#route_ticks_list_tab").css('visibility','hidden');
+    $("#route_ticks_list_tab").css('height','0px');
+    $("#tick_history_graph_div").css('visibility','visible');
+}
+
+function show_ticks_list() {
+    $("#ticks_tab_button_graph").css('color', '#FFF');
+    $("#ticks_tab_button_list").css('color', '#00BBE0');
+    $("#route_ticks_list_tab").css('visibility','visible');
+    $("#route_ticks_list_tab").css('height','100%');
+    $("#tick_history_graph_div").css('visibility','hidden');
 }
 
 function show_upload_photo() {
