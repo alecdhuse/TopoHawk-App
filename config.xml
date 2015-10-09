@@ -39,7 +39,6 @@
     <feature name="http://api.phonegap.com/1.0/geolocation"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
 
-    <gap:plugin name="cordova-plugin-whitelist" source="npm" />
     <gap:plugin name="org.apache.cordova.device-orientation" />
     <gap:plugin name="org.apache.cordova.geolocation" />
     <gap:plugin name="org.apache.cordova.network-information" />
@@ -89,10 +88,6 @@
     <icon src="images/icon-180.png"       gap:platform="ios" width="180" height="180" />
     <icon src="images/icon-192.png"       gap:platform="ios" width="192" height="192" />
 
-    <allow-navigation href="*" />
-    <allow-intent href="*" />
-
-    <access origin="*" />
     <access origin="https://topohawk.com" />
     <access origin="http://topohawk.com" />
     <access origin="http://foldingmap.co" />
