@@ -3169,7 +3169,10 @@ function show_photo_stream() {
             }
         },
         error: function (req, status, error) {
-            $("#photo_stream_div").html("<div class='network_unavailable_outer'><div class='network_unavailable_inner'><img src='images/no-connection.svg' width='150px' /></div></div>");
+            if (stream_offset == 0) {
+                $("#photo_stream_div").html("<div class='network_unavailable_outer'><div class='network_unavailable_inner'><img src='images/no-connection.svg' width='150px' /></div></div>");
+            }
+            
             TH.util.logging.log("Error getting photo stream: " + error);
         }
     });
