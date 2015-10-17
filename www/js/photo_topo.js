@@ -594,7 +594,7 @@ PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, rout
     };
 
     marker_point_text.onMouseEnter = function(event) {
-        photo_topo_obj.show_route_popup(event.event.clientX, event.event.clientY, route);
+        photo_topo_obj.show_route_popup(event.event.pageX, event.event.pageY, route);
         path.strokeColor = photo_topo_obj.path_color_selected;
     };
 
