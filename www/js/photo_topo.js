@@ -168,8 +168,8 @@ PT.prototype._click_route = function(route, path, event) {
     var popup_x, popup_y;
 
     if (event.event.clientY && event.event.clientX) {
-        popup_x = event.event.clientX;
-        popup_y = event.event.clientY;
+        popup_x = event.event.pageX;
+        popup_y = event.event.pageY;
     } else if (event.point) {
         /* Touch Event uses different variable for location */
         popup_x = event.point.x;
@@ -304,6 +304,10 @@ PT.prototype._load_photo = function(result) {
     }
 
     pt_obj.photo_raster = new Raster(this.photo_url);
+
+    pt_obj.photo_raster.onClick = function(event) {
+        pt_obj.raster_click(event);
+    }
 
     pt_obj.photo_raster.onLoad = function () {
         pt_obj._photo_loaded = true;
@@ -520,7 +524,7 @@ PT.prototype.draw_route_markers = function(markers_to_make) {
         }
 
         if (overlapping_markers.length > 0) {
-            this.draw_route_marker_graphic(overlapping_markers[0].x, overlapping_markers[0].y, overlapping_markers[0].path,overlapping_markers[0].route);
+            this.draw_route_marker_graphic(overlapping_markers[0].x, overlapping_markers[0].y, overlapping_markers[0].path, overlapping_markers[0].route);
             overlapping_markers.splice(0, 1);
         }
 
@@ -612,6 +616,10 @@ PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, rout
 
 PT.prototype.hide_popups = function() {
     $("#route_popup").css('visibility', 'hidden');
+}
+
+PT.prototype.raster_click = function(event) {
+    /* Overridable Function */
 }
 
 PT.prototype.resize = function(canvas_size) {
