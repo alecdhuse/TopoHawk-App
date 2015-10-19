@@ -664,7 +664,7 @@
                     if (this.selected_destination.destination_id === 0) {
                         this.set_view(map_obj._gps_location);
                     }
-                    
+
                     this._first_location_fix = false;
                     this.on_first_gps_fix(map_obj._gps_location.lat, map_obj._gps_location.lng);
                 }
@@ -1080,7 +1080,8 @@
             this._sat_tiles = L.tileLayer(
                 'http://{s}.tiles.mapbox.com/v3/scarletshark.h68kpm4j/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="http://www.mapbox.com/about/maps/" target="_blank">Mapbox</a>',
-                    maxZoom: 19
+                    maxNativeZoom: 19,
+                    maxZoom: 20
                 }
             );
 
