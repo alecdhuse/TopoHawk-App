@@ -161,7 +161,7 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
 
     $(j_canvas_id).mouseup(function() {
         pt_obj._mouse_dragging = false;
-    });
+    });    
 };
 
 PT.prototype._click_route = function(route, path, event) {
@@ -507,7 +507,7 @@ PT.prototype.place_route_markers = function(markers_to_make) {
                 var y_overlap = Math.abs(overlapping_markers[0].y - overlapping_markers[i].y);
                 var x_overlap = Math.abs(overlapping_markers[0].x - overlapping_markers[i].x);
 
-                if (y_overlap < 10) {
+                if (y_overlap < 10 && (x_overlap < 12)) {
                     if (overlapping_markers[0].y < overlapping_markers[i].y) {
                         overlapping_markers[0].y -= (10 - y_overlap);
                         overlapping_markers[i].y += (10 - y_overlap);
@@ -554,7 +554,7 @@ PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, rout
     this.route_markers_outer.push(route_label_outer);
 
     if (route.properties.display_order > 0) {
-        /* The route desplay order is setm so display its numberical order */
+        /* The route desplay order is set so display its numberical order */
         var marker_text = route.properties.display_order;
         var font_size   = 14;
         var y_offset    = 5;
@@ -580,8 +580,10 @@ PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, rout
         }
     }
 
+    var marker_text_pos = [marker_x - text_position_offset, marker_y + y_offset];
+
     var marker_point_text = new PointText({
-        point: [marker_x - text_position_offset, marker_y + y_offset],
+        point: marker_text_pos,
         content: marker_text,
         fillColor: 'white',
         fontFamily: 'Courier New',
@@ -691,6 +693,13 @@ PT.prototype.resize = function(canvas_size) {
             this.photo_top_margin  = top_margin;
 
             if (this._paths_drawn === true) {
+                /* Remove old labels */
+                for (var i=0; i<this.route_marker_text.length; i++) {
+                    this.route_markers_outer[i].remove();
+                    this.route_markers[i].remove();
+                    this.route_marker_text[i].remove();
+                }
+
                 this.route_markers_outer    = [];
                 this.route_markers          = [];
                 this.route_marker_text      = [];
@@ -699,6 +708,7 @@ PT.prototype.resize = function(canvas_size) {
                 for (var i=0; i<this.paths_json.length; i++) {
                     if (typeof this.paths[i] !== "undefined") {
                         path             = this.paths_json[i];
+                        path_route_obj   = this._get_route_from_id(path.route_id);
                         height_diff      = this.photo_height_scaled / path.height;
                         width_diff       = this.photo_width_scaled / path.width;
 
@@ -713,19 +723,21 @@ PT.prototype.resize = function(canvas_size) {
 
                             var point_new = new Point(x, y);
                             this.paths[i].add(point_new);
+
+                            if (j == 0) {
+                                /* First point, recreate label */
+                                this.route_markers_to_make.push({
+                                    x:      x,
+                                    y:      y,
+                                    path:   this.paths[i],
+                                    route:  path_route_obj
+                                });
+                            }
                         }
-
-                        /* recreate label */
-                        path_route_obj = this._get_route_from_id(path.route_id);
-
-                        this.route_markers_to_make.push({
-                            x:      path.points[0][0],
-                            y:      path.points[0][1],
-                            path:   path,
-                            route:  path_route_obj
-                        });
                     }
                 }
+
+                this.draw_route_markers(this.route_markers_to_make);
             } else {
                 if (this._destination_loaded === true) {
                     for (var i=0; i<this.paths_json.length; i++) {
