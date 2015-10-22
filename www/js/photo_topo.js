@@ -242,8 +242,8 @@ PT.prototype._get_destination_data = function(destination_id) {
 
     if (this._destination_loaded === false || (pt_obj.destination.destination_id != destination_id)) {
         $.ajax({
-           type:     'POST',
-           url:      'https://topohawk.com/api/v1.1/get_destination_data.php',
+           type:     'GET',
+           url:      'https://topohawk.com/api/v1.2/get_destination_data.php',
            dataType: 'json',
            data: {
                'destination_id': destination_id,
@@ -410,7 +410,7 @@ PT.prototype.draw_path = function(path, route_object, left_margin, top_margin, p
     var x, y;
     var first_point;
 
-    this.new_path_points  = [];
+    this.new_path_points = [];
     paper = this.paper_scope;
 
     var new_path = new Path({
@@ -476,8 +476,6 @@ PT.prototype.route_marker_overlaps = function(index, all_markers, margin) {
 
 PT.prototype.draw_route_markers = function(markers_to_make) {
     if (markers_to_make.length > 0) {
-        var overlapping_markers = [];
-
         /* Make sure all markers on on the canvas */
         for (var i=0; i<markers_to_make.length; i++) {
             if (markers_to_make[i].x < 9) {
@@ -486,6 +484,14 @@ PT.prototype.draw_route_markers = function(markers_to_make) {
 
             /* todo: check bottom, top, right */
         }
+
+        this.place_route_markers(markers_to_make);
+    }
+};
+
+PT.prototype.place_route_markers = function(markers_to_make) {
+    if (markers_to_make.length > 0) {
+        var overlapping_markers = [];
 
         for (var i=0; i<markers_to_make.length; i++) {
             if (this.route_marker_overlaps(i, markers_to_make, 18)) {
@@ -528,7 +534,7 @@ PT.prototype.draw_route_markers = function(markers_to_make) {
             overlapping_markers.splice(0, 1);
         }
 
-        this.draw_route_markers(overlapping_markers);
+        this.place_route_markers(overlapping_markers);
     }
 };
 
@@ -678,12 +684,18 @@ PT.prototype.resize = function(canvas_size) {
             var height_diff, width_diff;
             var new_path_points = [];
             var path;
+            var path_route_obj;
             var x, y;
 
             this.photo_left_margin = left_margin;
             this.photo_top_margin  = top_margin;
 
             if (this._paths_drawn === true) {
+                this.route_markers_outer    = [];
+                this.route_markers          = [];
+                this.route_marker_text      = [];
+                this.route_markers_to_make  = [];
+
                 for (var i=0; i<this.paths_json.length; i++) {
                     if (typeof this.paths[i] !== "undefined") {
                         path             = this.paths_json[i];
@@ -692,14 +704,8 @@ PT.prototype.resize = function(canvas_size) {
 
                         this.paths[i].removeSegments();
 
+                        /* Scale path points */
                         for (var j=0; j < path.points.length; j++) {
-                            if (j == 1) {
-                                /* Adjust route marker */
-                                this.route_markers_outer[i].position = new Point(x, y + 20);
-                                this.route_markers[i].position       = new Point(x, y + 20);
-                                this.route_marker_text[i].position   = new Point(x, y + 20);
-                            }
-
                             x = parseFloat(path.points[j][0]) * width_diff;
                             y = parseFloat(path.points[j][1]) * height_diff;
                             x += left_margin;
@@ -708,6 +714,16 @@ PT.prototype.resize = function(canvas_size) {
                             var point_new = new Point(x, y);
                             this.paths[i].add(point_new);
                         }
+
+                        /* recreate label */
+                        path_route_obj = this._get_route_from_id(path.route_id);
+
+                        this.route_markers_to_make.push({
+                            x:      path.points[0][0],
+                            y:      path.points[0][1],
+                            path:   path,
+                            route:  path_route_obj
+                        });
                     }
                 }
             } else {
