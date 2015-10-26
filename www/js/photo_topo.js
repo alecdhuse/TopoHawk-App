@@ -10,6 +10,7 @@ function PT(canvas_id) {
     this._offline_operation    = false;
     this._paths_drawn          = false;
     this._photo_loaded         = false;
+    this._photo_info_loaded    = false;
 
     this.canvas                = '';
     this.destination;
@@ -161,7 +162,7 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
 
     $(j_canvas_id).mouseup(function() {
         pt_obj._mouse_dragging = false;
-    });    
+    });
 };
 
 PT.prototype._click_route = function(route, path, event) {
@@ -304,15 +305,19 @@ PT.prototype._load_photo = function(result) {
     }
 
     pt_obj.photo_raster = new Raster(this.photo_url);
+    pt_obj.photo_raster.visible = false;
+
+    pt_obj.photo_raster.onLoad = function () {
+        setTimeout(function(){
+            pt_obj._photo_loaded = true;
+            pt_obj.resize();
+            pt_obj.photo_raster.visible = true;
+        }, 80);
+    };
 
     pt_obj.photo_raster.onClick = function(event) {
         pt_obj.raster_click(event);
     }
-
-    pt_obj.photo_raster.onLoad = function () {
-        pt_obj._photo_loaded = true;
-        pt_obj.resize();
-    };
 };
 
 PT.prototype._make_photo_request = function(photo_id) {
@@ -329,18 +334,18 @@ PT.prototype._make_photo_request = function(photo_id) {
             if (response.result_code > 0) {
                 if (typeof pt_obj.destination === "undefined" || pt_obj.destination === null) {
                     pt_obj._get_destination_data(response.result.dest_id);
-                    this._photo_loaded = true;
-                } else {
-                    this._photo_loaded = true;
                 }
 
                 pt_obj.update_photo_object(photo_id, response.result, pt_obj);
             } else {
                 TH.util.logging.log("Error getting photo info: " + response.result);
             }
+
+            pt_obj._photo_info_loaded = true;
         },
         error: function (req, status, error) {
             TH.util.logging.log("Error getting photo info: " + error);
+            pt_obj._photo_info_loaded = true;
         }
    });
 };
@@ -358,6 +363,7 @@ PT.prototype.change_photo = function(photo_id) {
 
         this._paths_drawn           = false;
         this._photo_loaded          = false;
+        this._photo_info_loaded     = false;
         this.last_segment_index     = 0;
         this.line_started           = false;
         this.new_path_points        = []
@@ -648,9 +654,6 @@ PT.prototype.resize = function(canvas_size) {
         }
 
         if (this._photo_loaded === true) {
-            var photo_height_scaled_old;
-            var photo_width_scaled_old;
-
             this.photo_raster.scale((1/this.photo_scale));
 
             var photo_size = this.photo_raster.size;
@@ -659,26 +662,19 @@ PT.prototype.resize = function(canvas_size) {
             var width_ratio  = view_size.width  / photo_size.width;
             var height_ratio = view_size.height / photo_size.height;
 
-            photo_height_scaled_old = this.photo_height_scaled;
-            photo_width_scaled_old  = this.photo_width_scaled;
+            var photo_height_scaled_old = (this.photo_height_scaled > 0) ? this.photo_height_scaled : this.photo_raster.height;
+            var photo_width_scaled_old  = (this.photo_width_scaled > 0)  ? this.photo_width_scaled  : this.photo_raster.width;
 
-            if (width_ratio < height_ratio) {
-                this.photo_scale = width_ratio;
-                this.photo_height_scaled = (photo_size.height * width_ratio);
-                this.photo_width_scaled =  (photo_size.width  * width_ratio);
-            } else {
-                this.photo_scale = height_ratio;
-                this.photo_height_scaled = (photo_size.height * height_ratio);
-                this.photo_width_scaled =  (photo_size.width  * height_ratio);
-            }
+            this.photo_scale = (width_ratio < height_ratio) ? width_ratio : height_ratio;
+            this.photo_height_scaled = (photo_size.height * this.photo_scale);
+            this.photo_width_scaled  = (photo_size.width  * this.photo_scale);
 
             this.photo_raster.scale(this.photo_scale);
             this.photo_raster.position = this.paper_scope.view.center;
-
             this.paper_scope.view.update();
 
-            var height_change = this.photo_height_scaled / photo_height_scaled_old;
-            var width_change  = this.photo_width_scaled /  photo_width_scaled_old;
+            var height_change = (this.photo_height_scaled / photo_height_scaled_old);
+            var width_change  = (this.photo_width_scaled /  photo_width_scaled_old);
 
             var left_margin = (view_size.width  - this.photo_width_scaled) / 2.0;
             var top_margin  = (view_size.height - this.photo_height_scaled) / 2.0 ;
@@ -739,26 +735,35 @@ PT.prototype.resize = function(canvas_size) {
 
                 this.draw_route_markers(this.route_markers_to_make);
             } else {
-                if (this._destination_loaded === true) {
-                    for (var i=0; i<this.paths_json.length; i++) {
-                        if (this.paths_json[i].route_id > 0) {
-                            var route_object = this._get_route_from_id(this.paths_json[i].route_id);
-                            this.draw_path(this.paths_json[i], route_object, left_margin, top_margin, this.photo_height_scaled, this.photo_width_scaled);
+                if (this._photo_info_loaded === true) {
+                    if (this.paths_json.length > 0) {
+                        if (this._destination_loaded === true) {
+                            for (var i=0; i<this.paths_json.length; i++) {
+                                if (this.paths_json[i].route_id > 0) {
+                                    var route_object = this._get_route_from_id(this.paths_json[i].route_id);
+                                    this.draw_path(this.paths_json[i], route_object, left_margin, top_margin, this.photo_height_scaled, this.photo_width_scaled);
+                                }
+                            }
+
+                            /* Draw all route markers */
+                            this.draw_route_markers(this.route_markers_to_make);
+                            this.paper_scope.view.update();
+                            this.photo_topo_loaded();
+                            this._paths_drawn = true;
                         }
+                    } else {
+                        this.paper_scope.view.update();
+                        this.photo_topo_loaded();
+                        this._paths_drawn = true;
                     }
-
-                    /* Draw all route markers */
-                    this.draw_route_markers(this.route_markers_to_make);
-
-                    this.paper_scope.view.update();
-                    this.photo_topo_loaded();
-                    this._paths_drawn = true;
+                } else {
+                    /* Photo Info not yet loaded */
                 }
             }
         }
 
-        this.photo_resized();
         this.paper_scope.view.update();
+        this.photo_resized();
     }
 
     this._create_loading_path();
