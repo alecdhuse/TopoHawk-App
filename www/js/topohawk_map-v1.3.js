@@ -661,10 +661,7 @@
 
             if (this._first_location_fix === true) {
                 if (map_obj._gps_location.lat != 0 && map_obj._gps_location.lng != 0) {
-                    if (this.selected_destination.destination_id === 0) {
-                        this.set_view(map_obj._gps_location);
-                    }
-
+                    this.set_view(map_obj._gps_location);
                     this._first_location_fix = false;
                     this.on_first_gps_fix(map_obj._gps_location.lat, map_obj._gps_location.lng);
                 }
@@ -689,7 +686,10 @@
             this._draw_polyons_objects(    this.get_zoom(), this.polygons,      this._objects_layer);
             this._draw_amenities_markers(  this.get_zoom(), this.amenities,     this._objects_layer);
             this._draw_area_markers(       this.get_zoom(), this.areas,         this._objects_layer, "#ff7800");
-            this._draw_route_markers(      this.get_zoom(), this.routes,        this._objects_layer, this.route_filter);
+
+            if (this._options.show_routes === true) {
+                this._draw_route_markers(  this.get_zoom(), this.routes,        this._objects_layer, this.route_filter);
+            }
         },
 
         _draw_path_objects: function (zoom, mapFeature, layer_group) {
@@ -1214,14 +1214,15 @@
         options.offline           = options.hasOwnProperty('offline') ? options.offline : false;
         options.route_id          = options.hasOwnProperty('route_id') ? options.route_id : -1;
         options.show_description_popups = options.hasOwnProperty('show_description_popups') ? options.show_description_popups : false;
-        options.show_location   = options.hasOwnProperty('show_location')   ? options.show_location : false;
-        options.show_numberings = options.hasOwnProperty('show_numberings') ? options.show_numberings : false;
-        options.grade_aid       = options.hasOwnProperty('grade_aid')       ? options.grade_aid     : 'USA-YDS';
-        options.grade_boulder   = options.hasOwnProperty('grade_boulder')   ? options.grade_boulder : 'USA-VScale';
-        options.grade_mixed     = options.hasOwnProperty('grade_mixed')     ? options.grade_mixed   : 'USA-YDS';
-        options.grade_sport     = options.hasOwnProperty('grade_sport')     ? options.grade_sport   : 'USA-YDS';
-        options.grade_top       = options.hasOwnProperty('grade_top')       ? options.grade_top     : 'USA-YDS';
-        options.grade_trad      = options.hasOwnProperty('grade_trad')      ? options.grade_trad    : 'USA-YDS';
+        options.show_location     = options.hasOwnProperty('show_location')   ? options.show_location   : false;
+        options.show_routes       = options.hasOwnProperty('show_routes')     ? options.show_routes     : true;
+        options.show_numberings   = options.hasOwnProperty('show_numberings') ? options.show_numberings : false;
+        options.grade_aid         = options.hasOwnProperty('grade_aid')       ? options.grade_aid       : 'USA-YDS';
+        options.grade_boulder     = options.hasOwnProperty('grade_boulder')   ? options.grade_boulder   : 'USA-VScale';
+        options.grade_mixed       = options.hasOwnProperty('grade_mixed')     ? options.grade_mixed     : 'USA-YDS';
+        options.grade_sport       = options.hasOwnProperty('grade_sport')     ? options.grade_sport     : 'USA-YDS';
+        options.grade_top         = options.hasOwnProperty('grade_top')       ? options.grade_top       : 'USA-YDS';
+        options.grade_trad        = options.hasOwnProperty('grade_trad')      ? options.grade_trad      : 'USA-YDS';
 
         var new_map = new TH.Map(id, options);
 

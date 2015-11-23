@@ -1586,7 +1586,7 @@ function create_photo_canvas(photos) {
             $("#photo_topo_canvas").css({"height": max_height});
             $("#photo_topo_canvas").css({"width": max_width});
 
-            photo_topo.init('photo_topo_canvas', photos[0], map.selected_destination, true);
+            photo_topo.init('photo_topo_canvas',  {destination: map.selected_destination, photo_id: 0, offline: true});
             photo_topo.use_offline_images = true;
             photo_topo.resize([$("#photo_topo_canvas").height(), $("#photo_topo_canvas").width()]);
             photo_topo.route_label_double_clicked = function(route) { photo_topo_label_double_click(route); };
@@ -1783,9 +1783,7 @@ function do_checkin() {
        dataType: 'json',
        data:     data,
        success:  function(response) {
-            if (response.result_code > 0) {
-                TH.util.logging.log(response.result);
-            } else {
+            if (response.result_code <= 0) {
                 TH.util.logging.log(response.result);
             }
        },
@@ -3172,7 +3170,7 @@ function show_photo_stream() {
             if (stream_offset == 0) {
                 $("#photo_stream_div").html("<div class='network_unavailable_outer'><div class='network_unavailable_inner'><img src='images/no-connection.svg' width='150px' /></div></div>");
             }
-            
+
             TH.util.logging.log("Error getting photo stream: " + error);
         }
     });

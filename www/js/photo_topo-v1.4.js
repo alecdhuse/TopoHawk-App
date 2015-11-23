@@ -1,4 +1,5 @@
 function PT(canvas_id) {
+    this._allow_edits          = false;
     this._canvas_center;
     this._canvas_center_1st;
     this._canvas_id;
@@ -8,6 +9,7 @@ function PT(canvas_id) {
     this._mouse_drag_start_x   = 0;
     this._mouse_drag_start_y   = 0;
     this._offline_operation    = false;
+    this._options              = {};
     this._paths_drawn          = false;
     this._photo_loaded         = false;
     this._photo_info_loaded    = false;
@@ -17,6 +19,7 @@ function PT(canvas_id) {
     this.last_segment_index    = 0;
     this.line_started          = false;
     this.loading_path;
+    this.new_path_marker       = {};
     this.new_path_points       = []
     this.paper_scope;
     this.path_color            = 'rgba(23,  157, 150, 0.7)';
@@ -48,6 +51,7 @@ function PT(canvas_id) {
     this.use_offline_images    = true;
 
     /* Overridable Functions */
+    this.path_click                 = function(route, segment_id, segment_index, segment_style) {};
     this.photo_topo_loaded          = function() {};
     this.photo_resized              = function() {};
     this.route_label_double_clicked = function(route) {};
@@ -74,16 +78,29 @@ function PT(canvas_id) {
     };
 };
 
-PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
+PT.prototype.init = function(canvas_id, options) {
+    paper.install(window);
+
+    if  (typeof options !== "undefined") {
+        this._options               = options;
+        this._options.photo_id      = options.hasOwnProperty('photo_id')    ? options.photo_id : 0;
+        this._options.destination   = options.hasOwnProperty('destination') ? options.destination : {destination_id: 0};
+        this._options.offline       = options.hasOwnProperty('offline')     ? options.offline : false;
+    } else {
+        this._options = {
+            photo_id:       0,
+            destination:    {destination_id: 0},
+            offline:        false
+        };
+    }
+
     if ($("#route_popup").length) {
         /* route popup exits already */
     } else {
         $('body').append("<div class='leaflet-label' id='route_popup' style='position:absolute;visibility:hidden;'></div>");
     }
 
-    paper.install(window);
-
-    this.photo_id    = photo_id;
+    this.photo_id    = this._options.photo_id;
     this._canvas_id  = canvas_id;
     this.canvas      = document.getElementById(canvas_id);
     this.paper_scope = new paper.PaperScope();
@@ -91,20 +108,16 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
 
     paper = this.paper_scope;
 
-    if (typeof offline !== "undefined") {
-        this._offline_operation = offline;
-        this.use_offline_images = offline;
-    }
+    this._offline_operation = this._options.offline;
+    this.use_offline_images = this._options.offline;
 
-    if (typeof destination !== "undefined") {
+    if (this._options.destination.destination_id > 0) {
         /* Destination supplied */
-        this.destination = destination;
+        this.destination = this._options.destination;
         this._destination_loaded = true;
     }
 
-    if (typeof photo_id !== "undefined" && photo_id > 0) {
-        this._get_photo_info(photo_id);
-    }
+    this._get_photo_info(this._options.photo_id);
 
     /* Bind Events */
     var pt_obj = this;
@@ -168,6 +181,8 @@ PT.prototype.init = function(canvas_id, photo_id, destination, offline) {
 PT.prototype._click_route = function(route, path, event) {
     var popup_x, popup_y;
 
+    paper = this.paper_scope;
+
     if (event.event.clientY && event.event.clientX) {
         popup_x = event.event.pageX;
         popup_y = event.event.pageY;
@@ -185,10 +200,16 @@ PT.prototype._click_route = function(route, path, event) {
 
     /* Reset all path colors */
     for (var i=0; i<this.paths.length; i++) {
-        this.paths[i].strokeColor = this.path_color;
+        for (var j=0; j<this.paths[i].length; j++) {
+            this.paths[i][j].strokeColor = this.path_color;
+        }
     }
 
-    path.strokeColor = this.path_color_selected;
+    for (var i=0; i<path.length; i++) {
+        path[i].strokeColor = this.path_color_selected;
+    }
+
+    this.paper_scope.view.update();
 };
 
 PT.prototype._create_loading_path = function() {
@@ -316,6 +337,14 @@ PT.prototype._load_photo = function(result) {
     };
 
     pt_obj.photo_raster.onClick = function(event) {
+        /* Reset all paths */
+        for (var i=0; i<pt_obj.paths.length; i++) {
+            for (var j=0; j<pt_obj.paths[i].length; j++) {
+                //pt_obj.paths[i][j].fullySelected = false;
+                pt_obj.paths[i][j].selectedColor = this.path_color;
+            }
+        }
+
         pt_obj.raster_click(event);
     }
 };
@@ -324,9 +353,9 @@ PT.prototype._make_photo_request = function(photo_id) {
     var pt_obj = this;
 
     $.ajax({
-       type:        'POST',
+       type:        'GET',
        dataType:    'json',
-       url:         'https://topohawk.com/api/v1/get_photo_info.php',
+       url:         'https://topohawk.com/api/v1.2/get_photo_info.php',
        data: {
            'photo_id': photo_id
        },
@@ -361,13 +390,8 @@ PT.prototype.change_photo = function(photo_id) {
             paper.view.center = this._canvas_center_1st;
         }
 
-        this._paths_drawn           = false;
         this._photo_loaded          = false;
         this._photo_info_loaded     = false;
-        this.last_segment_index     = 0;
-        this.line_started           = false;
-        this.new_path_points        = []
-        this.paths                  = [];
         this.paths_json             = [];
         this.photo_area             = 0;
         this.photo_destination      = 0;
@@ -377,12 +401,8 @@ PT.prototype.change_photo = function(photo_id) {
         this.photo_scale            = 1;
         this.photo_height_scaled    = 0;
         this.photo_width_scaled     = 0;
-        this.route_markers          = [];
-        this.route_markers_to_make  = [];
-        this.route_markers_outer    = [];
-        this.route_marker_points    = [];
-        this.route_marker_text      = [];
 
+        this.remove_paths();
         this._get_photo_info(photo_id);
     }
 };
@@ -397,60 +417,173 @@ PT.prototype.create_new_line = function(event, route) {
         path.strokeColor = this.path_color;
         path.strokeWidth = 4;
         path.fullySelected = true;
-        this.paths.push(path);
+        this.paths.push([path]);
 
         this.line_started = true;
         this.last_segment_index = 0;
-        //this.draw_route_marker(event.point, path, route);
+        this.new_path_marker = this.create_route_marker_graphic(event.point.x, event.point.y + 14, path, route);
     } else {
         this.last_segment_index = this.last_segment_index + 1;
-        this.paths[this.paths.length-1].add(event.point);
+        this.paths[this.paths.length-1][0].add(event.point);
     }
 
     this.new_path_points.push([event.point.x, event.point.y]);
 };
 
-PT.prototype.draw_path = function(path, route_object, left_margin, top_margin, photo_height, photo_width) {
-    var height_diff      = photo_height / path.height;
-    var width_diff       = photo_width / path.width;
-    var x, y;
-    var first_point;
+PT.prototype.get_path_segments = function(path, route_object, left_margin, top_margin, photo_height, photo_width, all_segments) {
+    var segments_obj = {
+            path_object:    path,
+            route_object:   route_object,
+            margin_left:    left_margin,
+            margin_top:     top_margin,
+            photo_height:   photo_height,
+            photo_width:    photo_width,
+            segments:       []
+    };
 
+    var segment         = new Array();
+    var segment_stroke  = "";
+    var height_diff     = segments_obj.photo_height / segments_obj.path_object.height;
+    var width_diff      = segments_obj.photo_width  / segments_obj.path_object.width;
+    var x, y;
+
+    /* Fist Point */
+    x = parseFloat(segments_obj.path_object.points[0][0]) * width_diff;
+    y = parseFloat(segments_obj.path_object.points[0][1]) * height_diff;
+    x += segments_obj.margin_left;
+    y += segments_obj.margin_top;
+    segment.push([x, y]);
+    segment_stroke = path.segments[0];
+
+    for (var i=1; i < segments_obj.path_object.points.length; i++) {
+        x = parseFloat(segments_obj.path_object.points[i][0]) * width_diff;
+        y = parseFloat(segments_obj.path_object.points[i][1]) * height_diff;
+        x += segments_obj.margin_left;
+        y += segments_obj.margin_top;
+
+        if ((segment_stroke != path.segments[i-1]) || (all_segments === true)) {
+            /* Split segment */
+            if (i > 1) {
+                var last_point = segment[segment.length - 1];
+                segments_obj.segments.push(segment);
+                segment = new Array();
+                segment.push(last_point);
+            }
+        }
+
+        segment.push([x, y]);
+        segment_stroke = path.segments[i-1];
+    }
+
+    segments_obj.segments.push(segment);
+
+    return segments_obj;
+}
+
+PT.prototype.draw_all_paths = function(all_segments) {
+    if (this.paths_json.length > 0) {
+        if (this._destination_loaded === true) {
+            for (var i=0; i<this.paths_json.length; i++) {
+                if (this.paths_json[i].route_id > 0) {
+                    var route_object = this._get_route_from_id(this.paths_json[i].route_id);
+                    this.draw_path(this.paths_json[i], route_object, this.photo_left_margin, this.photo_top_margin, this.photo_height_scaled, this.photo_width_scaled, all_segments);
+                }
+            }
+
+            /* Draw all route markers */
+            this.draw_route_markers(this.route_markers_to_make);
+            this.paper_scope.view.update();
+            this._paths_drawn = true;
+        }
+    }
+}
+
+PT.prototype.draw_path = function(path, route_object, left_margin, top_margin, photo_height, photo_width, all_segments) {
     this.new_path_points = [];
     paper = this.paper_scope;
 
-    var new_path = new Path({
-        fullySelected:  false,
-        strokeCap:      'round',
-        strokeWidth:    4
-    });
+    var segments_obj  = this.get_path_segments(path, route_object, left_margin, top_margin, photo_height, photo_width, all_segments);
+    var path_color    = (this.selected_route_id == segments_obj.route_object.properties.route_id) ? this.path_color_selected : this.path_color;
+    var path_segments = new Array();
+    var pt_obj        = this;
+    var points        = new Array();
+    var x, y;
 
-    if (this.selected_route_id == route_object.properties.route_id) {
-        new_path.strokeColor = this.path_color_selected;
-    } else {
-        new_path.strokeColor = this.path_color;
+    for (var i=0; i<segments_obj.segments.length; i++) {
+        var segment_index   = i;
+        var segment_style   = "solid";
+        var current_segment = segments_obj.segments[i];
+        var new_path = new Path({
+            fullySelected:  false,
+            strokeCap:      'round',
+            strokeWidth:    4
+        });
+
+        new_path.strokeColor = path_color;
+        if (i < path.segments.length) {
+            if (path.segments[i].trim() == "dotted") {
+                new_path.dashArray = [4, 9];
+                segment_style = "dotted";
+            }
+        } else {
+            segment_style = "solid";
+        }
+
+        for (var j=0; j<current_segment.length; j++) {
+            x = current_segment[j][0];
+            y = current_segment[j][1];
+            points.push(current_segment[j]);
+            new_path.add(new Point(x, y));
+            this.new_path_points.push([x, y]);
+
+            if (i == 0 && j == 0) {
+                this.route_markers_to_make.push({
+                    x:      x,
+                    y:      y + 14,
+                    path:   path_segments,
+                    route:  segments_obj.route_object
+                });
+            }
+        }
+
+        new_path.segment_index = segment_index;
+        new_path.segment_style = segment_style;
+        new_path.topo_id       = parseInt(path.topo_id);
+
+        new_path.onClick = function(event) {
+            if (pt_obj._allow_edits === true) {
+                /* Reset all paths */
+                for (var i=0; i<pt_obj.paths.length; i++) {
+                    for (var j=0; j<pt_obj.paths[i].length; j++) {
+                        pt_obj.paths[i][j].fullySelected = false;
+                        //pt_obj.paths[i][j].selectedColor = this.path_color;
+                        pt_obj.paths[i][j].strokeColor = pt_obj.path_color;
+                    }
+                }
+
+                //this.fullySelected = true;
+                //this.selectedColor = '#ffffff';
+                this.strokeColor = 'rgba(255,   0,   0, 0.8)';
+
+                /* Remove newly started line */
+                if (pt_obj.line_started === true) {
+                    pt_obj.line_started = false;
+                    pt_obj.paths[pt_obj.paths.length-1][0].removeSegments();
+                    pt_obj.paths[pt_obj.paths.length-1].splice(-1,1);
+
+                    pt_obj.new_path_marker.label.remove();
+                    pt_obj.new_path_marker.label_outer.remove();
+                    pt_obj.new_path_marker.marker_text.remove();
+                }
+
+                pt_obj.path_click(segments_obj.route_object, this.topo_id, this.segment_index, this.segment_style);
+            }
+        }
+
+        path_segments.push(new_path);
     }
 
-    for (var i=0; i < path.points.length; i++) {
-        x = parseFloat(path.points[i][0]) * width_diff;
-        y = parseFloat(path.points[i][1]) * height_diff;
-        x += left_margin;
-        y += top_margin;
-
-        if (i == 0) first_point = new Point(x, y);
-        var point_new = new Point(x, y);
-        new_path.add(point_new);
-        this.new_path_points.push([x, y]);
-    }
-
-    this.route_markers_to_make.push({
-        x:      first_point.x,
-        y:      first_point.y,
-        path:   new_path,
-        route:  route_object
-    });
-
-    this.paths.push(new_path);
+    this.paths.push(path_segments);
 };
 
 PT.prototype.get_height_from_width = function(given_width) {
@@ -494,6 +627,12 @@ PT.prototype.draw_route_markers = function(markers_to_make) {
         this.place_route_markers(markers_to_make);
     }
 };
+
+PT.prototype.enable_edits = function (allow_edits) {
+    this._allow_edits = allow_edits;
+    this.remove_paths();
+    this.draw_all_paths(allow_edits);
+}
 
 PT.prototype.place_route_markers = function(markers_to_make) {
     if (markers_to_make.length > 0) {
@@ -544,7 +683,7 @@ PT.prototype.place_route_markers = function(markers_to_make) {
     }
 };
 
-PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, route) {
+PT.prototype.create_route_marker_graphic = function(marker_x, marker_y, path, route) {
     paper = this.paper_scope;
     var photo_topo_obj = this;
     var y_adjust = 1;
@@ -554,10 +693,6 @@ PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, rout
 
     var route_label = new Path.Circle(new Point(marker_x, marker_y), 10);
     route_label.fillColor = this.type_colors[route.properties.route_type];
-
-    this.route_markers.push(route_label);
-    this.route_marker_points.push([marker_x, marker_y]);
-    this.route_markers_outer.push(route_label_outer);
 
     if (route.properties.display_order > 0) {
         /* The route desplay order is set so display its numberical order */
@@ -597,32 +732,52 @@ PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, rout
         fontSize: font_size
     });
 
-    this.route_marker_text.push(marker_point_text);
+    var marker_components = {
+        label:       route_label,
+        label_outer: route_label_outer,
+        marker_text: marker_point_text
+    };
 
-    route_label.onClick = function(event) {
+    return marker_components;
+}
+
+PT.prototype.draw_route_marker_graphic = function(marker_x, marker_y, path, route) {
+    var photo_topo_obj   = this;
+    var route_marker_obj = this.create_route_marker_graphic(marker_x, marker_y, path, route);
+
+    this.route_markers.push(route_marker_obj.label);
+    this.route_marker_points.push([marker_x, marker_y]);
+    this.route_markers_outer.push(route_marker_obj.label_outer);
+    this.route_marker_text.push(route_marker_obj.marker_text);
+
+    route_marker_obj.label.onClick = function(event) {
         photo_topo_obj._click_route(route, path, event);
     }
 
-    marker_point_text.onClick = function(event) {
+    route_marker_obj.marker_text.onClick = function(event) {
         photo_topo_obj._click_route(route, path, event);
     };
 
-    marker_point_text.onDoubleClick = function(event) {
+    route_marker_obj.marker_text.onDoubleClick = function(event) {
         photo_topo_obj.route_label_double_clicked(route);
     };
 
-    marker_point_text.onMouseEnter = function(event) {
+    route_marker_obj.marker_text.onMouseEnter = function(event) {
         photo_topo_obj.show_route_popup(event.event.pageX, event.event.pageY, route);
-        path.strokeColor = photo_topo_obj.path_color_selected;
+        for (var i=0; i<path.length; i++) {
+            path[i].strokeColor = photo_topo_obj.path_color_selected;
+        }
     };
 
-    marker_point_text.onMouseLeave = function(event) {
+    route_marker_obj.marker_text.onMouseLeave = function(event) {
         if (photo_topo_obj.selected_path !== path) {
             /* Hide Route Info Popoup */
             $("#route_popup").css('visibility', 'hidden');
 
             if (photo_topo_obj.selected_route_id != route.properties.route_id) {
-                path.strokeColor = photo_topo_obj.path_color;
+                for (var i=0; i<path.length; i++) {
+                    path[i].strokeColor = photo_topo_obj.path_color;
+                }
             }
         };
     }
@@ -634,6 +789,85 @@ PT.prototype.hide_popups = function() {
 
 PT.prototype.raster_click = function(event) {
     /* Overridable Function */
+}
+
+PT.prototype.redraw_segments = function() {
+    /* Remove old labels */
+    for (var i=0; i<this.route_marker_text.length; i++) {
+        this.route_markers_outer[i].remove();
+        this.route_markers[i].remove();
+        this.route_marker_text[i].remove();
+    }
+
+    this.route_markers_outer    = [];
+    this.route_markers          = [];
+    this.route_marker_text      = [];
+    this.route_markers_to_make  = [];
+
+    for (var i=0; i<this.paths_json.length; i++) {
+        if (typeof this.paths[i] !== "undefined") {
+            path             = this.paths_json[i];
+            path_route_obj   = this._get_route_from_id(path.route_id);
+            var segments_obj = this.get_path_segments(path, path_route_obj, this.photo_left_margin, this.photo_top_margin, this.photo_height_scaled, this.photo_width_scaled, false);
+
+            for (var s=0; s<this.paths[i].length; s++) {
+                path.strokeColor = this.path_color;
+                path.fullySelected = false;
+                this.paths[i][s].removeSegments();
+            }
+
+            for (var k=0; k<segments_obj.segments.length; k++) {
+                var current_segment = segments_obj.segments[k];
+
+                for (var l=0; l<current_segment.length; l++) {
+                    x = current_segment[l][0];
+                    y = current_segment[l][1];
+
+                    try {
+                        this.paths[i][k].add(new Point(x, y));
+                    } catch(err) {
+                        var e = err;
+                    }
+
+                    if (k == 0 && l == 0) {
+                        this.route_markers_to_make.push({
+                            x:      x,
+                            y:      y + 14,
+                            path:   this.paths[i],
+                            route:  segments_obj.route_object
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    this.draw_route_markers(this.route_markers_to_make);
+}
+
+PT.prototype.remove_paths = function() {
+    for (var i=0; i<this.paths.length; i++) {
+        for (var j=0; j<this.paths[i].length; j++) {
+            this.paths[i][j].remove();
+        }
+    }
+
+    for (var i=0; i<this.route_markers_outer.length; i++) {
+        this.route_markers_outer[i].remove();
+        this.route_marker_text[i].remove();
+        this.route_markers[i].remove();
+    }
+
+    this._paths_drawn           = false;
+    this.last_segment_index     = 0;
+    this.line_started           = false;
+    this.new_path_points        = [];
+    this.paths                  = [];
+    this.route_markers          = [];
+    this.route_markers_to_make  = [];
+    this.route_markers_outer    = [];
+    this.route_marker_points    = [];
+    this.route_marker_text      = [];
 }
 
 PT.prototype.resize = function(canvas_size) {
@@ -689,72 +923,21 @@ PT.prototype.resize = function(canvas_size) {
             this.photo_top_margin  = top_margin;
 
             if (this._paths_drawn === true) {
-                /* Remove old labels */
-                for (var i=0; i<this.route_marker_text.length; i++) {
-                    this.route_markers_outer[i].remove();
-                    this.route_markers[i].remove();
-                    this.route_marker_text[i].remove();
-                }
-
-                this.route_markers_outer    = [];
-                this.route_markers          = [];
-                this.route_marker_text      = [];
-                this.route_markers_to_make  = [];
-
-                for (var i=0; i<this.paths_json.length; i++) {
-                    if (typeof this.paths[i] !== "undefined") {
-                        path             = this.paths_json[i];
-                        path_route_obj   = this._get_route_from_id(path.route_id);
-                        height_diff      = this.photo_height_scaled / path.height;
-                        width_diff       = this.photo_width_scaled / path.width;
-
-                        this.paths[i].removeSegments();
-
-                        /* Scale path points */
-                        for (var j=0; j < path.points.length; j++) {
-                            x = parseFloat(path.points[j][0]) * width_diff;
-                            y = parseFloat(path.points[j][1]) * height_diff;
-                            x += left_margin;
-                            y += top_margin;
-
-                            var point_new = new Point(x, y);
-                            this.paths[i].add(point_new);
-
-                            if (j == 0) {
-                                /* First point, recreate label */
-                                this.route_markers_to_make.push({
-                                    x:      x,
-                                    y:      y,
-                                    path:   this.paths[i],
-                                    route:  path_route_obj
-                                });
-                            }
-                        }
-                    }
-                }
-
-                this.draw_route_markers(this.route_markers_to_make);
+                this.redraw_segments();
             } else {
                 if (this._photo_info_loaded === true) {
                     if (this.paths_json.length > 0) {
                         if (this._destination_loaded === true) {
-                            for (var i=0; i<this.paths_json.length; i++) {
-                                if (this.paths_json[i].route_id > 0) {
-                                    var route_object = this._get_route_from_id(this.paths_json[i].route_id);
-                                    this.draw_path(this.paths_json[i], route_object, left_margin, top_margin, this.photo_height_scaled, this.photo_width_scaled);
-                                }
-                            }
-
-                            /* Draw all route markers */
-                            this.draw_route_markers(this.route_markers_to_make);
-                            this.paper_scope.view.update();
+                            this.draw_all_paths(false);
                             this.photo_topo_loaded();
-                            this._paths_drawn = true;
                         }
                     } else {
                         this.paper_scope.view.update();
-                        this.photo_topo_loaded();
-                        this._paths_drawn = true;
+
+                        if (this._destination_loaded === true) {
+                            this.photo_topo_loaded();
+                            this._paths_drawn = true;
+                        }
                     }
                 } else {
                     /* Photo Info not yet loaded */
@@ -799,12 +982,23 @@ PT.prototype.show_route_popup = function(x, y, route) {
 
 PT.prototype.undo_last_segment = function () {
     paper = this.paper_scope;
-
     var last_index = this.paths.length - 1;
 
-    this.paths[last_index].removeSegment(this.last_segment_index);
-    this.last_segment_index = this.last_segment_index - 1;
-    this.new_path_points.pop();
+    if (this.last_segment_index == 0) {
+        this.new_path_marker.label.remove();
+        this.new_path_marker.label_outer.remove();
+        this.new_path_marker.marker_text.remove();
+
+        /* Remove newly started line */
+        this.line_started = false;
+        this.paths[this.paths.length-1][0].removeSegments();
+        this.paths[this.paths.length-1].splice(-1,1);
+    } else {
+        this.paths[last_index][0].removeSegment(this.last_segment_index);
+        this.last_segment_index = this.last_segment_index - 1;
+        this.new_path_points.pop();
+    }
+
     paper.view.update();
 };
 
