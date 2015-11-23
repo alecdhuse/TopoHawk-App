@@ -1279,6 +1279,19 @@ function create_area_list() {
 
                 area_list_html += "<span>";
 
+                if (area_stats == null) {
+                    area_stats = {
+                        "types": {
+                            "Sport":    0,
+                            "Trad":     0,
+                            "Mixed":    0,
+                            "Top Rope": 0,
+                            "Boulder":  0,
+                            "Aid":      0
+                        }
+                    };
+                }
+
                 if (area_stats.types['Sport'] > 9) {
                     area_list_html += "<span class='area_stats_route_count' style='background-color:#7a7aff;'>" + area_stats.types['Sport'] + "</span>";
                 } else {
