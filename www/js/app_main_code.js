@@ -939,6 +939,7 @@ function buttons_reset() {
      $("#screen_spray").css('visibility','hidden');
      $("#screen_tick_edit").css('visibility','hidden');
      $("#screen_ticks").css('visibility','hidden');
+     $("#tick_history_graph_div").css('visibility','hidden');
 
      /* Reset CSS */
      $("#screen_info_title").css({"margin": "8px"});
@@ -1507,14 +1508,7 @@ function create_home_screen() {
     if (api_key_th.length > 0) {
         /* User logged in */
         /*
-        html += "<div id='tick_history_card' class='card' style='height:100px;padding-top:6px;'>";
-        html += "<div class='card_title'>Tick History</div>";
-        html += "<div id='tick_history_graph_div'><br />";
-        html += "<div id='destination_downloading' class='loading_animation'>";
-        html += "<svg width='36' height='34'><g transform='scale(1,1) translate(0,0)' ><circle class='download_outer_circle' cx='175' cy='20' r='14' transform='rotate(-90, 95, 95)'/><g></svg>";
-        html += "</div></div></div>";
-        html += "<div style='height:300px;'></div>";
-        load_tick_history_card();
+            TODO: Add link to tick data
         */
     } else {
         /* Not logged in */
@@ -2447,6 +2441,13 @@ function load_tick_history_card() {
         if (results.length > 0) {
             var high_difficulty = 0;
             var low_difficulty  = 40;
+
+            var boulder_difficulty = {
+                'low':    40,
+                'high':   0,
+                'spread': 0
+            };
+
             var sends = {
                     'Boulder':    new Array(41),
                     'Sport':      new Array(41),
@@ -2456,12 +2457,22 @@ function load_tick_history_card() {
 
             for (var i=0; i<results.length; i++) {
                 if (results[i].send_type != "Project") {
-                    if (results[i].difficulty < low_difficulty) {
-                        low_difficulty = results[i].difficulty
-                    }
+                    if (results[i].route_type == "Boulder") {
+                        if (results[i].difficulty < boulder_difficulty.low) {
+                            boulder_difficulty.low = results[i].difficulty
+                        }
 
-                    if (results[i].difficulty > high_difficulty) {
-                        high_difficulty = results[i].difficulty
+                        if (results[i].difficulty > boulder_difficulty.high) {
+                            boulder_difficulty.high = results[i].difficulty
+                        }
+                    } else {
+                        if (results[i].difficulty < low_difficulty) {
+                            low_difficulty = results[i].difficulty
+                        }
+
+                        if (results[i].difficulty > high_difficulty) {
+                            high_difficulty = results[i].difficulty
+                        }
                     }
 
                     if (typeof sends[results[i].route_type][results[i].difficulty] === 'undefined') {
@@ -2472,7 +2483,11 @@ function load_tick_history_card() {
                         }
                     } else {
                         if (results[i].send_type == 'Top Rope') {
-                            sends['Top Rope'][results[i].difficulty]++;
+                            if (sends['Top Rope'][results[i].difficulty] >= 0) {
+                                sends['Top Rope'][results[i].difficulty]++;
+                            } else {
+                                sends['Top Rope'][results[i].difficulty] = 1;
+                            }
                         } else {
                             sends[results[i].route_type][results[i].difficulty]++;
                         }
@@ -2480,9 +2495,10 @@ function load_tick_history_card() {
                 }
             }
 
+            boulder_difficulty.spread = boulder_difficulty.high - boulder_difficulty.low;
             var grade_spread = high_difficulty - low_difficulty;
             var sends_adj = {
-                    'Boulder':    new Array(grade_spread),
+                    'Boulder':    new Array(),
                     'Sport':      new Array(grade_spread),
                     'Top Rope':   new Array(grade_spread),
                     'Trad':       new Array(grade_spread)
@@ -2490,22 +2506,58 @@ function load_tick_history_card() {
 
             /* Get route lables baised off of prefered grade */
             var grade_labels = new Array(grade_spread);
-            for (var i=low_difficulty; i<high_difficulty; i++) {
-                    sends_adj['Boulder'][i-low_difficulty] = sends['Boulder'][i];
+            var grade_labels_boulder = new Array();
+            var boulder_label = "";
+
+            for (var i=boulder_difficulty.low; i<boulder_difficulty.high; i++) {
+                boulder_label = TH.util.grades.convert_common_to(map.get_grade_systems()['Boulder'], i);
+
+                if (grade_labels_boulder.length > 0) {
+                    if (grade_labels_boulder[grade_labels_boulder.length-1] == boulder_label) {
+                        /* Labels are the same, combine values */
+                        sends_adj['Boulder'][sends_adj['Boulder'].length-1] += sends['Boulder'][i];
+                    } else {
+                        grade_labels_boulder.push(boulder_label);
+                        sends_adj['Boulder'].push(sends['Boulder'][i]);
+                    }
+                } else {
+                    grade_labels_boulder.push(boulder_label);
+                    sends_adj['Boulder'].push(sends['Boulder'][i]);
+                }
+            }
+
+            for (var i=low_difficulty; i<=high_difficulty; i++) {
                     sends_adj['Sport'][i-low_difficulty] = sends['Sport'][i];
                     sends_adj['Top Rope'][i-low_difficulty] = sends['Top Rope'][i];
                     sends_adj['Trad'][i-low_difficulty] = sends['Trad'][i];
-
                     grade_labels[i-low_difficulty] = TH.util.grades.convert_common_to(map.get_grade_systems()['Sport'], i);
             }
 
             /* Create Canvas */
-            var graph_height = (grade_spread * 20) + 80;
-            var graph_width  = $("#tick_history_card").width() - 4;
+            var tick_graphs_html     = ""
+            var graph_height_boulder = (boulder_difficulty.spread * 20) + 80;
+            var graph_height         = (grade_spread * 20) + 80;
+            var graph_width          = $("#tick_history_card").width() - 4;
+
             $("#tick_history_card").height(graph_height + 24);
-            $("#tick_history_graph_div").html("<canvas id='canvas_tick_history' height='" + graph_height + "px' width='" + graph_width + "px'></canvas>");
+
+            tick_graphs_html  += "<div class='card_title'>Route Ticks</div>";
+            tick_graphs_html  += "<canvas id='canvas_tick_history' height='" + graph_height + "px' width='" + graph_width + "px'></canvas>";
+            tick_graphs_html  += "<div class='card_title'>Problem Ticks</div>";
+            tick_graphs_html  += "<canvas id='canvas_tick_history_boulder' height='" + graph_height_boulder + "px' width='" + graph_width + "px'></canvas>";
+            $("#tick_history_graph_div").html(tick_graphs_html);
 
             /* Create Data Sets */
+            var dataset_boulder = [
+                {
+                    fillColor : "rgba(0,240,0,0.5)",
+                    strokeColor : "rgba(0,240,0,0.75)",
+                    pointColor : "rgba(0,240,0,1)",
+                    pointstrokeColor : "yellow",
+                    data : sends_adj["Boulder"],
+                }
+            ];
+
             var datasets = [
                 {
                     fillColor : "rgba(0,0,255,0.5)",
@@ -2522,13 +2574,6 @@ function load_tick_history_card() {
                     data : sends_adj["Trad"],
                 },
                 {
-                    fillColor : "rgba(0,240,0,0.5)",
-                    strokeColor : "rgba(0,240,0,0.75)",
-                    pointColor : "rgba(0,240,0,1)",
-                    pointstrokeColor : "yellow",
-                    data : sends_adj["Boulder"],
-                },
-                {
                     fillColor : "rgba(255,215,0,0.5)",
                     strokeColor : "rgba(255,215,0,0.75)",
                     pointColor : "rgba(255,215,0,1)",
@@ -2537,12 +2582,17 @@ function load_tick_history_card() {
                 }
             ];
 
-            var graph_data = {
-            	labels : grade_labels,
-            	datasets : datasets
+            var graph_data_boulder = {
+            	labels:   grade_labels_boulder,
+            	datasets: dataset_boulder
             }
 
-            var opt1 = {
+            var graph_data = {
+            	labels:   grade_labels,
+            	datasets: datasets
+            }
+
+            var graph_opts = {
                   animationStartWithDataset : 1,
                   animationStartWithData : 1,
                   animationSteps : 0,
@@ -2556,7 +2606,8 @@ function load_tick_history_card() {
                   graphTitleFontSize: 10
             }
 
-            var myBar = new Chart(document.getElementById("canvas_tick_history").getContext("2d")).HorizontalBar(graph_data, opt1);
+            var myBar = new Chart(document.getElementById("canvas_tick_history").getContext("2d")).HorizontalBar(graph_data, graph_opts);
+            var myBar = new Chart(document.getElementById("canvas_tick_history_boulder").getContext("2d")).HorizontalBar(graph_data_boulder, graph_opts);
         } else {
             /* User has no route ticks */
             $("#tick_history_card").height(70);
