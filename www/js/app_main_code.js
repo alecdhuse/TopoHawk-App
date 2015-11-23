@@ -2613,6 +2613,8 @@ function load_tick_history_card() {
             $("#tick_history_card").height(70);
             $("#tick_history_graph_div").html("<div class='card_title' style='margin-top:10px;'>No route ticks saved.</div>");
         }
+
+        $("#tick_history_graph_div").css('visibility','hidden');
     }, function(status) {
         $("#tick_history_graph_div").html("<div class='card_title' style='margin-top:10px;'>Failed to retrieve your route ticks.</div>");
     });
@@ -3264,6 +3266,7 @@ function show_ticks_graph() {
     $("#ticks_tab_button_list").css('color', '#FFF');
     $("#route_ticks_list_tab").css('visibility','hidden');
     $("#route_ticks_list_tab").css('height','0px');
+    $("#tick_history_graph_div").css('height','100%');
     $("#tick_history_graph_div").css('visibility','visible');
 }
 
@@ -3272,6 +3275,7 @@ function show_ticks_list() {
     $("#ticks_tab_button_list").css('color', '#00BBE0');
     $("#route_ticks_list_tab").css('visibility','visible');
     $("#route_ticks_list_tab").css('height','100%');
+    $("#tick_history_graph_div").css('height','0%');
     $("#tick_history_graph_div").css('visibility','hidden');
 }
 
