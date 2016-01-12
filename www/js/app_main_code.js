@@ -920,6 +920,7 @@ function buttons_reset() {
      $(".leaflet-control-attribution").css('visibility','hidden');
      $("#menu_popup").css('visibility','hidden');
 
+     $("#route_ticks_list_tab").css('visibility','hidden');
      $("#screen_about").css('visibility','hidden');
      $("#screen_add_photo").css('visibility','hidden');
      $("#screen_destinations").css('visibility','hidden');
