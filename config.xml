@@ -42,11 +42,12 @@
     <feature name="http://api.phonegap.com/1.0/geolocation"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
 
-    <gap:plugin name="org.apache.cordova.device-orientation"    source="npm"/>
-    <gap:plugin name="org.apache.cordova.geolocation"           source="npm"/>
-    <gap:plugin name="org.apache.cordova.network-information"   source="npm"/>
-    <gap:plugin name="org.apache.cordova.splashscreen"          source="npm"/>
-    <gap:plugin name="org.apache.cordova.statusbar"             source="npm"/>
+    <gap:plugin name="cordova-plugin-whitelist"                 source="npm" />
+    <gap:plugin name="org.apache.cordova.device-orientation"    source="npm" />
+    <gap:plugin name="org.apache.cordova.geolocation"           source="npm" />
+    <gap:plugin name="org.apache.cordova.network-information"   source="npm" />
+    <gap:plugin name="org.apache.cordova.splashscreen"          source="npm" />
+    <gap:plugin name="org.apache.cordova.statusbar"             source="npm" />
 
     <gap:config-file platform="ios" parent="NSLocationAlwaysUsageDescription" overwrite="true">
                 <string></string>
