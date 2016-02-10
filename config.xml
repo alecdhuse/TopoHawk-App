@@ -16,6 +16,9 @@
         Topo Hawk Team
     </author>
 
+    <platform name="ios" />
+    <platform name="android" />
+
     <preference name="phonegap-version"           value="cli-5.2.0" />
     <preference name="orientation"                value="portrait" />
     <preference name="target-device"              value="universal" />
