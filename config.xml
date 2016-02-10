@@ -36,7 +36,7 @@
     <preference name="SplashScreenDelay"          value="4500" />
     <preference name="show-splash-screen-spinner" value="false" />
     <preference name="auto-hide-splash-screen"    value="true" />
-    <preference name="StatusBarOverlaysWebview"   value="false" />
+    <preference name="StatusBarOverlaysWebview"   value="true" />
     <preference name="StatusBarStyle"             value="blackopaque" />
 
     <feature name="http://api.phonegap.com/1.0/geolocation"/>
@@ -92,13 +92,10 @@
     <icon src="images/icon-180.png"       gap:platform="ios" width="180" height="180" />
     <icon src="images/icon-192.png"       gap:platform="ios" width="192" height="192" />
 
-    <allow-navigation href="https://topohawk.com" />
-    <allow-navigation href="http://topohawk.com" />
-    <allow-navigation href="http://foldingmap.co" />
-    <allow-navigation href="http://tiles.mapbox.com" />
-    <allow-navigation href="http://*.tiles.mapbox.com" />
-    <allow-navigation href="https://tiles.mapbox.com" />
-    <allow-navigation href="https://*.tiles.mapbox.com" />
+    <allow-navigation href="*://topohawk.com" />
+    <allow-navigation href="*://foldingmap.co" />
+    <allow-navigation href="*://tiles.mapbox.com" />
+    <allow-navigation href="*://*.tiles.mapbox.com" />
 
     <access origin="https://topohawk.com"       subdomains="true" />
     <access origin="http://topohawk.com"        subdomains="true" />
@@ -113,4 +110,5 @@
     <access origin="https://c.tiles.mapbox.com" subdomains="true" />
     <access origin="http://d.tiles.mapbox.com"  subdomains="true" />
     <access origin="https://d.tiles.mapbox.com" subdomains="true" />
+    <access origin="*" />
 </widget>
