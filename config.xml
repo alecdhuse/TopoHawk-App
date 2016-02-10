@@ -16,7 +16,7 @@
         Topo Hawk Team
     </author>
 
-    <preference name="phonegap-version"           value="3.7.0" />
+    <preference name="phonegap-version"           value="cli-5.2.0" />
     <preference name="orientation"                value="portrait" />
     <preference name="target-device"              value="universal" />
     <preference name="fullscreen"                 value="true" />
@@ -39,11 +39,11 @@
     <feature name="http://api.phonegap.com/1.0/geolocation"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
 
-    <gap:plugin name="org.apache.cordova.device-orientation" />
-    <gap:plugin name="org.apache.cordova.geolocation" />
-    <gap:plugin name="org.apache.cordova.network-information" />
-    <gap:plugin name="org.apache.cordova.splashscreen" />
-    <gap:plugin name="org.apache.cordova.statusbar" />
+    <gap:plugin name="org.apache.cordova.device-orientation"    source="npm"/>
+    <gap:plugin name="org.apache.cordova.geolocation"           source="npm"/>
+    <gap:plugin name="org.apache.cordova.network-information"   source="npm"/>
+    <gap:plugin name="org.apache.cordova.splashscreen"          source="npm"/>
+    <gap:plugin name="org.apache.cordova.statusbar"             source="npm"/>
 
     <gap:config-file platform="ios" parent="NSLocationAlwaysUsageDescription" overwrite="true">
                 <string></string>
@@ -88,17 +88,25 @@
     <icon src="images/icon-180.png"       gap:platform="ios" width="180" height="180" />
     <icon src="images/icon-192.png"       gap:platform="ios" width="192" height="192" />
 
-    <access origin="https://topohawk.com" />
-    <access origin="http://topohawk.com" />
-    <access origin="http://foldingmap.co" />
-    <access origin="http://tiles.mapbox.com" subdomains="true"/>
-    <access origin="https://tiles.mapbox.com" subdomains="true"/>
-    <access origin="http://a.tiles.mapbox.com" subdomains="true"/>
-    <access origin="https://a.tiles.mapbox.com" subdomains="true"/>
-    <access origin="http://b.tiles.mapbox.com" subdomains="true"/>
-    <access origin="https://b.tiles.mapbox.com" subdomains="true"/>
-    <access origin="http://c.tiles.mapbox.com" subdomains="true"/>
-    <access origin="https://c.tiles.mapbox.com" subdomains="true"/>
-    <access origin="http://d.tiles.mapbox.com" subdomains="true"/>
-    <access origin="https://d.tiles.mapbox.com" subdomains="true"/>
+    <allow-navigation href="https://topohawk.com" />
+    <allow-navigation href="http://topohawk.com" />
+    <allow-navigation href="http://foldingmap.co" />
+    <allow-navigation href="http://tiles.mapbox.com" />
+    <allow-navigation href="http://*.tiles.mapbox.com" />
+    <allow-navigation href="https://tiles.mapbox.com" />
+    <allow-navigation href="https://*.tiles.mapbox.com" />
+
+    <access origin="https://topohawk.com"       subdomains="true" />
+    <access origin="http://topohawk.com"        subdomains="true" />
+    <access origin="http://foldingmap.co"       subdomains="true" />
+    <access origin="http://tiles.mapbox.com"    subdomains="true" />
+    <access origin="https://tiles.mapbox.com"   subdomains="true" />
+    <access origin="http://a.tiles.mapbox.com"  subdomains="true" />
+    <access origin="https://a.tiles.mapbox.com" subdomains="true" />
+    <access origin="http://b.tiles.mapbox.com"  subdomains="true" />
+    <access origin="https://b.tiles.mapbox.com" subdomains="true" />
+    <access origin="http://c.tiles.mapbox.com"  subdomains="true" />
+    <access origin="https://c.tiles.mapbox.com" subdomains="true" />
+    <access origin="http://d.tiles.mapbox.com"  subdomains="true" />
+    <access origin="https://d.tiles.mapbox.com" subdomains="true" />
 </widget>
