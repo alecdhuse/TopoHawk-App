@@ -372,7 +372,7 @@ function api_edit_area(data, show_ui_messages) {
 
     $.ajax({
        type:     'POST',
-       url:      'https://topohawk.com/api/v1.2/update_area.php',
+       url:      'https://topohawk.com/api/v1.3/update_area.php',
        dataType: 'json',
        data:     data,
        timeout:  6000,
