@@ -33,7 +33,7 @@
     <preference name="android-installLocation"    value="auto" />
     <preference name="permissions"                value="none" />
     <preference name="splashscreen"               value="splash" />
-    <preference name="SplashScreenDelay"          value="4500" />
+    <preference name="SplashScreenDelay"          value="10000" />
     <preference name="show-splash-screen-spinner" value="false" />
     <preference name="auto-hide-splash-screen"    value="false" />
     <preference name="StatusBarOverlaysWebview"   value="true" />
