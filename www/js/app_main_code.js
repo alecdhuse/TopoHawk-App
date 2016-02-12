@@ -3567,12 +3567,12 @@ function onDeviceReady() {
     get_user_info();
     TH.util.storage.check_offline_statuses();
 
+    resize_window();
+    button1_click();
+
     if (navigator.splashscreen) {
         navigator.splashscreen.hide();
     }
-
-    resize_window();
-    button1_click();
 
     /* Check for any localy stored changes and upload them. */
     TH.util.storage.get_all_changes(upload_changes, map.local_db);

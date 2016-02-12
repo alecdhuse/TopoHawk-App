@@ -32,10 +32,10 @@
     <preference name="disable-cursor"             value="false" />
     <preference name="android-installLocation"    value="auto" />
     <preference name="permissions"                value="none" />
-    <preference name="SplashScreen"               value="splash" />
+    <preference name="splashscreen"               value="splash" />
     <preference name="SplashScreenDelay"          value="4500" />
     <preference name="show-splash-screen-spinner" value="false" />
-    <preference name="auto-hide-splash-screen"    value="true" />
+    <preference name="auto-hide-splash-screen"    value="false" />
     <preference name="StatusBarOverlaysWebview"   value="true" />
     <preference name="StatusBarStyle"             value="blackopaque" />
 
