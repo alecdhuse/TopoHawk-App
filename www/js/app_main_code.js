@@ -98,7 +98,7 @@ function api_add_area(data, show_ui_messages) {
     $.ajax({
         type:       'POST',
         dataType:   'json',
-        url:        'https://topohawk.com/api/v1.2/add_area.php',
+        url:        'https://topohawk.com/api/v1.3/add_area.php',
         data:       data,
         timeout:    6000,
         success:    function(response) {
@@ -143,7 +143,7 @@ function api_add_destination(data, show_ui_messages) {
     $.ajax({
         type:       'POST',
         dataType:   'json',
-        url:        'https://topohawk.com/api/v1.2/add_destination.php',
+        url:        'https://topohawk.com/api/v1.3/add_destination.php',
         data:       data,
         timeout:    6000,
         success:    function(response) {
