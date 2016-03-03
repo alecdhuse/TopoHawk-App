@@ -1,12 +1,14 @@
 var EDIT_MODE_NONE        = 0;
 var EDIT_MODE_DESTINATION = 1;
-var EDIT_MODE_AREA        = 2;
-var EDIT_MODE_ROUTE       = 3;
+var EDIT_MODE_AREA_GROUP  = 2;
+var EDIT_MODE_AREA        = 3;
+var EDIT_MODE_ROUTE       = 4;
 
 var MODE_NONE        = 0;
 var MODE_DESTINATION = 1;
-var MODE_AREA        = 2;
-var MODE_ROUTE       = 3;
+var MODE_AREA_GROUP  = 2;
+var MODE_AREA        = 3;
+var MODE_ROUTE       = 4;
 
 var api_key_th           = "";
 var current_edit_mode    = EDIT_MODE_NONE;
@@ -619,6 +621,8 @@ function button1_click() {
     } else {
         if (current_mode == MODE_DESTINATION) {
             create_destination_info();
+        } else if (current_mode == MODE_AREA_GROUP) {
+            create_area_group_info();
         } else if (current_mode == MODE_AREA) {
             create_area_info();
         } else if (current_mode == MODE_ROUTE) {
@@ -645,6 +649,10 @@ function button2_click() {
     } else if (current_mode == MODE_DESTINATION) {
         $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
         $("#breadcrumbs_div_2").html("");
+    } else if (current_mode == MODE_AREA_GROUP) {
+        $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
+        $("#breadcrumbs_div_2").html("");
+        // TODO: Get Area_Group Name
     } else if (current_mode == MODE_AREA) {
         $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
         $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
@@ -666,6 +674,8 @@ function button3_click() {
 
         if (current_mode == MODE_DESTINATION) {
             $("#breadcrumbs_div_2").html("• " + map.selected_destination.destination_name);
+        } else if (current_mode == MODE_AREA_GROUP) {
+            // TODO: Add area group name
         } else if (current_mode == MODE_AREA) {
             $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
         } else if (current_mode == MODE_ROUTE) {
@@ -703,6 +713,9 @@ function button_back_click() {
         if (current_mode == MODE_DESTINATION) {
             current_mode = MODE_NONE;
             create_destination_list();
+        } else if (current_mode == MODE_AREA_GROUP) {
+            current_mode = MODE_DESTINATION;
+            create_area_group_list();
         } else if (current_mode >= MODE_AREA) {
             current_mode = MODE_DESTINATION;
             create_area_list();
@@ -714,6 +727,9 @@ function button_back_click() {
         if (current_mode == MODE_DESTINATION) {
             current_mode = MODE_NONE;
             create_destination_list();
+        } else if (current_mode == MODE_AREA_GROUP) {
+            current_mode = MODE_DESTINATION;
+            create_area_group_list();
         } else if (current_mode == MODE_AREA) {
             current_mode = MODE_DESTINATION;
             create_area_list();
@@ -1028,6 +1044,14 @@ function change_area(area_id, change_map_view) {
     photos_loaded = false;
 }
 
+function change_area_group(group_id, change_map_view) {
+    // TODO: Finish code
+
+    map.set_area_group(group_id);
+    current_mode = MODE_AREA_GROUP;
+    create_area_list();
+}
+
 function change_destination(destination_id) {
     var loading_html = "<div style='margin-top:5px;text-align:center;'>Loading Area List <img src='images/ui-anim_basic_16x16.gif'></div>";
 
@@ -1240,6 +1264,7 @@ function create_area_info() {
 }
 
 function create_area_list() {
+    var area_objs      = [];
     var area_list_html = "";
     var area_stats     = {};
     var hidden_count   = 0;
@@ -1248,94 +1273,62 @@ function create_area_list() {
     var last_group_id  = 0;
 
     if (map.areas.features.length > 0) {
+        //Find areas to display
         for (var i=0; i < map.areas.features.length; i++) {
-            area_stats = map.areas.features[i].properties.stats;
-
-            if (search_string.length === 0) {
-                show_area = true;
-            } else {
-                if (map.areas.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
-                    show_area = true;
-                } else {
-                    show_area = false;
-                }
-            }
-
-            if (show_area === true) {
-                if (last_group_id !== map.areas.features[i].properties.group_id) {
-                    if (parseInt(map.areas.features[i].properties.group_id) > 0) {
-                            area_list_html += "<div class='area_group_name'>" + map.areas.features[i].properties.group_name + "</div>";
-                            last_group_id = map.areas.features[i].properties.group_id;
+            if (map.selected_area_group.group_id > 0) {
+                // Group ID selected, filter areas to group
+                if (map.areas.features[i].properties.group_id == map.selected_area_group.group_id) {
+                    if (search_string.length === 0) {
+                        area_objs.push(map.areas.features[i]);
+                    } else {
+                        if (map.areas.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                            area_objs.push(map.areas.features[i]);
+                        } else {
+                            hidden_count++;
+                        }
                     }
                 }
-
-                if (route_count = map.areas.features[i].properties.stats !== null) {
-                    route_count = map.areas.features[i].properties.stats.types.Total;
-                } else {
-                    route_count = 0;
-                }
-
-                area_list_html += "<div class='destination_list_element' onclick='change_area(" + map.areas.features[i].properties.area_id + ", true)'>";
-                area_list_html += "<div class='destination_list_name'>" + map.areas.features[i].properties.name + "</div>";
-                area_list_html += "<div class='destination_list_small_text'>";
-
-                area_list_html += "<span>";
-
-                if (area_stats == null) {
-                    area_stats = {
-                        "types": {
-                            "Sport":    0,
-                            "Trad":     0,
-                            "Mixed":    0,
-                            "Top Rope": 0,
-                            "Boulder":  0,
-                            "Aid":      0
-                        }
-                    };
-                }
-
-                if (area_stats.types['Sport'] > 9) {
-                    area_list_html += "<span class='area_stats_route_count' style='background-color:#7a7aff;'>" + area_stats.types['Sport'] + "</span>";
-                } else {
-                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#7a7aff;'>" + area_stats.types['Sport'] + "</span>";
-                }
-
-                if (area_stats.types['Trad'] > 9) {
-                    area_list_html += "<span class='area_stats_route_count' style='background-color:#fd7b7d;'>" + area_stats.types['Trad'] + "</span>";
-                } else {
-                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#fd7b7d;'>" + area_stats.types['Trad'] + "</span>";
-                }
-
-                if (area_stats.types['Mixed'] > 9) {
-                    area_list_html += "<span class='area_stats_route_count' style='background-color:#bd7abd;'>" + area_stats.types['Mixed'] + "</span>";
-                } else {
-                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#bd7abd;'>" + area_stats.types['Mixed'] + "</span>";
-                }
-
-                if (area_stats.types['Top Rope'] > 9) {
-                    area_list_html += "<span class='area_stats_route_count' style='background-color:#ffd700;'>" + area_stats.types['Top Rope'] + "</span>";
-                } else {
-                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#ffd700;'>" + area_stats.types['Top Rope'] + "</span>";
-                }
-
-                if (area_stats.types['Boulder'] > 9) {
-                    area_list_html += "<span class='area_stats_route_count' style='background-color:#7af77a;'>" + area_stats.types['Boulder'] + "</span>";
-                } else {
-                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#7af77a;'>" + area_stats.types['Boulder'] + "</span>";
-                }
-
-                if (area_stats.types['Aid'] > 9) {
-                    area_list_html += "<span class='area_stats_route_count' style='background-color:#d3d3d3;'>" + area_stats.types['Aid'] + "</span>";
-                } else {
-                    area_list_html += "<span class='area_stats_route_count_small' style='background-color:#d3d3d3;'>" + area_stats.types['Aid'] + "</span>";
-                }
-
-                area_list_html += "</span>";
-                area_list_html += "<div>" + route_count + " routes/problems</div>";
-                area_list_html += "</div></div>";
             } else {
-                hidden_count++;
+                // No group selected, show all areas
+                if (search_string.length === 0) {
+                    area_objs.push(map.areas.features[i]);
+                } else {
+                    if (map.areas.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                        area_objs.push(map.areas.features[i]);
+                    } else {
+                        hidden_count++;
+                    }
+                }
             }
+        }
+
+        for (var i=0; i < area_objs.length; i++) {
+            area_stats = area_objs[i].properties.stats;
+
+            if (last_group_id !== area_objs[i].properties.group_id) {
+                if (parseInt(area_objs[i].properties.group_id) > 0) {
+                        area_list_html += "<div class='area_group_name'>" + area_objs[i].properties.group_name + "</div>";
+                        last_group_id = area_objs[i].properties.group_id;
+                }
+            }
+
+            if (route_count = area_objs[i].properties.stats !== null) {
+                route_count = area_objs[i].properties.stats.types.Total;
+            } else {
+                route_count = 0;
+            }
+
+            area_list_html += "<div class='destination_list_element' onclick='change_area(" + area_objs[i].properties.area_id + ", true)'>";
+            area_list_html += "<div class='destination_list_name'>" + area_objs[i].properties.name + "</div>";
+            area_list_html += "<div class='destination_list_small_text'>";
+
+            area_list_html += "<span>";
+
+            area_list_html += create_list_route_stats(area_stats);
+
+            area_list_html += "</span>";
+            area_list_html += "<div>" + route_count + " routes/problems</div>";
+            area_list_html += "</div></div>";
         }
     } else {
         /* No Areas at destination */
@@ -1349,6 +1342,129 @@ function create_area_list() {
     } else {
         $("#filter_hidden_items").html("");
     }
+}
+
+function create_area_group_list() {
+    var group_list_html = "";
+    var group_objs      = [];
+    var hidden_count    = 0;
+    var search_string   = $("#destination_search_filter").val();
+    var show_group      = true;
+
+    if (map.selected_destination.area_groups.groups.length > 0) {
+        //Get groups
+        for (var i=0; i < map.selected_destination.area_groups.groups.length; i++) {
+            if (search_string.length === 0) {
+                group_objs.push(map.selected_destination.area_groups.groups[i]);
+            } else {
+                if (map.selected_destination.area_groups.group[i].group_name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                    group_objs.push(map.selected_destination.area_groups.groups[i]);
+                } else {
+                    hidden_count++;
+                }
+            }
+
+            map.selected_destination.area_groups.groups[i].stats = {
+                "types": {
+                    "Sport":    0,
+                    "Trad":     0,
+                    "Mixed":    0,
+                    "Top Rope": 0,
+                    "Boulder":  0,
+                    "Aid":      0,
+                    "Total":    0
+                }
+            };
+        }
+
+        //Get area stats and areas without a group
+        var area_objs = [];
+        for (var i=0; i < map.areas.features.length; i++) {
+            if (map.areas.features[i].properties.group_id == 0) {
+                if (search_string.length === 0) {
+                    area_objs.push(map.areas.features[i]);
+                } else {
+                    if (map.areas.features[i].properties.name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                        area_objs.push(map.areas.features[i]);
+                    } else {
+                        hidden_count++;
+                    }
+                }
+            } else {
+                //compile stats for group
+                for (var j=0; j < group_objs.length; j++) {
+                    if (group_objs[j].group_id == map.areas.features[i].properties.group_id) {
+                        if (map.areas.features[i].properties.stats != null) {
+                            group_objs[j].stats.types["Sport"] += map.areas.features[i].properties.stats.types["Sport"];
+                            group_objs[j].stats.types["Trad"] += map.areas.features[i].properties.stats.types["Trad"];
+                            group_objs[j].stats.types["Mixed"] += map.areas.features[i].properties.stats.types["Mixed"];
+                            group_objs[j].stats.types["Top Rope"] += map.areas.features[i].properties.stats.types["Top Rope"];
+                            group_objs[j].stats.types["Boulder"] += map.areas.features[i].properties.stats.types["Boulder"];
+                            group_objs[j].stats.types["Aid"] += map.areas.features[i].properties.stats.types["Aid"];
+                            group_objs[j].stats.types["Total"] = group_objs[j].stats.types["Sport"] + group_objs[j].stats.types["Trad"] + group_objs[j].stats.types["Mixed"] + group_objs[j].stats.types["Top Rope"] + group_objs[j].stats.types["Boulder"] + group_objs[j].stats.types["Aid"];
+                        }
+                    }
+                }
+            }
+        }
+
+        //Write out group info in HTML
+        for (var i=0; i < group_objs.length; i++) {
+            group_list_html += "<div class='destination_list_element' onclick='change_area_group(" + map.selected_destination.area_groups.groups[i].group_id + ", false)'>";
+            group_list_html += "<div class='destination_list_name'>" + map.selected_destination.area_groups.groups[i].group_name + "</div>";
+            group_list_html += "<div class='destination_list_small_text'><span>";
+            group_list_html += create_list_route_stats(group_objs[i].stats);
+            group_list_html += "</span>";
+            group_list_html += "<div>" + group_objs[i].stats.types["Total"] + " routes/problems</div>";
+            group_list_html += "</div>";
+        }
+
+        //Show areas that are not part of any groups
+        for (var i=0; i < area_objs.length; i++) {
+            group_list_html += "<div class='destination_list_element' onclick='_area(" + area_objs[i].properties.area_id + ", true)'>";
+            group_list_html += "<div class='destination_list_name'>" + area_objs[i].properties.name + "</div>";
+            group_list_html += "<div class='destination_list_small_text'><span>";
+            group_list_html += create_list_route_stats(area_objs[i].properties.stats);
+            group_list_html += "</span>";
+
+            if (area_objs[i].properties.stats != null) {
+                group_list_html += "<div>" + area_objs[i].properties.stats.types["Total"] + " routes/problems</div>";
+            } else {
+                group_list_html += "<div>0 routes/problems</div>";
+            }
+
+            group_list_html += "</div>";
+            group_list_html += "</div>";
+        }
+
+        if (hidden_count > 0) {
+            $("#filter_hidden_items").html(hidden_count + " hidden items.");
+        } else {
+            $("#filter_hidden_items").html("");
+        }
+
+        $("#destination_search_results").html(group_list_html);
+    } else {
+        /* No area groups at destination, show areas */
+        create_area_list();
+        current_mode = MODE_AREA;
+    }
+}
+
+function create_area_group_info() {
+    $("#screen_info_title").html(map.selected_area_group.group_name);
+
+    description = map.selected_area_group.group_description;
+    description = description.replace(/(?:\r\n|\r|\n)/g, "<br />");
+
+    var info_html = "<div>" + description + "</div>";
+
+    if (api_key_th.length > 0) {
+        // TODO: Add edit code here
+    }
+
+    info_html += "<div style='height:400px;'></div>";
+    $("#screen_info_inner").html(info_html);
 }
 
 function create_destination_info() {
@@ -1539,6 +1655,61 @@ function create_home_screen() {
             click_search_card_submit();
         }
     });
+}
+
+function create_list_route_stats(stats) {
+    var starts_html = "";
+
+    if (stats == null) {
+        stats = {
+            "types": {
+                "Sport":    0,
+                "Trad":     0,
+                "Mixed":    0,
+                "Top Rope": 0,
+                "Boulder":  0,
+                "Aid":      0
+            }
+        };
+    }
+
+    if (stats.types['Sport'] > 9) {
+        starts_html += "<span class='area_stats_route_count' style='background-color:#7a7aff;'>" + stats.types['Sport'] + "</span>";
+    } else {
+        starts_html += "<span class='area_stats_route_count_small' style='background-color:#7a7aff;'>" + stats.types['Sport'] + "</span>";
+    }
+
+    if (stats.types['Trad'] > 9) {
+        starts_html += "<span class='area_stats_route_count' style='background-color:#fd7b7d;'>" + stats.types['Trad'] + "</span>";
+    } else {
+        starts_html += "<span class='area_stats_route_count_small' style='background-color:#fd7b7d;'>" + stats.types['Trad'] + "</span>";
+    }
+
+    if (stats.types['Mixed'] > 9) {
+        starts_html += "<span class='area_stats_route_count' style='background-color:#bd7abd;'>" + stats.types['Mixed'] + "</span>";
+    } else {
+        starts_html += "<span class='area_stats_route_count_small' style='background-color:#bd7abd;'>" + stats.types['Mixed'] + "</span>";
+    }
+
+    if (stats.types['Top Rope'] > 9) {
+        starts_html += "<span class='area_stats_route_count' style='background-color:#ffd700;'>" + stats.types['Top Rope'] + "</span>";
+    } else {
+        starts_html += "<span class='area_stats_route_count_small' style='background-color:#ffd700;'>" + stats.types['Top Rope'] + "</span>";
+    }
+
+    if (stats.types['Boulder'] > 9) {
+        starts_html += "<span class='area_stats_route_count' style='background-color:#7af77a;'>" + stats.types['Boulder'] + "</span>";
+    } else {
+        starts_html+= "<span class='area_stats_route_count_small' style='background-color:#7af77a;'>" + stats.types['Boulder'] + "</span>";
+    }
+
+    if (stats.types['Aid'] > 9) {
+        starts_html += "<span class='area_stats_route_count' style='background-color:#d3d3d3;'>" + stats.types['Aid'] + "</span>";
+    } else {
+        starts_html += "<span class='area_stats_route_count_small' style='background-color:#d3d3d3;'>" + stats.types['Aid'] + "</span>";
+    }
+
+    return starts_html;
 }
 
 function create_offline_destinations_list() {
@@ -1764,7 +1935,13 @@ function destination_info_loaded() {
 
     create_destination_info();
     photo_topo.set_destination(map.selected_destination);
-    create_area_list();
+
+    // Not all destinations use area groups, so only create the group list if destination has groups.
+    if (map.selected_destination.area_groups.groups.length > 0) {
+        create_area_group_list();
+    } else {
+        create_area_list();
+    }
 
     if (destination_callback === true) {
         /* Stream Item was clicked and we needed to wait for the destination info to be loaded */
@@ -2264,6 +2441,8 @@ function get_photo_ids() {
 
     if (current_mode == MODE_DESTINATION) {
         data = { destination_id: map.selected_destination.destination_id };
+    } else if (current_mode == MODE_AREA_GROUP) {
+        data = { group_id: selected_area_group.group_id };
     } else if (current_mode == MODE_AREA) {
         data = { area_id: map.selected_area.properties.area_id };
     } else if (current_mode == MODE_ROUTE) {
@@ -2278,8 +2457,8 @@ function get_photo_ids() {
 
     if (make_request === true && photos_loaded === false) {
         $.ajax({
-           type:     'POST',
-           url:      'https://topohawk.com/api/v1/get_photos.php',
+           type:     'GET',
+           url:      'https://topohawk.com/api/v1.3/get_photo_ids.php',
            dataType: 'json',
            data:     data,
            timeout:  4000,

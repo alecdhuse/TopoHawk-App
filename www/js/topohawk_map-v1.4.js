@@ -28,6 +28,7 @@
             this.polygons               = {'features': new Array()};
             this.routes                 = {'features': new Array()};
             this.selected_area          = {};
+            this.selected_area_group    = {'group_id': 0, 'group_name': 'none'};
             this.selected_route         = {};
             this.selected_destination   = {destination_id: 0};
             this.visible_routes         = [];
@@ -188,8 +189,25 @@
             }
         },
 
+        set_area_group: function (area_group_id) {
+            if (area_group_id > 0) {
+                for (var i=0; i<this.selected_destination.area_groups.groups.length; i++) {
+                    if (this.selected_destination.area_groups.groups[i].group_id == area_group_id) {
+                        this.selected_area_group = this.selected_destination.area_groups.groups[i];
+                        break;
+                    }
+                }
+            } else {
+                this.selected_area_group = {
+                    'group_id':     0,
+                    'group_name':   'none'
+                }
+            }
+        },
+
         set_area_object: function (area_obj, zoom_to) {
             this.selected_area = area_obj;
+            this.selected_area_group = this.set_area_group(area_obj.properties.group_id);
 
             if (zoom_to === true) {
                 var area_zoom = this.selected_area.properties.click_zoom_to;
