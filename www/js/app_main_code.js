@@ -2442,7 +2442,7 @@ function get_photo_ids() {
     if (current_mode == MODE_DESTINATION) {
         data = { destination_id: map.selected_destination.destination_id };
     } else if (current_mode == MODE_AREA_GROUP) {
-        data = { group_id: selected_area_group.group_id };
+        data = { group_id: map.selected_area_group.group_id };
     } else if (current_mode == MODE_AREA) {
         data = { area_id: map.selected_area.properties.area_id };
     } else if (current_mode == MODE_ROUTE) {
@@ -2478,6 +2478,9 @@ function get_photo_ids() {
                        photos_loaded = true;
                        create_photo_canvas(photo_array);
                    });
+               } else if (current_mode == MODE_AREA_GROUP) {
+                   photos_loaded = true;
+                   // TODO: implement offline group photos
                } else if (current_mode == MODE_AREA) {
                    TH.util.storage.get_photo_by_area(map.selected_area.properties.area_id, function(photo_array) {
                        photos_loaded = true;
