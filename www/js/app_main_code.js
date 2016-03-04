@@ -1416,7 +1416,7 @@ function create_area_group_list() {
             group_list_html += create_list_route_stats(group_objs[i].stats);
             group_list_html += "</span>";
             group_list_html += "<div>" + group_objs[i].stats.types["Total"] + " routes/problems</div>";
-            group_list_html += "</div>";
+            group_list_html += "</div></div>";
         }
 
         //Show areas that are not part of any groups
@@ -1765,7 +1765,7 @@ function create_photo_canvas(photos) {
             $("#photo_topo_canvas").css({"height": max_height});
             $("#photo_topo_canvas").css({"width": max_width});
 
-            photo_topo.init('photo_topo_canvas',  {destination: map.selected_destination, photo_id: 0, offline: true});
+            photo_topo.init('photo_topo_canvas',  {destination: map.selected_destination, photo_id: photos[0], offline: true});
             photo_topo.use_offline_images = true;
             photo_topo.resize([$("#photo_topo_canvas").height(), $("#photo_topo_canvas").width()]);
             photo_topo.route_label_double_clicked = function(route) { photo_topo_label_double_click(route); };
