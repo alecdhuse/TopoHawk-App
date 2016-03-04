@@ -2051,7 +2051,7 @@ function do_search() {
 
     $.ajax({
        type:     'GET',
-       url:      'https://topohawk.com/api/v1.2/search.php',
+       url:      'https://topohawk.com/api/v1.3/search.php',
        dataType: 'json',
        data:     search_data,
        success:  function(response) {
@@ -2480,7 +2480,8 @@ function get_photo_ids() {
                    });
                } else if (current_mode == MODE_AREA_GROUP) {
                    photos_loaded = true;
-                   // TODO: implement offline group photos
+                   photo_array = map.selected_area_group.group_photos;
+                   create_photo_canvas(photo_array);
                } else if (current_mode == MODE_AREA) {
                    TH.util.storage.get_photo_by_area(map.selected_area.properties.area_id, function(photo_array) {
                        photos_loaded = true;

@@ -907,7 +907,7 @@
 
             $.ajax({
                type:     'GET',
-               url:      'https://topohawk.com/api/v1.2/get_destination_data.php',
+               url:      'https://topohawk.com/api/v1.3/get_destination_data.php',
                dataType: 'json',
                timeout:  6000,
                data: {
