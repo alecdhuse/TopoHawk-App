@@ -95,7 +95,47 @@ function add_tick() {
 }
 
 function api_add_area_group(data, show_ui_messages) {
-    // TODO finish code
+    var ui_message = "";
+    var map_obj = map;
+
+    $.ajax({
+        type:       'POST',
+        dataType:   'json',
+        url:        'https://topohawk.com/api/v1.1/add_area_group.php',
+        data:       data,
+        timeout:    6000,
+        success:    function(response) {
+            if (response.result_code > 0) {
+                ui_message = "Area Group Added";
+            } else {
+                ui_message = response.result;
+            }
+
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
+            if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
+                show_help_comment(ui_message, 2000);
+            }
+        },
+        error: function (req, status, error) {
+            if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
+                show_help_comment("No connection, change saved localy.", 2000);
+            }
+
+            button1_click();
+            show_main_buttons();
+
+            /* No Connection, save change localy, and try to submit later */
+            map_obj.util.storage.add_change("add_area_group", area_data, map.local_db);
+            TH.util.logging.log("Error adding area, saved to local changes.");
+        }
+    });
 }
 
 function api_add_area(data, show_ui_messages) {
@@ -418,7 +458,47 @@ function api_edit_area(data, show_ui_messages) {
 }
 
 function api_edit_area_group(data, show_ui_messages) {
-    // TODO finish code
+    var ui_message = "";
+    var map_obj = map;
+
+    $.ajax({
+       type:     'POST',
+       url:      'https://topohawk.com/api/v1.2/update_area_group.php',
+       dataType: 'json',
+       data:     data,
+       timeout:  6000,
+       success:  function(response) {
+            if (response.result_code > 0) {
+                ui_message = "Area Group updated.";
+            } else {
+                ui_message = "Error updating area group: " + response.result;
+            }
+
+            TH.util.logging.log(ui_message);
+            button1_click();
+            show_main_buttons();
+
+            if (show_ui_messages) {
+                /* Hide loading screen */
+                $("#search_loading_screen").css('visibility','hidden');
+                show_help_comment(ui_message, 2000);
+            }
+       },
+       error: function (req, status, error) {
+           if (show_ui_messages) {
+               /* Hide loading screen */
+               $("#search_loading_screen").css('visibility','hidden');
+               show_help_comment("No connection, change saved localy.", 2000);
+           }
+
+           button1_click();
+           show_main_buttons();
+
+           /* No Connection, save change localy, and try to submit later */
+           map_obj.util.storage.add_change("edit_area_group", data, map.local_db);
+           TH.util.logging.log("Error updating area, saved to local changes.");
+       }
+    });
 }
 
 function api_edit_destination(data, show_ui_messages) {
@@ -3667,6 +3747,8 @@ function upload_changes(changes_array) {
         for (var i=0; i<changes_array.length; i++) {
             if (changes_array[i].change_type == "add_area") {
                 api_add_area(changes_array[i].change_json, false);
+            } else if (changes_array[i].change_type == "add_area_group") {
+                api_add_area_group(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "add_destination") {
                 api_add_destination(get_edit_destination_data(), false);
             } else if (changes_array[i].change_type == "add_photo") {
@@ -3675,6 +3757,8 @@ function upload_changes(changes_array) {
                 api_add_route(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_area") {
                 api_edit_area(changes_array[i].change_json, false);
+            } else if (changes_array[i].change_type == "edit_area_group") {
+                api_edit_area_group(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "edit_destination") {
                 api_edit_destination(changes_array[i].change_json, false);
             } else if (changes_array[i].change_type == "add_rating") {
