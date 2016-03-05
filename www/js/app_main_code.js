@@ -43,6 +43,7 @@ var welcome_html         = "";
 var destination_callback_change   = {
     change_screen:  false,
     destination_id: 0,
+    group_id:       0,
     area_id:        0,
     route_id:       0
 };
@@ -91,6 +92,10 @@ function add_tick() {
 
     buttons_reset();
     $("#screen_tick_edit").css('visibility', 'visible');
+}
+
+function api_add_area_group(data, show_ui_messages) {
+    // TODO finish code
 }
 
 function api_add_area(data, show_ui_messages) {
@@ -410,6 +415,10 @@ function api_edit_area(data, show_ui_messages) {
            TH.util.logging.log("Error updating area, saved to local changes.");
        }
     });
+}
+
+function api_edit_area_group(data, show_ui_messages) {
+    // TODO finish code
 }
 
 function api_edit_destination(data, show_ui_messages) {
@@ -942,6 +951,7 @@ function buttons_reset() {
      $("#screen_destinations").css('visibility','hidden');
      $("#screen_edit").css('visibility','hidden');
      $("#screen_edit_area").css('visibility','hidden');
+     $("#screen_edit_area_group").css('visibility','hidden');
      $("#screen_edit_destination").css('visibility','hidden');
      $("#screen_edit_route").css('visibility','hidden');
      $("#screen_info").css('visibility','hidden');
@@ -993,9 +1003,10 @@ function cancel_tick() {
     route_id       - Int: The ID to change the route to, or < 1 id no route change is wanted.
     change_screen  - Boolean: Automaticaly change to info sceen or not.
 */
-function change(destination_id, area_id, route_id, change_screen) {
+function change(destination_id, group_id, area_id, route_id, change_screen) {
     destination_callback_change.change_screen  = change_screen;
     destination_callback_change.destination_id = destination_id;
+    destination_callback_change.group_id       = group_id;
     destination_callback_change.area_id        = area_id;
     destination_callback_change.route_id       = route_id;
 
@@ -1460,7 +1471,14 @@ function create_area_group_info() {
     var info_html = "<div>" + description + "</div>";
 
     if (api_key_th.length > 0) {
-        // TODO: Add edit code here
+        info_html += "<br />";
+        info_html += "<div class='info_heading'>Edit Tools:</div>";
+
+        if (window.innerWidth < 501) {
+            info_html += "<div class='edit_tools_link'><a nohref onclick='show_edit_area_group_screen()'>Edit Area Group</a></div>";
+        } else {
+            info_html += "<div class='edit_tools_link_large'><a nohref onclick='show_edit_area_group_screen()'>Edit Area Group</a></div>";
+        }
     }
 
     info_html += "<div style='height:400px;'></div>";
@@ -1591,7 +1609,7 @@ function create_home_screen() {
     if (local_destinations.length > 0) {
         for (var i=0; (i<4 && i<local_destinations.length); i++) {
             html += "<div class='local_destinations_item'>";
-            html += "<span onclick='change(" + local_destinations[i].destination_id + ", 0, 0, true)'>";
+            html += "<span onclick='change(" + local_destinations[i].destination_id + ", 0, 0, 0, true)'>";
             html += local_destinations[i].destination_name;
             html += "</span>";
             html += "<span style='float:right;margin-right:4px;' onclick='set_map_view(L.latLng(" + local_destinations[i].lat + "," + local_destinations[i].lng + "))'>";
@@ -1906,11 +1924,13 @@ function create_search_result_html(search_results) {
 
     for (var i=0; i<search_results.length; i++) {
         if (search_results[i].type == "destination") {
-            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].id + ",0,0,true)'>";
+            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].id + ",0,0,0,true)'>";
+        } else if (search_results[i].type == "area_group") {
+            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + "," + search_results[i].id + ",0,0,true)'>";
         } else if (search_results[i].type == "area") {
-            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + "," + search_results[i].id + ",0,true)'>";
+            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + ",0," + search_results[i].id + ",0,true)'>";
         } else if (search_results[i].type == "route") {
-            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + "," + search_results[i].area_id + "," + search_results[i].id + ",true)'>";
+            seach_results_html += "<div class='seach_result_div' onclick='change(" + search_results[i].destination_id + ",0," + search_results[i].area_id + "," + search_results[i].id + ",true)'>";
         } else {
             seach_results_html += "<div class='seach_result_div'>";
         }
@@ -2316,6 +2336,31 @@ function get_edit_area_data() {
     }
 
     return area_data;
+}
+
+function get_edit_area_group_data() {
+    var area_group_data     = {};
+    var area_group_name     = $("#area_group_name_txt").val();
+    var area_group_desc     = $("#area_group_desc").val();
+    var area_group_dest_id  = $("#area_group_destination").val();
+    //TODO get destination_id
+
+    if (edit_new_object === true) {
+        area_group_data = {
+            'destination_id':   area_group_dest_id,
+            'name':             area_group_name,
+            'description':      area_group_desc
+        }
+    } else {
+        area_group_data = {
+            'group_id':         map.selected_area_group.group_id,
+            'destination_id':   area_group_dest_id,
+            'name':             area_group_name,
+            'description':      area_group_desc
+        }
+    }
+
+    return area_group_data;
 }
 
 function get_edit_destination_data() {
@@ -2908,6 +2953,12 @@ function proccess_destination_callback(destination_callback_change_obj) {
     if (destination_callback_change_obj.route_id > 0) {
         change_area(destination_callback_change_obj.area_id, true);
         change_route(destination_callback_change_obj.route_id, destination_callback_change_obj.change_screen, true);
+    } else if (destination_callback_change_obj.group_id > 0) {
+        change_area_group(destination_callback_change_obj.group_id, true);
+
+        if (destination_callback_change_obj.change_screen === true) {
+            button1_click();
+        }
     } else if (destination_callback_change_obj.area_id > 0) {
         change_area(destination_callback_change_obj.area_id);
 
@@ -3061,6 +3112,8 @@ function save_map_edit() {
                 api_add_route(get_edit_route_data(), true);
             } else if (current_edit_mode == EDIT_MODE_AREA) {
                 api_add_area(get_edit_area_data(), true);
+            } else if (current_edit_mode == EDIT_MODE_AREA_GROUP) {
+                api_add_area_group(get_edit_area_group_data(), true);
             } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
                 api_add_destination(get_edit_destination_data(), true);
             }
@@ -3069,6 +3122,8 @@ function save_map_edit() {
                 api_edit_route(get_edit_route_data(), true);
             } else if (current_edit_mode == EDIT_MODE_AREA) {
                 api_edit_area(get_edit_area_data(), true);
+            } else if (current_edit_mode == EDIT_MODE_AREA_GROUP) {
+                api_edit_area_group(get_edit_area_group_data(), true);
             } else if (current_edit_mode == EDIT_MODE_DESTINATION) {
                 api_edit_destination(get_edit_destination_data(), true);
             }
@@ -3308,10 +3363,36 @@ function show_edit_areas_screen() {
             text:  map.destinations.features[i].properties.name
         }));
 
+        // If current destination is the map selected destination, make it selected.
         if (map.selected_destination.destination_id == map.destinations.features[i].properties.destination_id) {
             $("#area_destination").val(map.destinations.features[i].properties.destination_id);
         }
     }
+}
+
+function show_edit_area_group_screen() {
+    current_edit_mode = EDIT_MODE_AREA_GROUP;
+    edit_step = 2;
+    edit_new_object = false;
+
+    for (var i=0; i < map.destinations.features.length; i++) {
+        $("#area_group_destination").append($('<option>', {
+            value: map.destinations.features[i].properties.destination_id,
+            text:  map.destinations.features[i].properties.name
+        }));
+
+        // If current destination is the map selected destination, make it selected.
+        if (map.selected_destination.destination_id == map.destinations.features[i].properties.destination_id) {
+            $("#area_group_destination").val(map.destinations.features[i].properties.destination_id);
+        }
+    }
+
+    buttons_reset();
+    show_edit_buttons();
+
+    $("#area_group_name_txt").val(map.selected_area_group.group_name)
+    $("#area_group_desc").val(map.selected_area_group.group_description);
+    $("#screen_edit_area_group").css('visibility','visible');
 }
 
 function show_edit_buttons() {
