@@ -195,7 +195,26 @@ function api_add_destination(data, show_ui_messages) {
         timeout:    6000,
         success:    function(response) {
             if (response.result_code > 0) {
-                /* TODO update destination lists */
+                //create data structure for new destination and add it to local memory.
+                new_destination_obj = {
+                    'geometry': {
+                        'coordinates': [data.dest_lng, data.dest_lat],
+                        'type': 'Point'
+                    },
+                    'properties': {
+                        'click_zoom_to':  14,
+                        'description':    data.dest_desc,
+                        'destinatoin_id': response.destination_id,
+                        'location':       data.dest_loc,
+                        'max_zoom':       13,
+                        'name':           data.dest_name
+                    },
+                    'type': 'Feature'
+                }
+                map_obj.destinations.features.push(new_destination_obj);
+                map_obj.selected_destination = new_destination_obj;
+                map_obj.redraw_map();
+
                 ui_message = "Destination Added";
             } else {
                 ui_message = response.result;
@@ -744,8 +763,7 @@ function button2_click() {
         $("#breadcrumbs_div_2").html("");
     } else if (current_mode == MODE_AREA_GROUP) {
         $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
-        $("#breadcrumbs_div_2").html("");
-        // TODO: Get Area_Group Name
+        $("#breadcrumbs_div_2").html("• " + map.selected_area_group.group_name);
     } else if (current_mode == MODE_AREA) {
         $("#breadcrumbs_div_1").html(map.selected_destination.destination_name);
         $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
@@ -768,7 +786,7 @@ function button3_click() {
         if (current_mode == MODE_DESTINATION) {
             $("#breadcrumbs_div_2").html("• " + map.selected_destination.destination_name);
         } else if (current_mode == MODE_AREA_GROUP) {
-            // TODO: Add area group name
+            $("#breadcrumbs_div_2").html("• " + map.selected_area_group.name);
         } else if (current_mode == MODE_AREA) {
             $("#breadcrumbs_div_2").html("• " + map.selected_area.properties.name);
         } else if (current_mode == MODE_ROUTE) {
@@ -1140,8 +1158,6 @@ function change_area(area_id, change_map_view) {
 }
 
 function change_area_group(group_id, change_map_view) {
-    // TODO: Finish code
-
     map.set_area_group(group_id);
     current_mode = MODE_AREA_GROUP;
     create_area_list();
@@ -2427,7 +2443,6 @@ function get_edit_area_group_data() {
     var area_group_name     = $("#area_group_name_txt").val();
     var area_group_desc     = $("#area_group_desc").val();
     var area_group_dest_id  = $("#area_group_destination").val();
-    //TODO get destination_id
 
     if (edit_new_object === true) {
         area_group_data = {
