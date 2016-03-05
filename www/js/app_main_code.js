@@ -499,6 +499,10 @@ function api_edit_area_group(data, show_ui_messages) {
            TH.util.logging.log("Error updating area, saved to local changes.");
        }
     });
+
+    //update local info
+    map.selected_area_group.group_name = data.name;
+    map.selected_area_group.group_description = data.description;
 }
 
 function api_edit_destination(data, show_ui_messages) {
@@ -2429,14 +2433,18 @@ function get_edit_area_group_data() {
         area_group_data = {
             'destination_id':   area_group_dest_id,
             'name':             area_group_name,
-            'description':      area_group_desc
+            'description':      area_group_desc,
+            'user_id':          user_id,
+            'key':              api_key_th
         }
     } else {
         area_group_data = {
             'group_id':         map.selected_area_group.group_id,
             'destination_id':   area_group_dest_id,
             'name':             area_group_name,
-            'description':      area_group_desc
+            'description':      area_group_desc,
+            'user_id':          user_id,
+            'key':              api_key_th
         }
     }
 
