@@ -3557,7 +3557,7 @@ function show_map_edit_buttons(is_new) {
     if (edit_new_object) {
         button4_click();
         $("#target_overlay").css('visibility','visible');
-        var target_top = (($(window).height() - 80 + status_bar_height) / 2) - 20 + "px";
+        var target_top = (($(window).height() - 80 + status_bar_height) / 2) + 10 + "px";
         var target_left = (($(window).width() / 2) - 20) + "px";
         $("#target_overlay").css({'top':  target_top});
         $("#target_overlay").css({'left':  target_left});
