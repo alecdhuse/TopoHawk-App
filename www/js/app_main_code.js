@@ -1074,6 +1074,7 @@ function buttons_reset() {
      $("#screen_info_title").css({"margin": "8px"});
      $("#screen_info_title").css({"height": "auto"});
      $("#screen_info_title").css({"background-image": "none"});
+     $("#screen_info_inner").css({"padding-top": "0px"});
 }
 
 function cancel_map_edit() {
@@ -1465,27 +1466,29 @@ function create_area_group_list() {
     if (map.selected_destination.area_groups.groups.length > 0) {
         //Get groups
         for (var i=0; i < map.selected_destination.area_groups.groups.length; i++) {
-            if (search_string.length === 0) {
-                group_objs.push(map.selected_destination.area_groups.groups[i]);
-            } else {
-                if (map.selected_destination.area_groups.group[i].group_name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+            if (map.selected_destination.area_groups.groups[i].group_id > 0) {
+                if (search_string.length === 0) {
                     group_objs.push(map.selected_destination.area_groups.groups[i]);
                 } else {
-                    hidden_count++;
+                    if (map.selected_destination.area_groups.groups[i].group_name.toLowerCase().indexOf(search_string.toLowerCase()) > -1) {
+                        group_objs.push(map.selected_destination.area_groups.groups[i]);
+                    } else {
+                        hidden_count++;
+                    }
                 }
-            }
 
-            map.selected_destination.area_groups.groups[i].stats = {
-                "types": {
-                    "Sport":    0,
-                    "Trad":     0,
-                    "Mixed":    0,
-                    "Top Rope": 0,
-                    "Boulder":  0,
-                    "Aid":      0,
-                    "Total":    0
-                }
-            };
+                map.selected_destination.area_groups.groups[i].stats = {
+                    "types": {
+                        "Sport":    0,
+                        "Trad":     0,
+                        "Mixed":    0,
+                        "Top Rope": 0,
+                        "Boulder":  0,
+                        "Aid":      0,
+                        "Total":    0
+                    }
+                };
+            }
         }
 
         //Get area stats and areas without a group
@@ -1756,14 +1759,17 @@ function create_home_screen() {
     }
 
     /* Bottom Space */
-    html += "<div style='height:530px;width:100%;'></div>";
+    html += "<div style='height:540px;width:100%;'></div>";
 
     $("#screen_info_title").html("");
     $("#screen_info_inner").html(html);
 
     /* Set CSS */
     var background_url = "url('" + home_image + "')"
-    $("#screen_info_title").css({"margin": "0px"});
+    $("#screen_info_title").css({"margin-top": "0px"});
+    $("#screen_info_title").css({"margin-bottom": "0px"});
+    $("#screen_info_title").css({"margin-left": "0px"});
+    $("#screen_info_title").css({"margin-right": "0px"});
     $("#screen_info_title").css({"height": "180px"});
     $("#screen_info_title").css({"background-image": background_url});
 
@@ -3916,6 +3922,20 @@ document.onreadystatechange = function(e) {
                 }
             }
          }
+    });
+
+    $("#screen_info_inner").scroll(function() {
+        if (current_mode == MODE_NONE) {
+            //Main page, scroll top banner
+            var info_inner_top = $("#screen_info_inner").scrollTop();
+            if (info_inner_top <= 180) {
+                var new_top = (info_inner_top) * -1;
+                $("#screen_info_inner").css({"padding-top": (info_inner_top + "px")});
+                $("#screen_info_title").css({"margin-top": (new_top + "px")});
+            } else {
+                $("#screen_info_inner").css({"padding-top": "180px"});
+            }
+        }
     });
 
     map.on_first_gps_fix = function (lat, lng) {
