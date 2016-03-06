@@ -1535,7 +1535,7 @@ function create_area_group_list() {
 
         //Show areas that are not part of any groups
         for (var i=0; i < area_objs.length; i++) {
-            group_list_html += "<div class='destination_list_element' onclick='_area(" + area_objs[i].properties.area_id + ", true)'>";
+            group_list_html += "<div class='destination_list_element' onclick='change_area(" + area_objs[i].properties.area_id + ", true)'>";
             group_list_html += "<div class='destination_list_name'>" + area_objs[i].properties.name + "</div>";
             group_list_html += "<div class='destination_list_small_text'><span>";
             group_list_html += create_list_route_stats(area_objs[i].properties.stats);
@@ -3997,7 +3997,7 @@ function onDeviceReady() {
     TH.util.storage.check_offline_statuses();
 
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
-        setTimeout(function() { map.enable_device_location(true); }, 2800);
+        setTimeout(function() { map.enable_device_location(true); }, 3000);
     } else {
         map.enable_device_location(true);
     }
