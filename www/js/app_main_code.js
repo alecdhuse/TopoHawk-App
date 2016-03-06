@@ -1628,9 +1628,11 @@ function create_destination_info() {
         if (window.innerWidth < 501) {
             info_html += "<div class='edit_tools_link'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
             info_html += "<div class='edit_tools_link'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
+            info_html += "<div class='edit_tools_link'><a nohref onclick='show_add_area_group_screen()'>Add Area Group</a></div>";
         } else {
             info_html += "<div class='edit_tools_link_large'><a nohref onclick='edit_current_destination()'>Edit Destinaion</a></div>";
             info_html += "<div class='edit_tools_link_large'><a nohref onclick='show_map_edit_buttons(true)'>Add Area</a></div>";
+            info_html += "<div class='edit_tools_link_large'><a nohref onclick='show_add_area_group_screen()'>Add Area Group</a></div>";
         }
     }
 
@@ -2452,11 +2454,11 @@ function get_edit_area_group_data() {
 
     if (edit_new_object === true) {
         area_group_data = {
-            'destination_id':   area_group_dest_id,
-            'name':             area_group_name,
-            'description':      area_group_desc,
-            'user_id':          user_id,
-            'key':              api_key_th
+            'destination_id':    area_group_dest_id,
+            'group_name':        area_group_name,
+            'group_description': area_group_desc,
+            'user_id':           user_id,
+            'key':               api_key_th
         }
     } else {
         area_group_data = {
@@ -3441,6 +3443,33 @@ function settings_update_grades(callback) {
 function settings_update_use_metric() {
     use_metric = $("#settings_use_metric").is(":checked");
     setting_save();
+}
+
+function show_add_area_group_screen() {
+    current_edit_mode = EDIT_MODE_AREA_GROUP;
+    edit_step = 2;
+    edit_new_object = true;
+
+    buttons_reset();
+    show_edit_buttons();
+
+    $("#area_group_name_txt").val("");
+    $("#area_group_desc").val("");
+
+    for (var i=0; i < map.destinations.features.length; i++) {
+        $("#area_group_destination").append($('<option>', {
+            value: map.destinations.features[i].properties.destination_id,
+            text:  map.destinations.features[i].properties.name
+        }));
+
+        // If current destination is the map selected destination, make it selected.
+        if (map.selected_destination.destination_id == map.destinations.features[i].properties.destination_id) {
+            $("#area_group_destination").val(map.destinations.features[i].properties.destination_id);
+        }
+    }
+
+    $("#screen_edit_area_group").css('visibility','visible');
+    // TODO finish add area group
 }
 
 function show_help_comment(comment_text, timeout) {
