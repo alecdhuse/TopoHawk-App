@@ -37,7 +37,7 @@ var stream_scroll        = false;
 var swipe_binded         = false;
 var use_metric           = false;
 var user_id              = -1;
-var version              = "1.1.4";
+var version              = "1.1.5";
 var welcome_html         = "";
 
 var destination_callback_change   = {
@@ -1738,10 +1738,19 @@ function create_home_screen() {
     html += "</div>";
 
     /* Search Card */
-    html += "<div id='search_card' class='card' style='height:105px;padding-top:6px;'>";
+    //iOS fixes
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad|)/)) {
+        var search_card_height = 112;
+        var search_card_input  = 98;
+    } else {
+        var search_card_height = 105;
+        var search_card_input  = 100;
+    }
+
+    html += "<div id='search_card' class='card' style='height:" + search_card_height + "px;padding-top:6px;'>";
     html += "<div class='card_title'>Search Everything</div>";
     html += "<div style='margin-top:8px;padding-left:6px;padding-right:12px;'>";
-    html += "<input type='text' id='search_card_input' onclick='position_search_card()' style='border-color:#ccc;border-style:solid;border-width:1px;font-size:large;width:100%;'><br />";
+    html += "<input type='text' id='search_card_input' onclick='position_search_card()' style='border-color:#ccc;border-style:solid;border-width:1px;font-size:large;width:" + search_card_input + "%;'><br />";
     html += "<div style='margin:auto;width:100px;'><input type='submit' value='Search' onclick='click_search_card_submit()' style='background-color: #00bbe0;border: 2px solid #D4D4D4;border-radius: 8px;color: white;font-size: large;height: 2em;margin-top: 10px;width: 100%;'></div>";
     html += "</div></div>";
 

@@ -35,7 +35,7 @@
     <preference name="splashscreen"               value="splash" />
     <preference name="SplashScreenDelay"          value="10000" />
     <preference name="show-splash-screen-spinner" value="false" />
-    <preference name="auto-hide-splash-screen"    value="true" />
+    <preference name="auto-hide-splash-screen"    value="false" />
     <preference name="StatusBarOverlaysWebview"   value="true" />
     <preference name="StatusBarStyle"             value="blackopaque" />
 
