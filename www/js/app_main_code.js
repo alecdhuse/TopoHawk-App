@@ -3995,9 +3995,10 @@ function onDeviceReady() {
     get_user_info();
 
     TH.util.storage.check_offline_statuses();
+    map.enable_device_location(true);
 
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
-        setTimeout(function() { map.enable_device_location(true); }, 1500);
+        
     } else {
         map.enable_device_location(true);
     }
