@@ -4,7 +4,7 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "com.topohawk.m"
-        version   = "1.1.4">
+        version   = "1.1.5">
 
     <name>Topo Hawk</name>
 
@@ -35,7 +35,7 @@
     <preference name="splashscreen"               value="splash" />
     <preference name="SplashScreenDelay"          value="10000" />
     <preference name="show-splash-screen-spinner" value="false" />
-    <preference name="auto-hide-splash-screen"    value="false" />
+    <preference name="auto-hide-splash-screen"    value="true" />
     <preference name="StatusBarOverlaysWebview"   value="true" />
     <preference name="StatusBarStyle"             value="blackopaque" />
 
