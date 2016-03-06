@@ -2990,7 +2990,7 @@ function on_keyboard_show() {
 
 }
 
-function on_load() {
+    function on_load() {
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
         document.addEventListener("deviceready", onDeviceReady, false);
     } else {
@@ -3997,7 +3997,7 @@ function onDeviceReady() {
     TH.util.storage.check_offline_statuses();
 
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
-
+        setTimeout(function() { map.enable_device_location(true); }, 3000);
     } else {
         map.enable_device_location(true);
     }
