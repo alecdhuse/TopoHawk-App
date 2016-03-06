@@ -1741,7 +1741,7 @@ function create_home_screen() {
     //iOS fixes
     if (navigator.userAgent.match(/(iPhone|iPod|iPad|)/)) {
         var search_card_height = 112;
-        var search_card_input  = 98;
+        var search_card_input  = 96;
     } else {
         var search_card_height = 105;
         var search_card_input  = 100;
