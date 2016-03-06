@@ -3991,10 +3991,11 @@ function onDeviceReady() {
     document.addEventListener("hidekeyboard", on_keyboard_hide, false);
     document.addEventListener("showkeyboard", on_keyboard_show, false);
 
-    map.enable_device_location(true);
     settings_load();
     get_user_info();
+    
     TH.util.storage.check_offline_statuses();
+    map.enable_device_location(true);
 
     resize_window();
     button1_click();
