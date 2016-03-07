@@ -3972,6 +3972,7 @@ document.onreadystatechange = function(e) {
                 $("#screen_info_title").css({"margin-top": (new_top + "px")});
             } else {
                 $("#screen_info_inner").css({"padding-top": "180px"});
+                $("#screen_info_title").css({"margin-top": "180px")});
             }
         }
     });
@@ -3997,7 +3998,7 @@ function onDeviceReady() {
 
     TH.util.storage.check_offline_statuses();
     map.enable_device_location(true);
-    
+
     button1_click();
 
     if (navigator.splashscreen) {
