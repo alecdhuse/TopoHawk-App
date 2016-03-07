@@ -3992,17 +3992,12 @@ function onDeviceReady() {
     document.addEventListener("showkeyboard", on_keyboard_show, false);
 
     settings_load();
+    resize_window();
     get_user_info();
 
     TH.util.storage.check_offline_statuses();
-
-    if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
-        setTimeout(function() { map.enable_device_location(true); }, 3000);
-    } else {
-        map.enable_device_location(true);
-    }
-
-    resize_window();
+    map.enable_device_location(true);
+    
     button1_click();
 
     if (navigator.splashscreen) {
