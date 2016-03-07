@@ -1739,7 +1739,7 @@ function create_home_screen() {
 
     /* Search Card */
     //iOS fixes
-    if (navigator.userAgent.match(/(iPhone|iPod|iPad|)/)) {
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
         var search_card_height = 112;
         var search_card_input  = 96;
     } else {
