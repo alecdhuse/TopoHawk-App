@@ -3993,12 +3993,12 @@ function onDeviceReady() {
     document.addEventListener("showkeyboard", on_keyboard_show, false);
 
     settings_load();
-    resize_window();
     get_user_info();
 
     TH.util.storage.check_offline_statuses();
     map.enable_device_location(true);
 
+    resize_window();
     button1_click();
 
     if (navigator.splashscreen) {
