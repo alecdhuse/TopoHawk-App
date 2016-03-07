@@ -3972,7 +3972,7 @@ document.onreadystatechange = function(e) {
                 $("#screen_info_title").css({"margin-top": (new_top + "px")});
             } else {
                 $("#screen_info_inner").css({"padding-top": "180px"});
-                $("#screen_info_title").css({"margin-top": "180px"});
+                $("#screen_info_title").css({"margin-top": "-180px"});
             }
         }
     });
