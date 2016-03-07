@@ -2504,11 +2504,11 @@ function get_edit_destination_data() {
     } else {
         destination_data = {
             'destination_id':   map.selected_destination.destination_id,
-            'dest_name':        dest_name,
-            'dest_loc':         dest_loc,
-            'dest_desc':        dest_desc,
-            'dest_lat':         dest_lat,
-            'dest_lng':         dest_lng,
+            'destination_name': dest_name,
+            'destination_loc':  dest_loc,
+            'destination_desc': dest_desc,
+            'destination_lat': dest_lat,
+            'destination_lng': dest_lng,
             'user_id' :         user_id,
             'key':              api_key_th
         };
