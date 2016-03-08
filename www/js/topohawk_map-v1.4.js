@@ -737,8 +737,8 @@
                             }
                     });
 
-                    layerGroup.addLayer(path_outline);
-                    layerGroup.addLayer(path_inline);
+                    layer_group.addLayer(path_outline);
+                    layer_group.addLayer(path_inline);
                 }
             }
         },
@@ -907,7 +907,7 @@
 
             $.ajax({
                type:     'GET',
-               url:      'https://topohawk.com/api/v1.3/get_destination_data.php',
+               url:      'https://topohawk.com/api/v1.4/get_destination_data.php',
                dataType: 'json',
                timeout:  6000,
                data: {
