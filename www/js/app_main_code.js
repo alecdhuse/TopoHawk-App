@@ -17,7 +17,7 @@ var destination_callback = false;
 var edit_new_object      = true;
 var edit_step            = 0;
 var first_gps_fix        = false;
-var home_image           = "";
+var home_image           = "images/home/" + Math.floor((Math.random() * 6) + 1) + ".jpg";
 var keyboard_height      = 230;
 var local_destinations   = [];
 var map_finished         = false;
@@ -3901,9 +3901,6 @@ document.onreadystatechange = function(e) {
     if (navigator.splashscreen) {
         navigator.splashscreen.show();
     }
-
-    /* Find Randomized Home Image */
-    home_image = "images/home/" + Math.floor((Math.random() * 6) + 1) + ".jpg";
 
     /* Device Specific Adjustments */
     if (navigator.userAgent.match(/(iPhone|iPod|iPad)/)) {
