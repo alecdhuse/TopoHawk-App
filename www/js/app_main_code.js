@@ -2995,11 +2995,12 @@ function on_keyboard_show() {
 
 }
 
-    function on_load() {
-    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) {
+function on_load() {
+    if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)) {
+        /* Wait for Cordova's device APIs to load */
         document.addEventListener("deviceready", onDeviceReady, false);
     } else {
-        onDeviceReady();
+        final_app_init();
     }
 }
 
@@ -3992,6 +3993,14 @@ document.onreadystatechange = function(e) {
 };
 
 function onDeviceReady() {
+    if (PhoneGap === undefined || PhoneGap === null) {
+        setTimeout(function() { onDeviceReady(); }, 500);
+    } else {
+        final_app_init();
+    }
+}
+
+function final_app_init() {
     document.addEventListener("backbutton", button_back_click, false);
     document.addEventListener("menubutton", button_menu_click, false);
     document.addEventListener("hidekeyboard", on_keyboard_hide, false);
@@ -4001,13 +4010,7 @@ function onDeviceReady() {
     get_user_info();
 
     TH.util.storage.check_offline_statuses();
-
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        /* Wait longer for iOS devices */
-        setTimeout(function() { map.enable_device_location(true); }, 3500);
-    } else {
-        map.enable_device_location(true);
-    }
+    map.enable_device_location(true);
 
     resize_window();
     button1_click();
