@@ -677,14 +677,6 @@
             }
 
             this._user_location_layer.addLayer(marker);
-
-            if (this._first_location_fix === true) {
-                if (map_obj._gps_location.lat != 0 && map_obj._gps_location.lng != 0) {
-                    this.set_view(map_obj._gps_location);
-                    this._first_location_fix = false;
-                    this.on_first_gps_fix(map_obj._gps_location.lat, map_obj._gps_location.lng);
-                }
-            }
         },
 
         _draw_map_objects: function () {
@@ -1214,6 +1206,15 @@
 
         _update_location: function (e, map_obj) {
             map_obj._gps_location = e.latlng;
+
+            if (this._first_location_fix === true) {
+                if (map_obj._gps_location.lat != 0 && map_obj._gps_location.lng != 0) {
+                    this.set_view(map_obj._gps_location);
+                    this._first_location_fix = false;
+                    this.on_first_gps_fix(map_obj._gps_location.lat, map_obj._gps_location.lng);
+                }
+            }
+
             map_obj._draw_location_marker(map_obj);
         },
 
