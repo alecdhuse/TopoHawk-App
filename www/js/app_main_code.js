@@ -16,6 +16,7 @@ var current_mode         = MODE_NONE;
 var destination_callback = false;
 var edit_new_object      = true;
 var edit_step            = 0;
+var first_gps_fix        = false;
 var home_image           = "";
 var keyboard_height      = 230;
 var local_destinations   = [];
@@ -56,9 +57,11 @@ var photo_uploader      = {
 
 /* Map Setup */
 var map = TH.map('screen_map', {
+    auto_location:   false,
     cluster:         true,
     mobile:          true,
     offline:         true,
+    show_location:   true,
     show_numberings: true,
     lat:             40.6,
     lng:             -98.0,
@@ -73,6 +76,12 @@ map.destination_info_loaded     = function (destination_obj) { destination_info_
 map.on_destinations_info_loaded = function ()                { on_destinations_info_loaded(); };
 map.on_localization_complete    = function ()                { finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport)); };
 map.destinations_load_error     = function (error_message)   { destinations_load_error(error_message); };
+
+map.on_first_gps_fix = function (lat, lng) {
+    first_gps_fix = true;
+    do_checkin();
+    get_local_destinations();
+};
 
 function add_new_destination() {
     current_mode = MODE_NONE;
@@ -1030,7 +1039,7 @@ function button_menu_ticks() {
 }
 
 function buttons_reset() {
-     map.enable_device_location(false);
+     if (first_gps_fix === true) map.enable_device_location(false);
      photo_topo.hide_popups();
      hide_help_comment();
 
@@ -2580,12 +2589,29 @@ function get_local_destinations() {
         /* Find Closest Locations */
         var destination_distance = 0;
         var destination_list = [];
-        var user_location = map._gps_location;
+        var user_location = map.get_location();
 
+        if (user_location.lat != 0 && user_location.lng != 0) {
+            for (var i=0; i < map.destinations.features.length; i++) {
+                destination_distance = user_location.distanceTo(L.latLng(map.destinations.features[i].geometry.coordinates[1], map.destinations.features[i].geometry.coordinates[0]));
 
+                if (destination_distance < 370500) {
+                    destination_list.push({
+                            destination_name:   map.destinations.features[i].properties.name,
+                            destination_id:     map.destinations.features[i].properties.destination_id,
+                            distance:           destination_distance,
+                            lat:                map.destinations.features[i].geometry.coordinates[1],
+                            lng:                map.destinations.features[i].geometry.coordinates[0]
+                    });
+                }
             }
 
+            local_destinations = destination_list.sort(function(a, b) {
+                return ((a.distance < b.distance) ? -1 : ((a.distance > b.distance) ? 1 : 0));
+            });
 
+            create_home_screen();
+        }
     }
 }
 
@@ -3967,11 +3993,6 @@ document.onreadystatechange = function(e) {
         }
     });
 
-    map.on_first_gps_fix = function (lat, lng) {
-        do_checkin();
-        get_local_destinations();
-    };
-
     /* This cleans out indexedDB objects */
     //TH.util.storage.delete_indexedDB();
 };
@@ -3989,6 +4010,8 @@ function onDeviceReady() {
 
     resize_window();
     button1_click();
+
+    map.enable_device_location(true);
 
     if (navigator.splashscreen) {
         navigator.splashscreen.hide();
