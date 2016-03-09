@@ -59,7 +59,6 @@ var map = TH.map('screen_map', {
     cluster:         true,
     mobile:          true,
     offline:         true,
-    show_location:   true,
     show_numberings: true,
     lat:             40.6,
     lng:             -98.0,
@@ -3000,7 +2999,7 @@ function on_load() {
         /* Wait for Cordova's device APIs to load */
         document.addEventListener("deviceready", onDeviceReady, false);
     } else {
-        final_app_init();
+        onDeviceReady();
     }
 }
 
@@ -3993,14 +3992,6 @@ document.onreadystatechange = function(e) {
 };
 
 function onDeviceReady() {
-    if (PhoneGap === undefined || PhoneGap === null) {
-        setTimeout(function() { onDeviceReady(); }, 500);
-    } else {
-        final_app_init();
-    }
-}
-
-function final_app_init() {
     document.addEventListener("backbutton", button_back_click, false);
     document.addEventListener("menubutton", button_menu_click, false);
     document.addEventListener("hidekeyboard", on_keyboard_hide, false);
