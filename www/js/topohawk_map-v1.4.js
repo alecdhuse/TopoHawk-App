@@ -724,21 +724,36 @@
                 }
 
                 if (this.get_zoom() <= max_zoom && zoom >= this.get_zoom()) {
-                    /* add outline first */
-                    var path_outline = L.geoJson(mapFeature.features[i], {
-                        style: function (feature) {
-                            return {color: "#444444", weight: 2};
-                        }
-                    });
+                    var path_style = {color: "#333", opacity: 1, weight: 2};
 
-                    var path_inline = L.geoJson(mapFeature.features[i], {
+                    if (mapFeature.features[i].properties.path_type == "Trail") {
+                        path_style = {
+                            color: "#eee",
+                            dashArray: [1, 4],
+                            opacity: 1,
+                            weight: 2
+                        };
+                    } else if (mapFeature.features[i].properties.path_type == "Cliff") {
+                        path_style = {
+                            color: "#444444",
+                            opacity: 1,
+                            weight: 2
+                        };
+                    } else if (mapFeature.features[i].properties.path_type == "Road") {
+                        path_style = {
+                            color: "#eee",
+                            opacity: 1,
+                            weight: 3
+                        };
+                    }
+
+                    var path_obj = L.geoJson(mapFeature.features[i], {
                             style: function (feature) {
-                                return {color: "#fff", opacity: 1, weight: 4};
+                                return path_style;
                             }
                     });
 
-                    layer_group.addLayer(path_outline);
-                    layer_group.addLayer(path_inline);
+                    layer_group.addLayer(path_obj);
                 }
             }
         },
