@@ -286,6 +286,10 @@
             this.invalidate_size();
         },
 
+        set_position: function (lat, lng) {
+            map_obj._update_location(L.latLng(lat, lng), this);
+        },
+
         set_route: function (route_id) {
             for (var i=0; i<this.routes.features.length; i++) {
                 if (this.routes.features[i].properties.route_id == route_id) {
@@ -452,11 +456,14 @@
             });
 
             this._leaflet_map.on('locationfound', function(e) {
-                map_obj._update_location(e, map_obj);
+                map_obj._update_location(e.latlng, map_obj);
             });
 
             if (this._options.show_location) {
-                this._leaflet_map.locate({setView: false, watch: false, enableHighAccuracy: true});
+                if (this._options.auto_location === true) {
+                    this._leaflet_map.locate({setView: false, watch: false, enableHighAccuracy: true});
+                }
+
                 this._initialize_device_orientation(map_obj);
                 this._gps_orientation_init = true;
             }
@@ -1204,14 +1211,14 @@
             map_obj.on_destinations_info_loaded();
         },
 
-        _update_location: function (e, map_obj) {
-            map_obj._gps_location = e.latlng;
+        _update_location: function (latlng, map_obj) {
+            map_obj._gps_location = latlng;
 
-            if (this._first_location_fix === true) {
+            if (map_obj._first_location_fix === true) {
                 if (map_obj._gps_location.lat != 0 && map_obj._gps_location.lng != 0) {
-                    this.set_view(map_obj._gps_location);
-                    this._first_location_fix = false;
-                    this.on_first_gps_fix(map_obj._gps_location.lat, map_obj._gps_location.lng);
+                    map_obj.set_view(map_obj._gps_location);
+                    map_obj._first_location_fix = false;
+                    map_obj.on_first_gps_fix(map_obj._gps_location.lat, map_obj._gps_location.lng);
                 }
             }
 
@@ -1238,6 +1245,7 @@
         /* Default options for the TopoHawk map  */
         options                   = options || {};
         options.area_id           = options.hasOwnProperty('area_id') ? options.area_id : -1;
+        options.auto_location     = options.hasOwnProperty('auto_location') ? options.auto_location : true;
         options.lat               = options.hasOwnProperty('lat')  ? options.lat : 0;
         options.lng               = options.hasOwnProperty('lng')  ? options.lng : 0;
         options.zoom              = options.hasOwnProperty('zoom') ? options.zoom : 2;
