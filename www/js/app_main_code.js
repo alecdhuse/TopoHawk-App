@@ -73,6 +73,7 @@ map.on_user_info_loaded         = function ()                { user_info_loaded(
 map.destination_info_loaded     = function (destination_obj) { destination_info_loaded(); };
 map.on_destinations_info_loaded = function ()                { on_destinations_info_loaded(); };
 map.on_localization_complete    = function ()                { finish_map_setup(TH.util.grades.get_grade_count(map._options.grade_sport)); };
+map.destinations_load_error     = function (error_message)   { destinations_load_error(error_message); };
 
 function add_new_destination() {
     current_mode = MODE_NONE;
@@ -2085,6 +2086,10 @@ function destination_info_loaded() {
         destination_callback = false;
         proccess_destination_callback(destination_callback_change);
     }
+}
+
+function destinations_load_error(error_message) {
+    $("#destination_search_results").html("<div style='text-align:center'>Connection Error: " + error_message + "</div>");
 }
 
 function do_checkin() {

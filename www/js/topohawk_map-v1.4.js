@@ -67,6 +67,7 @@
             this.on_area_click               = function (area_obj) {};
             this.on_destination_click        = function (destination_obj) {};
             this.destination_info_loaded     = function (destination_obj) {};
+            this.destinations_load_error     = function (error_message) {};
             this.on_first_gps_fix            = function (lat, lng) {};
             this.on_route_click              = function (route_obj) {};
             this.on_user_info_loaded         = function () {};
@@ -992,6 +993,7 @@
                             map_obj._update_destinations(offline_response, map_obj);
                         });
                     } else {
+                        map_obj.destinations_load_error(error);
                         TH.util.logging.log('Error getting destinations: ' + error);
                     }
                 }
