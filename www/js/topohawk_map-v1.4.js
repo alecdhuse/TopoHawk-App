@@ -1154,6 +1154,11 @@
 
             auto_zoom = (typeof auto_zoom === undefined) ? true : auto_zoom;
 
+            /* Set selected destination and clear out selected area and route. */
+            this.selected_area          = {};
+            this.selected_route         = {};
+            this.selected_destination   = data;
+
             if (this._first_location_fix === true) {
                 if (this._options.area_id > 0) {
                     this.set_area(this._options.area_id);
@@ -1163,11 +1168,6 @@
                     this.set_route(this._options.route_id);
                 }
             }
-
-            /* Set selected destination and clear out selected area and route. */
-            this.selected_area          = {};
-            this.selected_route         = {};
-            this.selected_destination   = data;
 
             /* Zoom into destination location */
             var latlng = L.latLng(data.destination_lat, data.destination_lng);
