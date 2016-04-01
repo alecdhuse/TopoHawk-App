@@ -1715,6 +1715,7 @@ function create_destination_title() {
 
 function create_home_screen() {
     var html = "";
+    var local_destination_ids = [];
 
     /* Create list of local destinations */
     html += "<div id='local_destinations' class='card'>";
@@ -1722,6 +1723,7 @@ function create_home_screen() {
 
     if (local_destinations.length > 0) {
         for (var i=0; (i<4 && i<local_destinations.length); i++) {
+            local_destination_ids.push(local_destinations[i].destination_id);
             html += "<div class='local_destinations_item'>";
             html += "<span onclick='change(" + local_destinations[i].destination_id + ", 0, 0, 0, true)'>";
             html += local_destinations[i].destination_name;
@@ -1737,6 +1739,9 @@ function create_home_screen() {
             html += "</span>";
             html += "</div>";
         }
+
+        /* Local events card */
+        var local_events = get_local_events(local_destination_ids);
     } else {
         html += "<div id='local_destinations_loading'><br />";
         html += "<div id='destination_downloading' class='loading_animation'>";
@@ -2613,6 +2618,32 @@ function get_local_destinations() {
             create_home_screen();
         }
     }
+}
+
+function get_local_events(local_destinations) {
+    var data = {
+        'destination_ids': local_destinations
+    };
+
+    $.ajax({
+       type:     'GET',
+       url:      'https://topohawk.com/api/v1.4/get_events.php',
+       dataType: 'json',
+       data:     data,
+       timeout:  4000,
+       success:  function(response) {
+            if (response.result_code > 0) {
+
+            } else {
+
+            }
+       },
+       error: function (req, status, error) {
+
+       }
+    });
+
+    return [];
 }
 
 function get_photo_ids() {
