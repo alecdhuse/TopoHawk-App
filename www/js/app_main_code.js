@@ -16,6 +16,7 @@ var current_mode         = MODE_NONE;
 var destination_callback = false;
 var edit_new_object      = true;
 var edit_step            = 0;
+var events_card_html     = "";
 var first_gps_fix        = false;
 var home_image           = "images/home/" + Math.floor((Math.random() * 6) + 1) + ".jpg";
 var keyboard_height      = 230;
@@ -41,7 +42,11 @@ var user_id              = -1;
 var version              = "1.1.7";
 var welcome_html         = "";
 
-var destination_callback_change   = {
+var month_names = {
+    "EN" : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+}
+
+var destination_callback_change = {
     change_screen:  false,
     destination_id: 0,
     group_id:       0,
@@ -49,7 +54,7 @@ var destination_callback_change   = {
     route_id:       0
 };
 
-var photo_uploader      = {
+var photo_uploader = {
     dataurl: "",
     init:    false,
     obj:     {}
@@ -737,6 +742,10 @@ function button1_click() {
     var info_html   = "";
 
     if (current_mode === MODE_NONE) {
+        $("#screen_info_inner").animate({
+            scrollTop: 0
+        }, 10);
+
         $("#breadcrumbs_div_2").html("");
         create_home_screen();
     } else {
@@ -1715,7 +1724,6 @@ function create_destination_title() {
 
 function create_home_screen() {
     var html = "";
-    var local_destination_ids = [];
 
     /* Create list of local destinations */
     html += "<div id='local_destinations' class='card'>";
@@ -1723,7 +1731,6 @@ function create_home_screen() {
 
     if (local_destinations.length > 0) {
         for (var i=0; (i<4 && i<local_destinations.length); i++) {
-            local_destination_ids.push(local_destinations[i].destination_id);
             html += "<div class='local_destinations_item'>";
             html += "<span onclick='change(" + local_destinations[i].destination_id + ", 0, 0, 0, true)'>";
             html += local_destinations[i].destination_name;
@@ -1739,9 +1746,6 @@ function create_home_screen() {
             html += "</span>";
             html += "</div>";
         }
-
-        /* Local events card */
-        var local_events = get_local_events(local_destination_ids);
     } else {
         html += "<div id='local_destinations_loading'><br />";
         html += "<div id='destination_downloading' class='loading_animation'>";
@@ -1766,6 +1770,13 @@ function create_home_screen() {
     html += "<div style='margin-top:8px;padding-left:6px;padding-right:12px;'>";
     html += "<input type='text' id='search_card_input' onclick='position_search_card()' style='border-color:#ccc;border-style:solid;border-width:1px;font-size:large;width:" + search_card_input + "%;'><br />";
     html += "<div style='margin:auto;width:100px;'><input type='submit' value='Search' onclick='click_search_card_submit()' style='background-color: #00bbe0;border: 2px solid #D4D4D4;border-radius: 8px;color: white;font-size: large;height: 2em;margin-top: 10px;width: 100%;'></div>";
+    html += "</div></div>";
+
+    /* Events Card */
+    html += "<div id='events_card' class='card' style='visibility:hidden'>";
+    html += "<div class='card_title'>Upcoming Events</div>";
+    html += "<div id='events_card_list' style='margin-top:8px;'>";
+    html += events_card_html;
     html += "</div></div>";
 
     if (api_key_th.length > 0) {
@@ -2424,9 +2435,12 @@ function finish_map_setup(max_slider_val) {
             }}
         });
 
+        /*
+        Is this still needed?
         map._leaflet_map.on('click', function () {
-            /* TODO: Put Tap Action here */
+            // TODO: Put Tap Action here
         });
+        */
 
         map_finished = true;
     }
@@ -2615,15 +2629,21 @@ function get_local_destinations() {
                 return ((a.distance < b.distance) ? -1 : ((a.distance > b.distance) ? 1 : 0));
             });
 
+            get_local_events(local_destinations);
             create_home_screen();
         }
     }
 }
 
 function get_local_events(local_destinations) {
+    var max_destinations = (local_destinations.length > 4) ? 4 : local_destinations.length;
     var data = {
-        'destination_ids': local_destinations
+        'destination_ids': []
     };
+
+    for (var i=0; i<max_destinations; i++) {
+        data.destination_ids.push(local_destinations[i].destination_id);
+    }
 
     $.ajax({
        type:     'GET',
@@ -2633,7 +2653,7 @@ function get_local_events(local_destinations) {
        timeout:  4000,
        success:  function(response) {
             if (response.result_code > 0) {
-
+                update_local_events(response.events);
             } else {
 
             }
@@ -2642,8 +2662,6 @@ function get_local_events(local_destinations) {
 
        }
     });
-
-    return [];
 }
 
 function get_photo_ids() {
@@ -3846,6 +3864,33 @@ function update_current_route_tick() {
         };
 
         api_add_route_tick(data, true);
+    }
+}
+
+function update_local_events(local_events) {
+    // TODO: Finish local events card
+
+    if (local_events.length > 0) {
+        var card_height = (local_events.length * 40) + 28;
+        events_card_html = "";
+
+        for (var i=0; i<local_events.length; i++) {
+            event_date = local_events[i].event_start.split(" ")[0].split("-");
+            month_name = month_names['EN'][parseInt(event_date[1])];
+            event_day  = parseInt(event_date[2]);
+
+            events_card_html += "<div>";
+            events_card_html += "<div style='float:left;'>";
+            events_card_html += local_events[i].event_name;
+            events_card_html += "</div>";
+            events_card_html += "<div style='float:right;'>";
+            events_card_html += month_name + " " + event_day + "<br>" + event_date[0];
+            events_card_html += "</div></div>";
+        }
+
+        $("#events_card_list").html(events_card_html);
+        $("#events_card").height(card_height);
+        $("#events_card").css({"visibility": "visible"});
     }
 }
 
